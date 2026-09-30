@@ -226,13 +226,14 @@
 
     <!-- Community Comments Section -->
     <section class="comments-section" id="commentsSection">
-      <div class="comments-container">
+      <div class="comments-container" id="comments-container">
         <div class="comments-header">
           <div class="comments-header-title">
             <div class="heading-pill"><i class="fa-solid fa-comments"></i> Comunidad de Arquitectos</div>
+            <span class="live-status-pill" title="Sincronización en tiempo real activa"><span class="live-pulse-dot"></span> Firestore En Vivo</span>
             <h2>Comentarios y Opiniones (<span id="commentsCount">0</span>)</h2>
           </div>
-          <p class="comments-subtitle">Comparte tus ideas, comentarios sobre los diseños o qué casas te gustaría ver.</p>
+          <p class="comments-subtitle">Comparte tus ideas, comentarios sobre los diseños o qué casas te gustaría ver en tiempo real.</p>
         </div>
 
         <!-- Comment Form -->
@@ -509,7 +510,76 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="assertive"></div>
 
-  <!-- JavaScript -->
-  <script src="./app.js?v=7"></script>
+  <!-- Firebase SDK v10 (ESM) Realtime Firestore -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      query, 
+      orderBy, 
+      onSnapshot, 
+      serverTimestamp,
+      doc,
+      deleteDoc,
+      updateDoc,
+      increment 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Configuración de tu proyecto
+    const firebaseConfig = {
+      apiKey: "AIzaSyDuAOr9jNlvqufnNOdQm9q49B2ztHM16T8",
+      authDomain: "minecraft-comentarios.firebaseapp.com",
+      projectId: "minecraft-comentarios",
+      storageBucket: "minecraft-comentarios.firebasestorage.app",
+      messagingSenderId: "207717656301",
+      appId: "1:207717656301:web:56fa26902ae9ed9d414ee4"
+    };
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const commentsCollection = collection(db, "comentarios");
+
+      window.FirebaseCommentsBridge = {
+        app,
+        db,
+        commentsCollection,
+        isReady: true,
+        subscribe(onUpdate, onError) {
+          const q = query(commentsCollection, orderBy("fecha", "desc"));
+          return onSnapshot(q, onUpdate, onError);
+        },
+        async addComment(data) {
+          return await addDoc(commentsCollection, {
+            autor: data.author || data.autor || "Anónimo",
+            texto: data.text || data.texto || "",
+            author: data.author || data.autor || "Anónimo",
+            text: data.text || data.texto || "",
+            houseRef: data.houseRef || "General",
+            role: data.role || null,
+            likes: typeof data.likes === "number" ? data.likes : 0,
+            fecha: serverTimestamp()
+          });
+        },
+        async deleteComment(commentId) {
+          return await deleteDoc(doc(db, "comentarios", commentId));
+        },
+        async toggleLike(commentId, delta) {
+          return await updateDoc(doc(db, "comentarios", commentId), {
+            likes: increment(delta)
+          });
+        }
+      };
+
+      window.dispatchEvent(new CustomEvent('firebase-bridge-ready'));
+    } catch (err) {
+      console.warn("Error al inicializar Firebase Firestore:", err);
+    }
+  </script>
+
+  <!-- JavaScript Application -->
+  <script src="./app.js?v=8"></script>
 </body>
 </html>

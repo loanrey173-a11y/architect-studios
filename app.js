@@ -77,6 +77,7 @@
   const STORAGE_KEYS = {
     HOUSES: 'mc_architect_houses_v15',
     COMMENTS: 'mc_comments_v12',
+    USER_COMMENT_LIKES: 'mc_user_comm_likes_v12',
     THEME: 'mc_theme_v11',
     SOUND: 'mc_sound_v11',
     FAVORITES: 'mc_favs_v11',
@@ -713,7 +714,10 @@
       this.comments = this.loadComments();
       this.userFavorites = this.loadFavorites();
       this.userLikes = this.loadUserLikes();
+      this.userCommentLikes = this.loadUserCommentLikes();
       this.adminRole = localStorage.getItem(STORAGE_KEYS.ADMIN_ROLE) || 'none';
+      this.firebaseUnsubscribe = null;
+      this.isFirebaseConnected = false;
       
       this.currentCategory = 'all';
       this.currentSearch = '';
@@ -732,6 +736,9 @@
       this.render();
       this.renderComments();
       this.updateStats();
+
+      // Initialize Firebase Firestore real-time sync
+      this.initFirebaseSync();
 
       // Initialize Ambient Particles
       new AmbientParticles('particleCanvas');
@@ -831,6 +838,106 @@
       } catch (e) {
         // Ignore
       }
+    }
+
+    loadUserCommentLikes() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEYS.USER_COMMENT_LIKES);
+        return saved ? JSON.parse(saved) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    saveUserCommentLikes() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.USER_COMMENT_LIKES, JSON.stringify(this.userCommentLikes));
+      } catch (e) {
+        // Ignore
+      }
+    }
+
+    initFirebaseSync() {
+      const setupBridge = () => {
+        if (!window.FirebaseCommentsBridge || !window.FirebaseCommentsBridge.isReady) return;
+
+        if (this.firebaseUnsubscribe) {
+          this.firebaseUnsubscribe();
+        }
+
+        this.firebaseUnsubscribe = window.FirebaseCommentsBridge.subscribe(
+          (snapshot) => {
+            this.isFirebaseConnected = true;
+            const loaded = [];
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              const author = data.autor || data.author || 'Anónimo';
+              const text = data.texto || data.text || '';
+              const houseRef = data.houseRef || 'General';
+              const role = data.role || (author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
+              const likes = typeof data.likes === 'number' ? data.likes : 0;
+              const likedByUser = this.userCommentLikes.includes(doc.id);
+              const date = this.formatCommentDate(data.fecha);
+
+              loaded.push({
+                id: doc.id,
+                author,
+                text,
+                houseRef,
+                role,
+                likes,
+                likedByUser,
+                date,
+                timestamp: data.fecha && data.fecha.seconds ? data.fecha.seconds * 1000 : Date.now()
+              });
+            });
+
+            this.comments = loaded;
+            this.saveComments();
+            this.renderComments();
+          },
+          (error) => {
+            console.warn('Firebase Firestore Snapshot error:', error);
+            this.isFirebaseConnected = false;
+          }
+        );
+      };
+
+      if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady) {
+        setupBridge();
+      } else {
+        window.addEventListener('firebase-bridge-ready', () => setupBridge(), { once: true });
+      }
+    }
+
+    formatCommentDate(fecha) {
+      if (!fecha) return 'Hace unos momentos';
+      let d = null;
+      if (typeof fecha.toDate === 'function') {
+        d = fecha.toDate();
+      } else if (fecha && typeof fecha.seconds === 'number') {
+        d = new Date(fecha.seconds * 1000);
+      } else if (typeof fecha === 'number') {
+        d = new Date(fecha);
+      } else if (typeof fecha === 'string') {
+        d = new Date(fecha);
+      }
+
+      if (!d || isNaN(d.getTime())) return 'Hace unos momentos';
+
+      const diffMs = Date.now() - d.getTime();
+      const diffSec = Math.floor(diffMs / 1000);
+      const diffMin = Math.floor(diffSec / 60);
+      const diffHrs = Math.floor(diffMin / 60);
+      const diffDays = Math.floor(diffHrs / 24);
+
+      if (diffSec < 45) return 'Hace unos momentos';
+      if (diffMin < 60) return `Hace ${diffMin} min`;
+      if (diffHrs < 24) return `Hace ${diffHrs} h`;
+      if (diffDays === 1) return 'Ayer';
+      if (diffDays < 7) return `Hace ${diffDays} d`;
+
+      return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
     }
 
     /* ------------------------------------------------------------------------
@@ -2041,13 +2148,13 @@
     }
 
     /* ------------------------------------------------------------------------
-       Community Comments Logic
+       Community Comments Logic (Firebase Realtime + Profanity Filter)
        ------------------------------------------------------------------------ */
 
-    handleCommentSubmit() {
-      const author = this.commentAuthor.value.trim();
-      const houseRef = this.commentHouseRef.value;
-      const text = this.commentText.value.trim();
+    async handleCommentSubmit() {
+      const author = this.commentAuthor ? this.commentAuthor.value.trim() : '';
+      const houseRef = this.commentHouseRef ? this.commentHouseRef.value : 'General';
+      const text = this.commentText ? this.commentText.value.trim() : '';
 
       if (!author || !text) {
         this.showToast('Por favor completa todos los campos requeridos', 'error');
@@ -2082,28 +2189,54 @@
         return;
       }
 
-      const newComment = {
-        id: 'comm-' + Date.now(),
-        author: author,
-        houseRef: houseRef,
-        text: text,
-        date: 'Hace unos momentos',
-        likes: 0,
-        likedByUser: false,
-        role: this.adminRole !== 'none' ? this.adminRole : null,
-        timestamp: Date.now()
-      };
+      const submitBtn = document.getElementById('submitCommentBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
+      }
 
-      this.sound.playSuccess();
-      this.comments.unshift(newComment);
-      this.saveComments();
+      const assignedRole = this.adminRole !== 'none' ? this.adminRole : (author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
 
-      // Reset form
-      this.commentText.value = '';
-      if (this.charCounter) this.charCounter.textContent = '0 / 500';
+      try {
+        if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady) {
+          await window.FirebaseCommentsBridge.addComment({
+            author,
+            text,
+            houseRef,
+            role: assignedRole
+          });
+        } else {
+          // Local fallback if offline
+          const newComment = {
+            id: 'comm-' + Date.now(),
+            author: author,
+            houseRef: houseRef,
+            text: text,
+            date: 'Hace unos momentos',
+            likes: 0,
+            likedByUser: false,
+            role: assignedRole,
+            timestamp: Date.now()
+          };
+          this.comments.unshift(newComment);
+          this.saveComments();
+          this.renderComments();
+        }
 
-      this.renderComments();
-      this.showToast('¡Comentario publicado con éxito! 🎉', 'success');
+        this.sound.playSuccess();
+        if (this.commentText) this.commentText.value = '';
+        if (this.charCounter) this.charCounter.textContent = '0 / 500';
+        this.showToast('¡Comentario publicado en tiempo real! 🎉', 'success');
+      } catch (err) {
+        console.error('Error enviando comentario a Firebase:', err);
+        this.sound.playPop();
+        this.showToast('Ocurrió un error al enviar el comentario a Firebase.', 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publicar Comentario';
+        }
+      }
     }
 
     renderComments() {
@@ -2125,8 +2258,8 @@
 
       this.commentsList.innerHTML = this.comments
         .map((comm) => {
-          const isCreator = comm.role === 'creator' || comm.isCreator;
-          const isCoCreator = comm.role === 'co-creator';
+          const isCreator = comm.role === 'creator' || comm.isCreator || (comm.author && comm.author.toLowerCase() === 'loanrey17');
+          const isCoCreator = comm.role === 'co-creator' || (comm.author && comm.author.toLowerCase() === 'danna');
           const isAdminUser = this.adminRole === 'creator' || this.adminRole === 'co-creator';
 
           let cardClass = 'comment-card animate-slide-in';
@@ -2161,15 +2294,15 @@
                 <div class="comment-author-info">
                   <span class="comment-author-name">${this.escapeHTML(comm.author)}</span>
                   ${roleBadge}
-                  <span class="comment-ref-badge"><i class="fa-solid fa-cube"></i> ${this.escapeHTML(comm.houseRef)}</span>
+                  <span class="comment-ref-badge"><i class="fa-solid fa-cube"></i> ${this.escapeHTML(comm.houseRef || 'General')}</span>
                 </div>
-                <span class="comment-date"><i class="fa-regular fa-clock"></i> ${comm.date}</span>
+                <span class="comment-date"><i class="fa-regular fa-clock"></i> ${comm.date || 'Hace unos momentos'}</span>
               </div>
               <p class="comment-text-body">${this.escapeHTML(comm.text)}</p>
               <div class="comment-actions">
-                <button class="btn-comment-like ${comm.likedByUser ? 'liked' : ''}" data-comment-action="like" data-id="${comm.id}">
+                <button class="btn-comment-like ${comm.likedByUser ? 'liked' : ''}" data-comment-action="like" data-id="${comm.id}" title="${comm.likedByUser ? 'Quitar me gusta' : 'Dar me gusta'}">
                   <i class="${comm.likedByUser ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
-                  <span>${comm.likes}</span>
+                  <span>${comm.likes || 0}</span>
                 </button>
                 ${trashBtn}
               </div>
@@ -2203,39 +2336,62 @@
       });
     }
 
-    deleteComment(commId) {
+    async deleteComment(commId) {
       if (this.adminRole !== 'creator' && this.adminRole !== 'co-creator') {
         this.showToast('No tienes permisos de administrador', 'error');
         return;
       }
 
       const commentIndex = this.comments.findIndex((c) => c.id === commId);
-      if (commentIndex === -1) return;
+      const authorName = commentIndex !== -1 ? (this.comments[commentIndex].author || 'Usuario') : 'Comentario';
 
-      const authorName = this.comments[commentIndex].author || 'Usuario';
-
-      this.sound.playPop();
-      this.comments.splice(commentIndex, 1);
-      this.saveComments();
-      this.renderComments();
-      this.showToast(`Comentario de "${authorName}" eliminado 🗑️`, 'info');
+      try {
+        if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !commId.startsWith('comm-')) {
+          await window.FirebaseCommentsBridge.deleteComment(commId);
+        }
+        if (commentIndex !== -1) {
+          this.comments.splice(commentIndex, 1);
+          this.saveComments();
+          this.renderComments();
+        }
+        this.sound.playPop();
+        this.showToast(`Comentario de "${authorName}" eliminado 🗑️`, 'info');
+      } catch (err) {
+        console.error('Error eliminando comentario en Firebase:', err);
+        this.showToast('Error al eliminar comentario de Firebase', 'error');
+      }
     }
 
-    toggleCommentLike(commId) {
+    async toggleCommentLike(commId) {
       const comment = this.comments.find((c) => c.id === commId);
       if (!comment) return;
 
       this.sound.playHeart();
-      if (comment.likedByUser) {
-        comment.likes = Math.max(0, comment.likes - 1);
+      const alreadyLiked = this.userCommentLikes.includes(commId);
+      let delta = 1;
+
+      if (alreadyLiked) {
+        this.userCommentLikes = this.userCommentLikes.filter((id) => id !== commId);
+        comment.likes = Math.max(0, (comment.likes || 0) - 1);
         comment.likedByUser = false;
+        delta = -1;
       } else {
-        comment.likes += 1;
+        this.userCommentLikes.push(commId);
+        comment.likes = (comment.likes || 0) + 1;
         comment.likedByUser = true;
+        delta = 1;
       }
 
-      this.saveComments();
+      this.saveUserCommentLikes();
       this.renderComments();
+
+      if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !commId.startsWith('comm-')) {
+        try {
+          await window.FirebaseCommentsBridge.toggleLike(commId, delta);
+        } catch (err) {
+          console.warn('Error actualizando like en Firebase:', err);
+        }
+      }
     }
 
     /* ------------------------------------------------------------------------
