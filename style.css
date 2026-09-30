@@ -1662,6 +1662,16 @@ body {
   transform: scale(1.25);
 }
 
+.footer-legal-disclaimer {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  opacity: 0.85;
+  margin-top: 0.85rem;
+  text-align: center;
+  line-height: 1.45;
+  max-width: 600px;
+}
+
 .footer-stats {
   display: flex;
   gap: 1.5rem;
@@ -1762,13 +1772,28 @@ body {
   transform: scale(1.1);
 }
 
+.modal-dialog.modal-detail {
+  max-width: 1240px;
+  width: 95vw;
+  max-height: 90vh;
+}
+
 .detail-layout {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 65% 35%;
   flex: 1;
   overflow-y: auto;
-  max-height: calc(88vh - 10px);
+  max-height: calc(90vh - 10px);
   scroll-behavior: smooth;
+  width: 100%;
+}
+
+.detail-info-panel {
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--bg-secondary);
 }
 
 .detail-image-stage {
@@ -2334,11 +2359,8 @@ body {
   .hero-title {
     font-size: 2.3rem;
   }
-  .detail-layout {
-    grid-template-columns: 1fr;
-  }
   .stage-image-container img {
-    max-height: 350px;
+    max-height: 400px;
   }
 }
 
@@ -3404,22 +3426,47 @@ body {
   .card-ig-handle {
     font-size: 0.78rem;
   }
-  .detail-modal-card {
+  .modal-dialog.modal-detail {
     max-width: 95vw;
     width: 95vw;
     margin: 10px auto;
-    padding: 1rem;
     max-height: 92vh;
+    border-radius: var(--radius-lg);
+  }
+  .detail-layout {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: 1fr;
     overflow-y: auto;
+    max-height: calc(92vh - 10px);
+    width: 100%;
+  }
+  .detail-image-stage {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+    min-height: auto;
   }
   .stage-image-container {
     max-height: 240px;
     height: 240px;
+    width: 100%;
   }
   .stage-image-container img {
     max-height: 240px;
     height: 100%;
+    width: 100%;
     object-fit: cover;
+  }
+  .detail-info-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 1 0 auto;
+    overflow-y: visible;
+    padding: 1.25rem 1rem 1.75rem;
   }
   .stage-nav-btn {
     width: 36px;
