@@ -100,7 +100,7 @@
       creatorRole: 'Co-creadora',
       instagram: {
         name: 'DANN_YAZ2',
-        url: 'https://www.instagram.com/DANN_YAZ2'
+        url: 'https://www.instagram.com/dann_yaz1/'
       },
       image: './casa_danna_1_fachada.jpg',
       gallery: [
@@ -138,7 +138,7 @@
       creatorRole: 'Co-creadora',
       instagram: {
         name: 'DANN_YAZ2',
-        url: 'https://www.instagram.com/DANN_YAZ2'
+        url: 'https://www.instagram.com/dann_yaz1/'
       },
       image: './casa_danna_2_fachada.jpg',
       gallery: [
@@ -175,7 +175,7 @@
       creatorRole: 'Co-creadora',
       instagram: {
         name: 'DANN_YAZ2',
-        url: 'https://www.instagram.com/DANN_YAZ2'
+        url: 'https://www.instagram.com/dann_yaz1/'
       },
       image: './casa_danna_3_exterior.jpg',
       gallery: [
@@ -212,7 +212,7 @@
       creatorRole: 'Co-creadora',
       instagram: {
         name: 'DANN_YAZ2',
-        url: 'https://www.instagram.com/DANN_YAZ2'
+        url: 'https://www.instagram.com/dann_yaz1/'
       },
       image: './casa_danna_4_fachada.jpg',
       gallery: [
