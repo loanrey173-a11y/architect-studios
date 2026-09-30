@@ -85,8 +85,28 @@
     </div>
 
     <nav class="drawer-nav">
+      <!-- Sección Destacados (Según mayor número de corazones) -->
+      <div class="drawer-section-label">
+        <i class="fa-solid fa-fire-flame-curved" style="color: var(--gold);"></i> Construcciones Destacadas
+      </div>
+      <div class="drawer-featured-container" id="drawerFeaturedList">
+        <!-- Injected dynamically based on highest likes -->
+      </div>
+
       <div class="drawer-section-label">Comunidad & Envíos</div>
       <ul class="drawer-menu-list">
+        <li>
+          <button class="drawer-item-btn" id="drawerSortPopularBtn" title="Ordenar galería por más populares">
+            <div class="drawer-icon-box item-fav">
+              <i class="fa-solid fa-heart" style="color: #f87171;"></i>
+            </div>
+            <div class="drawer-item-text">
+              <span class="drawer-item-title">Ver Más Votadas</span>
+              <span class="drawer-item-desc">Ordenar por mayor número de corazones</span>
+            </div>
+            <i class="fa-solid fa-arrow-trend-up drawer-chevron"></i>
+          </button>
+        </li>
         <li>
           <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="drawer-item-btn highlight-item" id="drawerSendBuildBtn" title="Enviar tu construcción a @loanrey17 en Instagram">
             <div class="drawer-icon-box item-instagram">
@@ -524,7 +544,8 @@
       doc,
       deleteDoc,
       updateDoc,
-      increment 
+      increment,
+      setDoc
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Configuración de tu proyecto
@@ -570,6 +591,17 @@
           return await updateDoc(doc(db, "comentarios", commentId), {
             likes: increment(delta)
           });
+        },
+        // Sincronización en tiempo real de corazones / likes de las casas
+        subscribeHouseLikes(onUpdate) {
+          const likesCollection = collection(db, "casas_likes");
+          return onSnapshot(likesCollection, onUpdate, (err) => console.warn("Likes sync error:", err));
+        },
+        async toggleHouseLike(houseId, delta) {
+          const houseDoc = doc(db, "casas_likes", houseId);
+          return await setDoc(houseDoc, {
+            likes: increment(delta)
+          }, { merge: true });
         }
       };
 
@@ -580,6 +612,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=8"></script>
+  <script src="./app.js?v=9"></script>
 </body>
 </html>

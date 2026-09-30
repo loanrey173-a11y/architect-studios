@@ -75,13 +75,13 @@
   };
 
   const STORAGE_KEYS = {
-    HOUSES: 'mc_architect_houses_v15',
+    HOUSES: 'mc_architect_houses_v20',
     COMMENTS: 'mc_comments_v12',
     USER_COMMENT_LIKES: 'mc_user_comm_likes_v12',
     THEME: 'mc_theme_v11',
     SOUND: 'mc_sound_v11',
     FAVORITES: 'mc_favs_v11',
-    USER_LIKES: 'mc_user_likes_v11',
+    USER_LIKES: 'mc_user_likes_v20',
     ADMIN_ROLE: 'mc_admin_role_v12'
   };
 
@@ -95,10 +95,12 @@
       difficultyLevel: 3,
       time: '~3.0 Horas',
       biome: 'Arboleda de Cerezos',
-      creator: 'Danna',
+      creator: 'Co-creadora',
+      creatorDisplay: 'Co-creadora',
+      creatorRole: 'Co-creadora',
       instagram: {
-        name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17'
+        name: 'DANN_YAZ2',
+        url: 'https://www.instagram.com/DANN_YAZ2'
       },
       image: './casa_danna_1_fachada.jpg',
       gallery: [
@@ -118,7 +120,7 @@
         'Vallas de Roble Oscuro',
         'Puertas de Roble Oscuro'
       ],
-      likes: 12,
+      likes: 0,
       isFavorite: false,
       createdAt: '2026-09-29'
     },
@@ -131,10 +133,12 @@
       difficultyLevel: 2,
       time: '~2.0 Horas',
       biome: 'Bosque de Cerezos / Colinas',
-      creator: 'Danna',
+      creator: 'Co-creadora',
+      creatorDisplay: 'Co-creadora',
+      creatorRole: 'Co-creadora',
       instagram: {
-        name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17'
+        name: 'DANN_YAZ2',
+        url: 'https://www.instagram.com/DANN_YAZ2'
       },
       image: './casa_danna_2_fachada.jpg',
       gallery: [
@@ -153,7 +157,7 @@
         'Cuadros Decorativos',
         'Macetas con Rosas y Flores'
       ],
-      likes: 9,
+      likes: 0,
       isFavorite: false,
       createdAt: '2026-09-29'
     },
@@ -166,10 +170,12 @@
       difficultyLevel: 3,
       time: '~3.5 Horas',
       biome: 'Montaña de Cerezos',
-      creator: 'Danna',
+      creator: 'Co-creadora',
+      creatorDisplay: 'Co-creadora',
+      creatorRole: 'Co-creadora',
       instagram: {
-        name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17'
+        name: 'DANN_YAZ2',
+        url: 'https://www.instagram.com/DANN_YAZ2'
       },
       image: './casa_danna_3_exterior.jpg',
       gallery: [
@@ -188,7 +194,7 @@
         'Escaleras de Cuarzo',
         'Paredes de Hormigón'
       ],
-      likes: 15,
+      likes: 0,
       isFavorite: false,
       createdAt: '2026-09-29'
     },
@@ -201,10 +207,12 @@
       difficultyLevel: 3,
       time: '~4.0 Horas',
       biome: 'Selva / Jungla Tropical',
-      creator: 'Danna',
+      creator: 'Co-creadora',
+      creatorDisplay: 'Co-creadora',
+      creatorRole: 'Co-creadora',
       instagram: {
-        name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17'
+        name: 'DANN_YAZ2',
+        url: 'https://www.instagram.com/DANN_YAZ2'
       },
       image: './casa_danna_4_fachada.jpg',
       gallery: [
@@ -223,7 +231,7 @@
         'Faroles Colgantes',
         'Losa de Piedra Lisa'
       ],
-      likes: 18,
+      likes: 0,
       isFavorite: false,
       createdAt: '2026-09-29'
     },
@@ -237,6 +245,8 @@
       time: '~1.5 Horas',
       biome: 'Playa / Costa',
       creator: 'heber jhosue',
+      creatorDisplay: 'heber jhosue',
+      creatorRole: 'Creador',
       instagram: {
         name: 'heber jhosue',
         url: 'https://www.instagram.com/heberjhosue/'
@@ -256,7 +266,7 @@
         'Vallas de Roble Oscuro',
         'Bloque de Hormigón Gris Claro'
       ],
-      likes: 8,
+      likes: 0,
       isFavorite: false,
       createdAt: '2026-09-28'
     },
@@ -270,6 +280,8 @@
       time: '~2.5 Horas',
       biome: 'Playa Tropical',
       creator: 'heber jhosue',
+      creatorDisplay: 'heber jhosue',
+      creatorRole: 'Creador',
       instagram: {
         name: 'heber jhosue',
         url: 'https://www.instagram.com/heberjhosue/'
@@ -289,7 +301,7 @@
         'Pared de Adoquín',
         'Vallas de Abeto'
       ],
-      likes: 6,
+      likes: 0,
       isFavorite: false,
       createdAt: '2026-09-27'
     }
@@ -717,6 +729,7 @@
       this.userCommentLikes = this.loadUserCommentLikes();
       this.adminRole = localStorage.getItem(STORAGE_KEYS.ADMIN_ROLE) || 'none';
       this.firebaseUnsubscribe = null;
+      this.firebaseLikesUnsubscribe = null;
       this.isFirebaseConnected = false;
       
       this.currentCategory = 'all';
@@ -861,6 +874,7 @@
       const setupBridge = () => {
         if (!window.FirebaseCommentsBridge || !window.FirebaseCommentsBridge.isReady) return;
 
+        // 1. Comments real-time sync
         if (this.firebaseUnsubscribe) {
           this.firebaseUnsubscribe();
         }
@@ -901,6 +915,31 @@
             this.isFirebaseConnected = false;
           }
         );
+
+        // 2. House likes real-time sync (corazones actualizados en vivo para todos los usuarios)
+        if (typeof window.FirebaseCommentsBridge.subscribeHouseLikes === 'function') {
+          if (this.firebaseLikesUnsubscribe) {
+            this.firebaseLikesUnsubscribe();
+          }
+
+          this.firebaseLikesUnsubscribe = window.FirebaseCommentsBridge.subscribeHouseLikes((snapshot) => {
+            let hasChanges = false;
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              const house = this.houses.find((h) => h.id === doc.id);
+              if (house && typeof data.likes === 'number' && house.likes !== data.likes) {
+                house.likes = Math.max(0, data.likes);
+                hasChanges = true;
+              }
+            });
+
+            if (hasChanges) {
+              this.saveHouses();
+              this.render();
+              this.updateStats();
+            }
+          });
+        }
       };
 
       if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady) {
@@ -953,6 +992,8 @@
       this.soundFxBtn = document.getElementById('soundFxBtn');
       this.themeToggleBtn = document.getElementById('themeToggleBtn');
       this.openCommentsBtn = document.getElementById('openCommentsBtn');
+      this.drawerFeaturedList = document.getElementById('drawerFeaturedList');
+      this.drawerSortPopularBtn = document.getElementById('drawerSortPopularBtn');
 
       // Search & Filters
       this.searchInput = document.getElementById('searchInput');
@@ -1084,6 +1125,20 @@
       if (this.drawerBackdrop) {
         this.drawerBackdrop.addEventListener('click', () => {
           this.closeDrawer();
+        });
+      }
+
+      if (this.drawerSortPopularBtn) {
+        this.drawerSortPopularBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeDrawer();
+          this.currentSort = 'popular';
+          if (this.sortSelect) this.sortSelect.value = 'popular';
+          this.render();
+          if (this.cardsGrid) {
+            this.cardsGrid.scrollIntoView({ behavior: 'smooth' });
+          }
+          this.showToast('🔥 Mostrando casas con más corazones', 'info');
         });
       }
 
@@ -1540,6 +1595,51 @@
       this.cardsGrid.innerHTML = sorted.map((house) => this.createCardHTML(house)).join('');
 
       this.attachCardEventListeners();
+      this.renderDrawerFeatured();
+    }
+
+    renderDrawerFeatured() {
+      const featuredList = document.getElementById('drawerFeaturedList');
+      if (!featuredList) return;
+
+      const sorted = [...this.houses].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 4);
+
+      if (sorted.length === 0) {
+        featuredList.innerHTML = '<p class="drawer-feat-empty">No hay casas disponibles aún.</p>';
+        return;
+      }
+
+      featuredList.innerHTML = sorted.map((house, idx) => {
+        const creatorDisplay = house.creatorDisplay || house.creator || 'Co-creadora';
+
+        return `
+          <div class="drawer-feat-card" data-featured-id="${house.id}" role="button" tabindex="0" title="Ver ${house.title}">
+            <div class="drawer-feat-thumb-wrap">
+              <img src="${house.image}" alt="${house.title}" class="drawer-feat-thumb" onerror="window.handleImgFallback(this, '${house.id}')">
+              <span class="drawer-feat-rank">${idx + 1}</span>
+            </div>
+            <div class="drawer-feat-details">
+              <span class="drawer-feat-title">${house.title}</span>
+              <span class="drawer-feat-creator">
+                <i class="fa-solid fa-crown creator-crown"></i> ${creatorDisplay}
+              </span>
+              <span class="drawer-feat-likes">
+                <i class="fa-solid fa-heart"></i> ${house.likes || 0}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const cards = featuredList.querySelectorAll('.drawer-feat-card');
+      cards.forEach((card) => {
+        card.addEventListener('click', () => {
+          const houseId = card.getAttribute('data-featured-id');
+          this.sound.playPop();
+          this.closeDrawer();
+          this.openModal(houseId);
+        });
+      });
     }
 
     createCardHTML(house) {
@@ -1559,6 +1659,9 @@
         ? `<span class="badge-photo-count"><i class="fa-solid fa-images"></i> ${house.gallery.length} fotos</span>`
         : '';
 
+      const creatorRole = house.creatorRole || (house.category === 'cerezo' || house.creator === 'Co-creadora' ? 'Co-creadora' : 'Creador');
+      const creatorDisplay = house.creatorDisplay || house.creator || 'Co-creadora';
+
       const igBannerHTML = house.instagram
         ? `
           <a href="${house.instagram.url}" target="_blank" rel="noopener noreferrer" class="card-ig-banner" data-action="instagram" title="Instagram de ${house.instagram.name}" aria-label="Abrir Instagram de ${house.instagram.name}">
@@ -1566,8 +1669,8 @@
               <img src="./instagram_logo.png" alt="Logo Instagram" class="card-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
             </div>
             <div class="card-ig-info">
-              <span class="card-ig-subtitle"><i class="fa-solid fa-crown creator-crown"></i> Creador</span>
-              <span class="card-ig-handle">${house.creator || 'Danna'} <span class="card-ig-at">@${house.instagram.name}</span></span>
+              <span class="card-ig-subtitle"><i class="fa-solid fa-crown creator-crown"></i> ${creatorRole}</span>
+              <span class="card-ig-handle">${creatorDisplay} <span class="card-ig-at">@${house.instagram.name}</span></span>
             </div>
             <div class="card-ig-badge-action">
               <span>Instagram</span>
@@ -1745,23 +1848,26 @@
        House Actions (Likes & Favorites)
        ------------------------------------------------------------------------ */
 
-    toggleHouseLike(houseId) {
+    async toggleHouseLike(houseId) {
       const house = this.houses.find((h) => h.id === houseId);
       if (!house) return;
 
       const alreadyLiked = this.userLikes.includes(houseId);
+      let delta = 1;
 
       if (alreadyLiked) {
         // Toggle OFF like (1 per user)
         this.sound.playPop();
         this.userLikes = this.userLikes.filter((id) => id !== houseId);
         house.likes = Math.max(0, (house.likes || 0) - 1);
+        delta = -1;
         this.showToast(`Like eliminado de ${house.title} 🤍`, 'info');
       } else {
         // Toggle ON like (1 per user)
         this.sound.playHeart();
         this.userLikes.push(houseId);
         house.likes = (house.likes || 0) + 1;
+        delta = 1;
         this.showToast(`¡Te ha gustado ${house.title}! ❤️`, 'success');
       }
 
@@ -1780,6 +1886,15 @@
           if (icon) {
             icon.className = nowLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
           }
+        }
+      }
+
+      // Sync with Firebase Firestore in real-time
+      if (window.FirebaseCommentsBridge && typeof window.FirebaseCommentsBridge.toggleHouseLike === 'function') {
+        try {
+          await window.FirebaseCommentsBridge.toggleHouseLike(houseId, delta);
+        } catch (err) {
+          console.warn('Error syncing house like with Firebase:', err);
         }
       }
     }
@@ -1847,8 +1962,11 @@
       }
 
       // Populate Creator Name & Instagram
+      const creatorRole = house.creatorRole || (house.category === 'cerezo' || house.creator === 'Co-creadora' ? 'Co-creadora' : 'Creador');
+      const creatorDisplay = house.creatorDisplay || house.creator || 'Co-creadora';
+
       if (this.detailCreatorName) {
-        this.detailCreatorName.textContent = house.creator || 'Danna';
+        this.detailCreatorName.textContent = creatorDisplay;
       }
 
       const detailCreatorIgWrap = document.getElementById('detailCreatorIgWrap');
@@ -1860,8 +1978,8 @@
                 <img src="./instagram_logo.png" alt="Instagram ${house.instagram.name}" class="detail-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
               </div>
               <div class="detail-ig-info-col">
-                <span class="detail-ig-role">Instagram Oficial</span>
-                <span class="detail-ig-username">${house.creator || 'Creador'} <span class="detail-ig-handle-pill">@${house.instagram.name}</span></span>
+                <span class="detail-ig-role"><i class="fa-solid fa-crown"></i> ${creatorRole} Oficial</span>
+                <span class="detail-ig-username">${creatorDisplay} <span class="detail-ig-handle-pill">@${house.instagram.name}</span></span>
               </div>
               <div class="detail-ig-follow-btn">
                 <span>Seguir</span>

@@ -3143,20 +3143,224 @@ body {
 }
 
 /* ==========================================================================
-   Profanity Filter & Input Validation Styles
+   Drawer Featured Builds ("Destacados") Section
    ========================================================================== */
 
-.input-error-shake {
-  animation: shakeInput 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
-  border-color: var(--redstone) !important;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.35) !important;
+.drawer-featured-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.35rem;
 }
 
-@keyframes shakeInput {
-  10%, 90% { transform: translate3d(-2px, 0, 0); }
-  20%, 80% { transform: translate3d(4px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
-  40%, 60% { transform: translate3d(6px, 0, 0); }
+.drawer-feat-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.65rem;
+  cursor: pointer;
+  transition: all var(--tr-fast);
+  text-decoration: none;
+  color: var(--text-main);
+  position: relative;
+}
+
+.drawer-feat-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(245, 158, 11, 0.5);
+  transform: translateX(4px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.drawer-feat-thumb-wrap {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.drawer-feat-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.drawer-feat-rank {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: linear-gradient(135deg, var(--gold), #ea580c);
+  color: #ffffff;
+  font-size: 0.58rem;
+  font-weight: 900;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.drawer-feat-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.drawer-feat-title {
+  font-family: var(--font-main);
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.drawer-feat-creator {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.15rem;
+}
+
+.drawer-feat-creator .creator-crown {
+  color: var(--gold);
+  font-size: 0.65rem;
+}
+
+.drawer-feat-likes {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #f87171;
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-top: 0.2rem;
+}
+
+.drawer-feat-empty {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  padding: 0.5rem;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Mobile Responsive Image & Layout Optimizations (Celulares / Tablets)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .house-card {
+    min-height: auto;
+  }
+  .card-image-wrap {
+    aspect-ratio: 16 / 10;
+    max-height: 230px;
+    height: auto;
+  }
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .card-body {
+    padding: 1rem 0.85rem;
+  }
+  .card-title {
+    font-size: 1.12rem;
+  }
+  .card-desc {
+    font-size: 0.84rem;
+    -webkit-line-clamp: 2;
+    margin-bottom: 0.5rem;
+  }
+  .card-ig-banner {
+    padding: 0.32rem 0.55rem;
+    margin-bottom: 0.65rem;
+  }
+  .card-ig-handle {
+    font-size: 0.78rem;
+  }
+  .detail-modal-card {
+    max-width: 95vw;
+    width: 95vw;
+    margin: 10px auto;
+    padding: 1rem;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+  .stage-image-container {
+    max-height: 240px;
+    height: 240px;
+  }
+  .stage-image-container img {
+    max-height: 240px;
+    height: 100%;
+    object-fit: cover;
+  }
+  .stage-nav-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+  .stage-thumbnails-container {
+    padding: 0.4rem 0.2rem;
+    gap: 0.4rem;
+    overflow-x: auto;
+  }
+  .stage-thumb-btn {
+    width: 58px;
+    height: 40px;
+    min-width: 58px;
+  }
+  .drawer-feat-thumb-wrap {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 2.2rem 1rem 1.8rem;
+  }
+  .hero-title {
+    font-size: 1.55rem;
+    line-height: 1.25;
+  }
+  .card-image-wrap {
+    aspect-ratio: 16 / 10;
+    max-height: 200px;
+  }
+  .stage-image-container {
+    max-height: 200px;
+    height: 200px;
+  }
+  .stage-image-container img {
+    max-height: 200px;
+  }
+  .category-tabs {
+    gap: 0.35rem;
+  }
+  .tab-btn {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.65rem;
+  }
 }
 
 
