@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./style.css?v=25">
+  <link rel="stylesheet" href="./style.css?v=26">
 </head>
 <body>
 
@@ -85,30 +85,24 @@
     </div>
 
     <nav class="drawer-nav">
-      <!-- Sección Destacados (Según mayor número de corazones) -->
       <div class="drawer-section-label">
-        <i class="fa-solid fa-fire-flame-curved" style="color: var(--gold);"></i> Construcciones Destacadas
+        <i class="fa-solid fa-compass" style="color: var(--emerald);"></i> Explorar & Comunidad
       </div>
-      <div class="drawer-featured-container" id="drawerFeaturedList">
-        <!-- Injected dynamically based on highest likes -->
-      </div>
-
-      <div class="drawer-section-label">Comunidad & Envíos</div>
       <ul class="drawer-menu-list">
         <li>
-          <button class="drawer-item-btn" id="drawerSortPopularBtn" title="Ordenar galería por más populares">
-            <div class="drawer-icon-box item-fav">
-              <i class="fa-solid fa-heart" style="color: #f87171;"></i>
+          <button class="drawer-item-btn highlight-item" id="drawerSortPopularBtn" title="Ver solo las construcciones más votadas">
+            <div class="drawer-icon-box item-fav" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.15)); color: #ef4444;">
+              <i class="fa-solid fa-fire-flame-curved" style="color: #f87171;"></i>
             </div>
             <div class="drawer-item-text">
               <span class="drawer-item-title">Ver Más Votadas</span>
-              <span class="drawer-item-desc">Ordenar por mayor número de corazones</span>
+              <span class="drawer-item-desc">Muestra únicamente las construcciones con más corazones</span>
             </div>
             <i class="fa-solid fa-arrow-trend-up drawer-chevron"></i>
           </button>
         </li>
         <li>
-          <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="drawer-item-btn highlight-item" id="drawerSendBuildBtn" title="Enviar tu construcción a @loanrey17 en Instagram">
+          <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="drawer-item-btn" id="drawerSendBuildBtn" title="Enviar tu construcción a @loanrey17 en Instagram">
             <div class="drawer-icon-box item-instagram">
               <i class="fa-brands fa-instagram"></i>
             </div>
@@ -190,6 +184,9 @@
       <div class="category-tabs" id="categoryTabs" role="tablist">
         <button class="tab-btn active" data-category="all" role="tab" aria-selected="true">
           <i class="fa-solid fa-layer-group"></i> Todas (<span id="countAll">0</span>)
+        </button>
+        <button class="tab-btn" data-category="mas_votadas" role="tab" aria-selected="false">
+          <i class="fa-solid fa-fire-flame-curved" style="color: #f87171;"></i> Más Votadas (<span id="countVotadas">0</span>)
         </button>
         <button class="tab-btn" data-category="cerezo" role="tab" aria-selected="false">
           <i class="fa-solid fa-tree"></i> Cerezos / Sakura (<span id="countCerezo">0</span>)
@@ -636,6 +633,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=25"></script>
+  <script src="./app.js?v=26"></script>
 </body>
 </html>

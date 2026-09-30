@@ -992,7 +992,6 @@
       this.soundFxBtn = document.getElementById('soundFxBtn');
       this.themeToggleBtn = document.getElementById('themeToggleBtn');
       this.openCommentsBtn = document.getElementById('openCommentsBtn');
-      this.drawerFeaturedList = document.getElementById('drawerFeaturedList');
       this.drawerSortPopularBtn = document.getElementById('drawerSortPopularBtn');
 
       // Search & Filters
@@ -1007,6 +1006,7 @@
 
       // Counts
       this.countAll = document.getElementById('countAll');
+      this.countVotadas = document.getElementById('countVotadas');
       this.countCerezo = document.getElementById('countCerezo');
       this.countPlaya = document.getElementById('countPlaya');
       this.countModerna = document.getElementById('countModerna');
@@ -1132,13 +1132,19 @@
         this.drawerSortPopularBtn.addEventListener('click', () => {
           this.sound.playPop();
           this.closeDrawer();
+          this.currentCategory = 'mas_votadas';
           this.currentSort = 'popular';
           if (this.sortSelect) this.sortSelect.value = 'popular';
+
+          document.querySelectorAll('.tab-btn').forEach((b) => {
+            b.classList.toggle('active', b.getAttribute('data-category') === 'mas_votadas');
+          });
+
           this.render();
           if (this.cardsGrid) {
             this.cardsGrid.scrollIntoView({ behavior: 'smooth' });
           }
-          this.showToast('🔥 Mostrando casas con más corazones', 'info');
+          this.showToast('🔥 Mostrando solo las construcciones más votadas', 'info');
         });
       }
 
@@ -1522,6 +1528,11 @@
           if (house.category !== 'moderna' && !house.tags.includes('moderna')) return false;
         } else if (this.currentCategory === 'favoritos') {
           if (!this.userFavorites.includes(house.id)) return false;
+        } else if (this.currentCategory === 'mas_votadas') {
+          const maxLikes = Math.max(0, ...this.houses.map((h) => h.likes || 0));
+          if (maxLikes > 0) {
+            if ((house.likes || 0) <= 0) return false;
+          }
         }
 
         // Search match
@@ -1543,9 +1554,10 @@
 
     getSortedHouses(filteredList) {
       const list = [...filteredList];
+      if (this.currentCategory === 'mas_votadas' || this.currentSort === 'popular') {
+        return list.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      }
       switch (this.currentSort) {
-        case 'popular':
-          return list.sort((a, b) => b.likes - a.likes);
         case 'difficulty':
           return list.sort((a, b) => b.difficultyLevel - a.difficultyLevel);
         case 'name':
@@ -1586,7 +1598,21 @@
 
       if (sorted.length === 0) {
         this.cardsGrid.innerHTML = '';
-        if (this.emptyState) this.emptyState.style.display = 'block';
+        if (this.emptyState) {
+          this.emptyState.style.display = 'block';
+          const title = this.emptyState.querySelector('.empty-title');
+          const text = this.emptyState.querySelector('.empty-text');
+          if (this.currentCategory === 'mas_votadas') {
+            if (title) title.textContent = 'Aún no hay votos registrados';
+            if (text) text.textContent = '¡Sé el primero en dar corazón ❤️ a una de las construcciones para que aparezca aquí!';
+          } else if (this.currentCategory === 'favoritos') {
+            if (title) title.textContent = 'No tienes casas favoritas guardadas';
+            if (text) text.textContent = 'Haz clic en el icono de marcador ⭐ en cualquier tarjeta para guardarla.';
+          } else {
+            if (title) title.textContent = 'No se encontraron construcciones';
+            if (text) text.textContent = 'No hay casas que coincidan con tu búsqueda o filtro seleccionado.';
+          }
+        }
         return;
       }
 
@@ -1595,51 +1621,6 @@
       this.cardsGrid.innerHTML = sorted.map((house) => this.createCardHTML(house)).join('');
 
       this.attachCardEventListeners();
-      this.renderDrawerFeatured();
-    }
-
-    renderDrawerFeatured() {
-      const featuredList = document.getElementById('drawerFeaturedList');
-      if (!featuredList) return;
-
-      const sorted = [...this.houses].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 4);
-
-      if (sorted.length === 0) {
-        featuredList.innerHTML = '<p class="drawer-feat-empty">No hay casas disponibles aún.</p>';
-        return;
-      }
-
-      featuredList.innerHTML = sorted.map((house, idx) => {
-        const creatorDisplay = house.creatorDisplay || house.creator || 'Co-creadora';
-
-        return `
-          <div class="drawer-feat-card" data-featured-id="${house.id}" role="button" tabindex="0" title="Ver ${house.title}">
-            <div class="drawer-feat-thumb-wrap">
-              <img src="${house.image}" alt="${house.title}" class="drawer-feat-thumb" onerror="window.handleImgFallback(this, '${house.id}')">
-              <span class="drawer-feat-rank">${idx + 1}</span>
-            </div>
-            <div class="drawer-feat-details">
-              <span class="drawer-feat-title">${house.title}</span>
-              <span class="drawer-feat-creator">
-                <i class="fa-solid fa-crown creator-crown"></i> ${creatorDisplay}
-              </span>
-              <span class="drawer-feat-likes">
-                <i class="fa-solid fa-heart"></i> ${house.likes || 0}
-              </span>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      const cards = featuredList.querySelectorAll('.drawer-feat-card');
-      cards.forEach((card) => {
-        card.addEventListener('click', () => {
-          const houseId = card.getAttribute('data-featured-id');
-          this.sound.playPop();
-          this.closeDrawer();
-          this.openModal(houseId);
-        });
-      });
     }
 
     createCardHTML(house) {
@@ -1807,12 +1788,14 @@
 
     updateCounters() {
       const totalAll = this.houses.length;
+      const totalVotadas = this.houses.filter((h) => (h.likes || 0) > 0).length;
       const totalCerezo = this.houses.filter((h) => h.category === 'cerezo' || h.tags.includes('cerezo') || h.tags.includes('sakura')).length;
       const totalPlaya = this.houses.filter((h) => h.category === 'playa' || h.tags.includes('playa')).length;
       const totalModerna = this.houses.filter((h) => h.category === 'moderna' || h.tags.includes('moderna')).length;
       const totalFavs = this.houses.filter((h) => this.userFavorites.includes(h.id)).length;
 
       if (this.countAll) this.countAll.textContent = totalAll;
+      if (this.countVotadas) this.countVotadas.textContent = totalVotadas;
       if (this.countCerezo) this.countCerezo.textContent = totalCerezo;
       if (this.countPlaya) this.countPlaya.textContent = totalPlaya;
       if (this.countModerna) this.countModerna.textContent = totalModerna;
@@ -1826,7 +1809,9 @@
       if (hasFilter) {
         this.filterSummaryBar.style.display = 'flex';
         let text = `Mostrando ${filteredCount} construcción${filteredCount === 1 ? '' : 'es'}`;
-        if (this.currentCategory !== 'all') {
+        if (this.currentCategory === 'mas_votadas') {
+          text = `🔥 Mostrando ${filteredCount} construcción${filteredCount === 1 ? '' : 'es'} más votada${filteredCount === 1 ? '' : 's'}`;
+        } else if (this.currentCategory !== 'all') {
           text += ` en categoría "${this.currentCategory}"`;
         }
         if (this.currentSearch) {
