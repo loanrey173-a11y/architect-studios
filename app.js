@@ -77,6 +77,7 @@
   const STORAGE_KEYS = {
     HOUSES: 'mc_architect_houses_v20',
     COMMENTS: 'mc_comments_v12',
+    DELETED_COMMENTS: 'mc_deleted_comments_v12',
     USER_COMMENT_LIKES: 'mc_user_comm_likes_v12',
     THEME: 'mc_theme_v11',
     SOUND: 'mc_sound_v11',
@@ -800,16 +801,18 @@
     loadComments() {
       try {
         const saved = localStorage.getItem(STORAGE_KEYS.COMMENTS);
+        const deleted = this.loadDeletedComments();
         if (saved) {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed)) {
-            return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.filter((c) => !deleted.includes(c.id));
           }
         }
       } catch (e) {
         console.warn('Error reading stored comments:', e);
       }
-      return JSON.parse(JSON.stringify(INITIAL_COMMENTS));
+      const deleted = this.loadDeletedComments();
+      return JSON.parse(JSON.stringify(INITIAL_COMMENTS)).filter((c) => !deleted.includes(c.id));
     }
 
     saveComments() {
@@ -817,6 +820,27 @@
         localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(this.comments));
       } catch (e) {
         console.warn('Error saving comments:', e);
+      }
+    }
+
+    loadDeletedComments() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEYS.DELETED_COMMENTS);
+        return saved ? JSON.parse(saved) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    saveDeletedComment(commId) {
+      try {
+        const deleted = this.loadDeletedComments();
+        if (!deleted.includes(commId)) {
+          deleted.push(commId);
+          localStorage.setItem(STORAGE_KEYS.DELETED_COMMENTS, JSON.stringify(deleted));
+        }
+      } catch (e) {
+        // Ignore
       }
     }
 
@@ -886,13 +910,14 @@
             const loaded = [];
             snapshot.forEach((doc) => {
               const data = doc.data();
-              const author = data.autor || data.author || 'Anónimo';
-              const text = data.texto || data.text || '';
+              const author = data.author || data.autor || 'Anónimo';
+              const text = data.text || data.texto || '';
               const houseRef = data.houseRef || 'General';
-              const role = data.role || (author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
+              const role = data.role || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
               const likes = typeof data.likes === 'number' ? data.likes : 0;
               const likedByUser = this.userCommentLikes.includes(doc.id);
-              const date = this.formatCommentDate(data.fecha);
+              const date = this.formatCommentDate(data.fecha || data.createdAtMs);
+              const timestamp = (data.fecha && data.fecha.seconds) ? data.fecha.seconds * 1000 : (data.createdAtMs || (data.timestamp || Date.now()));
 
               loaded.push({
                 id: doc.id,
@@ -903,11 +928,31 @@
                 likes,
                 likedByUser,
                 date,
-                timestamp: data.fecha && data.fecha.seconds ? data.fecha.seconds * 1000 : Date.now()
+                timestamp
               });
             });
 
-            this.comments = loaded;
+            const deletedIds = this.loadDeletedComments();
+
+            // Build a unified dictionary merging Firestore comments with pre-existing / local comments so none disappear
+            const commentMap = new Map();
+
+            // A. Insert all Firestore comments (not marked as deleted)
+            loaded.forEach((comm) => {
+              if (!deletedIds.includes(comm.id)) {
+                commentMap.set(comm.id, comm);
+              }
+            });
+
+            // B. Preserve any local in-memory comments (including optimistic submissions and initial comments) that haven't been deleted
+            this.comments.forEach((comm) => {
+              if (!commentMap.has(comm.id) && !deletedIds.includes(comm.id)) {
+                commentMap.set(comm.id, comm);
+              }
+            });
+
+            // C. Convert back to array sorted newest first
+            this.comments = Array.from(commentMap.values()).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
             this.saveComments();
             this.renderComments();
           },
@@ -2445,30 +2490,39 @@
 
       const assignedRole = this.adminRole !== 'none' ? this.adminRole : (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
 
+      // Optimistically add comment to memory and UI so all comments stay present
+      const tempId = 'comm-' + Date.now();
+      const optimisticComment = {
+        id: tempId,
+        author: author,
+        houseRef: houseRef,
+        text: text,
+        date: 'Hace unos momentos',
+        likes: 0,
+        likedByUser: false,
+        role: assignedRole,
+        timestamp: Date.now()
+      };
+
+      this.comments.unshift(optimisticComment);
+      this.saveComments();
+      this.renderComments();
+
       try {
         if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady) {
-          await window.FirebaseCommentsBridge.addComment({
+          const docRef = await window.FirebaseCommentsBridge.addComment({
             author,
             text,
             houseRef,
             role: assignedRole
           });
-        } else {
-          // Local fallback if offline
-          const newComment = {
-            id: 'comm-' + Date.now(),
-            author: author,
-            houseRef: houseRef,
-            text: text,
-            date: 'Hace unos momentos',
-            likes: 0,
-            likedByUser: false,
-            role: assignedRole,
-            timestamp: Date.now()
-          };
-          this.comments.unshift(newComment);
-          this.saveComments();
-          this.renderComments();
+          if (docRef && docRef.id) {
+            const found = this.comments.find((c) => c.id === tempId);
+            if (found) {
+              found.id = docRef.id;
+              this.saveComments();
+            }
+          }
         }
 
         this.sound.playSuccess();
@@ -2477,8 +2531,10 @@
         this.showToast('¡Comentario publicado en tiempo real! 🎉', 'success');
       } catch (err) {
         console.error('Error enviando comentario a Firebase:', err);
-        this.sound.playPop();
-        this.showToast('Ocurrió un error al enviar el comentario a Firebase.', 'error');
+        this.sound.playSuccess();
+        if (this.commentText) this.commentText.value = '';
+        if (this.charCounter) this.charCounter.textContent = '0 / 500';
+        this.showToast('Comentario guardado localmente 🎉', 'success');
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -2593,20 +2649,25 @@
       const commentIndex = this.comments.findIndex((c) => c.id === commId);
       const authorName = commentIndex !== -1 ? (this.comments[commentIndex].author || 'Usuario') : 'Comentario';
 
+      // Persist as deleted so it never reappears
+      this.saveDeletedComment(commId);
+
+      if (commentIndex !== -1) {
+        this.comments.splice(commentIndex, 1);
+        this.saveComments();
+        this.renderComments();
+      }
+
       try {
         if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !commId.startsWith('comm-')) {
           await window.FirebaseCommentsBridge.deleteComment(commId);
-        }
-        if (commentIndex !== -1) {
-          this.comments.splice(commentIndex, 1);
-          this.saveComments();
-          this.renderComments();
         }
         this.sound.playPop();
         this.showToast(`Comentario de "${authorName}" eliminado 🗑️`, 'info');
       } catch (err) {
         console.error('Error eliminando comentario en Firebase:', err);
-        this.showToast('Error al eliminar comentario de Firebase', 'error');
+        this.sound.playPop();
+        this.showToast(`Comentario de "${authorName}" eliminado localmente 🗑️`, 'info');
       }
     }
 
