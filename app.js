@@ -746,6 +746,7 @@
       this.cacheDOMElements();
       this.initTheme();
       this.initEventListeners();
+      this.updateCommentAuthorUI();
       this.render();
       this.renderComments();
       this.updateStats();
@@ -1021,6 +1022,9 @@
       this.commentsSection = document.getElementById('commentsSection');
       this.commentForm = document.getElementById('commentForm');
       this.commentAuthor = document.getElementById('commentAuthor');
+      this.commentAuthorGroup = document.getElementById('commentAuthorGroup');
+      this.commentAuthBadgeGroup = document.getElementById('commentAuthBadgeGroup');
+      this.authCommenterCard = document.getElementById('authCommenterCard');
       this.commentHouseRef = document.getElementById('commentHouseRef');
       this.commentText = document.getElementById('commentText');
       this.charCounter = document.getElementById('charCounter');
@@ -2263,27 +2267,111 @@
       }
     }
 
+    /* ------------------------------------------------------------------------
+       Comment Author Dynamic UI for Authenticated Roles
+       ------------------------------------------------------------------------ */
+
+    updateCommentAuthorUI() {
+      const authorGroup = document.getElementById('commentAuthorGroup');
+      const authBadgeGroup = document.getElementById('commentAuthBadgeGroup');
+      const authCard = document.getElementById('authCommenterCard');
+
+      if (this.adminRole === 'creator') {
+        if (this.commentAuthor) {
+          this.commentAuthor.value = 'Josue';
+          this.commentAuthor.required = false;
+        }
+        if (authorGroup) authorGroup.style.display = 'none';
+        if (authBadgeGroup) authBadgeGroup.style.display = 'block';
+        if (authCard) {
+          authCard.innerHTML = `
+            <div class="auth-commenter-badge creator-auth-badge">
+              <div class="auth-badge-avatar creator-avatar"><i class="fa-solid fa-crown"></i></div>
+              <div class="auth-badge-text">
+                <span class="auth-badge-name">Josue</span>
+                <span class="auth-badge-role"><i class="fa-solid fa-shield-halved"></i> Desarrollador Oficial</span>
+              </div>
+              <button type="button" class="btn-logout-role" id="btnLogoutRole" title="Cerrar sesión de desarrollador">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              </button>
+            </div>
+          `;
+          const logoutBtn = authCard.querySelector('#btnLogoutRole');
+          if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+              this.logoutRole();
+            });
+          }
+        }
+      } else if (this.adminRole === 'co-creator') {
+        if (this.commentAuthor) {
+          this.commentAuthor.value = 'Danna';
+          this.commentAuthor.required = false;
+        }
+        if (authorGroup) authorGroup.style.display = 'none';
+        if (authBadgeGroup) authBadgeGroup.style.display = 'block';
+        if (authCard) {
+          authCard.innerHTML = `
+            <div class="auth-commenter-badge cocreator-auth-badge">
+              <div class="auth-badge-avatar cocreator-avatar"><i class="fa-solid fa-crown"></i></div>
+              <div class="auth-badge-text">
+                <span class="auth-badge-name">Danna</span>
+                <span class="auth-badge-role"><i class="fa-solid fa-crown"></i> Creadora Oficial</span>
+              </div>
+              <button type="button" class="btn-logout-role" id="btnLogoutRole" title="Cerrar sesión de creadora">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              </button>
+            </div>
+          `;
+          const logoutBtn = authCard.querySelector('#btnLogoutRole');
+          if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+              this.logoutRole();
+            });
+          }
+        }
+      } else {
+        if (this.commentAuthor) {
+          if (this.commentAuthor.value === 'Josue' || this.commentAuthor.value === 'Danna') {
+            this.commentAuthor.value = '';
+          }
+          this.commentAuthor.required = true;
+        }
+        if (authorGroup) authorGroup.style.display = 'block';
+        if (authBadgeGroup) authBadgeGroup.style.display = 'none';
+        if (authCard) authCard.innerHTML = '';
+      }
+    }
+
+    logoutRole() {
+      this.sound.playPop();
+      this.adminRole = 'none';
+      localStorage.removeItem(STORAGE_KEYS.ADMIN_ROLE);
+      this.updateCommentAuthorUI();
+      this.renderComments();
+      this.showToast('Sesión cerrada', 'info');
+    }
+
     handleAuthSubmit() {
       const pass = this.authPasswordInput ? this.authPasswordInput.value.trim() : '';
 
       if (pass === '385178Hbr') {
-        // CREADOR PRINCIPAL
+        // DESARROLLADOR PRINCIPAL (Josue)
         this.sound.playSuccess();
         this.adminRole = 'creator';
         localStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, 'creator');
         this.closeAuthModal();
-        this.showToast('👑 Modo Creador Principal activado', 'success');
-        if (this.commentAuthor && (!this.commentAuthor.value || this.commentAuthor.value === 'loanrey')) {
-          this.commentAuthor.value = 'loanrey17';
-        }
+        this.updateCommentAuthorUI();
+        this.showToast('👑 ¡Modo Desarrollador activado! Publicando como Josue', 'success');
         this.renderComments();
       } else if (pass === '160409dn') {
-        // CO-CREADORA
+        // CREADORA OFICIAL (Danna)
         this.sound.playSuccess();
         this.adminRole = 'co-creator';
         localStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, 'co-creator');
         this.closeAuthModal();
-        this.showToast('💎 Modo Co-Creadora activado', 'success');
+        this.updateCommentAuthorUI();
+        this.showToast('👑 ¡Modo Creadora activado! Publicando como Danna', 'success');
         this.renderComments();
       } else if (pass === '12345') {
         // TRAMPA / DESPISTE (Muestra mensaje falso de éxito, pero NO asigna distintivos)
@@ -2291,6 +2379,7 @@
         this.adminRole = 'none';
         localStorage.removeItem(STORAGE_KEYS.ADMIN_ROLE);
         this.closeAuthModal();
+        this.updateCommentAuthorUI();
         this.showToast('¡Modo Creador activado!', 'success');
         this.renderComments();
       } else {
@@ -2305,9 +2394,15 @@
        ------------------------------------------------------------------------ */
 
     async handleCommentSubmit() {
-      const author = this.commentAuthor ? this.commentAuthor.value.trim() : '';
+      let author = this.commentAuthor ? this.commentAuthor.value.trim() : '';
       const houseRef = this.commentHouseRef ? this.commentHouseRef.value : 'General';
       const text = this.commentText ? this.commentText.value.trim() : '';
+
+      if (this.adminRole === 'creator') {
+        author = 'Josue';
+      } else if (this.adminRole === 'co-creator') {
+        author = 'Danna';
+      }
 
       if (!author || !text) {
         this.showToast('Por favor completa todos los campos requeridos', 'error');
@@ -2315,7 +2410,7 @@
       }
 
       // Anti-Profanity & Leetspeak Check for Author Name
-      if (this.profanityFilter.isProfane(author)) {
+      if (this.adminRole === 'none' && this.profanityFilter.isProfane(author)) {
         this.sound.playPop();
         if (this.commentAuthor) {
           this.commentAuthor.classList.add('input-error-shake');
@@ -2348,7 +2443,7 @@
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
       }
 
-      const assignedRole = this.adminRole !== 'none' ? this.adminRole : (author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
+      const assignedRole = this.adminRole !== 'none' ? this.adminRole : (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
 
       try {
         if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady) {
@@ -2411,7 +2506,7 @@
 
       this.commentsList.innerHTML = this.comments
         .map((comm) => {
-          const isCreator = comm.role === 'creator' || comm.isCreator || (comm.author && comm.author.toLowerCase() === 'loanrey17');
+          const isCreator = comm.role === 'creator' || comm.isCreator || (comm.author && (comm.author.toLowerCase() === 'josue' || comm.author.toLowerCase() === 'loanrey17'));
           const isCoCreator = comm.role === 'co-creator' || (comm.author && comm.author.toLowerCase() === 'danna');
           const isAdminUser = this.adminRole === 'creator' || this.adminRole === 'co-creator';
 
@@ -2424,12 +2519,12 @@
             cardClass += ' gold-verified-card';
             avatarClass += ' creator-golden-avatar';
             avatarContent = '<i class="fa-solid fa-crown"></i>';
-            roleBadge = '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Creador</span>';
+            roleBadge = '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>';
           } else if (isCoCreator) {
             cardClass += ' neon-pink-verified-card';
             avatarClass += ' co-creator-pink-avatar';
-            avatarContent = '<i class="fa-solid fa-gem"></i>';
-            roleBadge = '<span class="co-creator-pink-pill"><i class="fa-solid fa-gem"></i> Co-Creadora</span>';
+            avatarContent = '<i class="fa-solid fa-crown"></i>';
+            roleBadge = '<span class="co-creator-pink-pill"><i class="fa-solid fa-crown"></i> Creadora</span>';
           }
 
           // Trash button only for authenticated Administrators

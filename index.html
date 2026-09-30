@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./style.css?v=31">
+  <link rel="stylesheet" href="./style.css?v=32">
 </head>
 <body>
 
@@ -266,10 +266,19 @@
         <!-- Comment Form -->
         <form id="commentForm" class="comment-form-card">
           <div class="comment-form-row">
-            <div class="form-group flex-1">
+            <div class="form-group flex-1" id="commentAuthorGroup">
               <label for="commentAuthor"><i class="fa-solid fa-user-astronaut"></i> Tu Nombre o GamerTag <span class="req">*</span></label>
-              <input type="text" id="commentAuthor" placeholder="Ej. loanrey17, MinerCraft..." required maxlength="30">
+              <input type="text" id="commentAuthor" placeholder="Ej. MinerCraft..." required maxlength="30">
             </div>
+
+            <!-- Authenticated Author Badge (Only for Desarrollador Josue & Creadora Danna) -->
+            <div class="form-group flex-1" id="commentAuthBadgeGroup" style="display: none;">
+              <label><i class="fa-solid fa-id-badge"></i> Publicando como:</label>
+              <div class="auth-commenter-card" id="authCommenterCard">
+                <!-- Injected dynamically in app.js -->
+              </div>
+            </div>
+
             <div class="form-group flex-1">
               <label for="commentHouseRef"><i class="fa-solid fa-cube"></i> Tema / Construcción</label>
               <select id="commentHouseRef">
@@ -278,8 +287,8 @@
                 <option value="Residencia de Cerezo con Chimenea">🔥 Residencia de Cerezo con Chimenea (Danna)</option>
                 <option value="Villa Imperial Cherry">🏯 Villa Imperial Cherry (Danna)</option>
                 <option value="Mansión Monumental de la Selva">🌴 Mansión Monumental de la Selva (Danna)</option>
-                <option value="Villa Costera Moderna">🏖️ Villa Costera Moderna (heber jhosue)</option>
-                <option value="Mansión de Playa con Muelle">🌊 Mansión de Playa con Muelle (heber jhosue)</option>
+                <option value="Villa Costera Moderna">🏖️ Villa Costera Moderna (Josue)</option>
+                <option value="Mansión de Playa con Muelle">🌊 Mansión de Playa con Muelle (Josue)</option>
               </select>
             </div>
           </div>
@@ -664,6 +673,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=31"></script>
+  <script src="./app.js?v=32"></script>
 </body>
 </html>

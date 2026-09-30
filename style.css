@@ -2992,6 +2992,111 @@ body {
 }
 
 /* ==========================================================================
+   Authenticated Commenter Badge (Josue / Danna in Comment Form)
+   ========================================================================== */
+
+.auth-commenter-card {
+  display: flex;
+  align-items: center;
+}
+
+.auth-commenter-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--radius-md);
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  transition: all var(--tr-smooth);
+}
+
+.auth-commenter-badge.creator-auth-badge {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
+}
+
+.auth-commenter-badge.cocreator-auth-badge {
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.18) 0%, rgba(168, 85, 247, 0.1) 100%);
+  border-color: rgba(244, 114, 182, 0.6);
+  box-shadow: 0 0 15px rgba(244, 114, 182, 0.2);
+}
+
+.auth-badge-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.auth-badge-avatar.creator-avatar {
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  box-shadow: 0 0 10px var(--gold-glow);
+}
+
+.auth-badge-avatar.cocreator-avatar {
+  background: linear-gradient(135deg, #f472b6, #ec4899);
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+}
+
+.auth-badge-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.auth-badge-name {
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.creator-auth-badge .auth-badge-name {
+  color: var(--gold);
+}
+
+.cocreator-auth-badge .auth-badge-name {
+  color: #f472b6;
+}
+
+.auth-badge-role {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.15rem;
+}
+
+.btn-logout-role {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  transition: all var(--tr-fast);
+}
+
+.btn-logout-role:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* ==========================================================================
    Prominent Instagram Creator Banner in House Cards & Modals ("heber jhosue")
    ========================================================================== */
 
