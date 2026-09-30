@@ -1061,6 +1061,11 @@
       this.totalBuildsCount = document.getElementById('totalBuildsCount');
       this.paypalDonationBtn = document.getElementById('paypalDonationBtn');
 
+      // Donation Modal
+      this.donationModal = document.getElementById('donationModal');
+      this.closeDonationModalBtn = document.getElementById('closeDonationModalBtn');
+      this.donationModalOkBtn = document.getElementById('donationModalOkBtn');
+
       // Auth Decoy Modal
       this.logoGroup = document.querySelector('.logo-group');
       this.authModal = document.getElementById('authModal');
@@ -1192,11 +1197,34 @@
         });
       }
 
-      // PayPal Donation Button
+      // PayPal Donation Button & Modal
       if (this.paypalDonationBtn) {
         this.paypalDonationBtn.addEventListener('click', () => {
           this.sound.playPop();
-          this.showToast('Donaciones al desarrollador: Esta en proceso ⏳', 'info');
+          this.openDonationModal();
+        });
+      }
+
+      if (this.closeDonationModalBtn) {
+        this.closeDonationModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeDonationModal();
+        });
+      }
+
+      if (this.donationModalOkBtn) {
+        this.donationModalOkBtn.addEventListener('click', () => {
+          this.sound.playSuccess();
+          this.closeDonationModal();
+        });
+      }
+
+      if (this.donationModal) {
+        this.donationModal.addEventListener('click', (e) => {
+          if (e.target === this.donationModal) {
+            this.sound.playPop();
+            this.closeDonationModal();
+          }
         });
       }
 
@@ -1366,6 +1394,8 @@
         if (e.key === 'Escape') {
           this.closeModal();
           this.closeDrawer();
+          this.closeAuthModal();
+          this.closeDonationModal();
         } else if (this.activeModalHouse && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) {
           this.prevModalImage();
         } else if (this.activeModalHouse && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) {
@@ -2180,6 +2210,26 @@
       link.click();
       document.body.removeChild(link);
       this.showToast('Descargando imagen HD... 💾', 'success');
+    }
+
+    /* ------------------------------------------------------------------------
+       Donation Modal Methods
+       ------------------------------------------------------------------------ */
+
+    openDonationModal() {
+      if (this.donationModal) {
+        this.donationModal.classList.add('active');
+        this.donationModal.classList.add('open');
+        this.donationModal.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    closeDonationModal() {
+      if (this.donationModal) {
+        this.donationModal.classList.remove('active');
+        this.donationModal.classList.remove('open');
+        this.donationModal.setAttribute('aria-hidden', 'true');
+      }
     }
 
     /* ------------------------------------------------------------------------

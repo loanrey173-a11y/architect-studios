@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./style.css?v=27">
+  <link rel="stylesheet" href="./style.css?v=28">
 </head>
 <body>
 
@@ -196,9 +196,6 @@
         </button>
         <button class="tab-btn" data-category="playa" role="tab" aria-selected="false">
           <i class="fa-solid fa-umbrella-beach"></i> Casas de Playa (<span id="countPlaya">0</span>)
-        </button>
-        <button class="tab-btn" data-category="favoritos" role="tab" aria-selected="false">
-          <i class="fa-solid fa-heart"></i> Favoritas (<span id="countFavs">0</span>)
         </button>
       </div>
 
@@ -510,6 +507,35 @@
     </div>
   </div>
 
+  <!-- Developer Donation Notice Modal -->
+  <div class="modal-backdrop donation-modal-backdrop" id="donationModal" aria-hidden="true">
+    <div class="modal-dialog modal-donation-dialog">
+      <button class="modal-close-btn" id="closeDonationModalBtn" aria-label="Cerrar ventana de donaciones">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="donation-modal-content">
+        <div class="donation-icon-wrap">
+          <i class="fa-solid fa-clock-rotate-left donation-main-icon"></i>
+          <span class="donation-icon-sparkle">✨</span>
+        </div>
+
+        <h3 class="donation-title">Donaciones al Desarrollador</h3>
+        
+        <div class="donation-message-box">
+          <p class="donation-notice-text">
+            <strong>Está en proceso</strong>, próximamente estará disponible.
+          </p>
+          <span class="donation-subtext">¡Muchas gracias por tu apoyo e interés en el proyecto! ❤️</span>
+        </div>
+
+        <button type="button" class="btn-donation-ok" id="donationModalOkBtn">
+          <i class="fa-solid fa-check"></i> OK
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Creator Auth / Security Decoy Modal (Easter Egg) -->
   <div class="modal-backdrop auth-modal-backdrop" id="authModal" aria-hidden="true">
     <div class="modal-dialog modal-auth-dialog">
@@ -633,6 +659,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=27"></script>
+  <script src="./app.js?v=28"></script>
 </body>
 </html>

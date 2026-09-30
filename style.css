@@ -2600,6 +2600,114 @@ body {
   transform: scale(0.96);
 }
 
+/* Developer Donation Notice Modal */
+.modal-donation-dialog {
+  max-width: 420px;
+  width: 90vw;
+  text-align: center;
+  padding: 2.2rem 1.8rem 1.8rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(16, 185, 129, 0.15);
+  position: relative;
+}
+
+.donation-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.donation-icon-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(245, 158, 11, 0.2));
+  border: 2px solid rgba(16, 185, 129, 0.45);
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);
+  margin-top: 0.2rem;
+}
+
+.donation-main-icon {
+  font-size: 2rem;
+  color: var(--emerald);
+}
+
+.donation-icon-sparkle {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 1.15rem;
+}
+
+.donation-title {
+  font-family: var(--font-main);
+  font-size: 1.28rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.donation-message-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.donation-notice-text {
+  font-size: 1.02rem;
+  color: var(--text-main);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.donation-notice-text strong {
+  color: var(--gold);
+}
+
+.donation-subtext {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.btn-donation-ok {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: linear-gradient(135deg, var(--emerald) 0%, #059669 100%);
+  color: #fff;
+  border: none;
+  transition: all var(--tr-fast);
+  box-shadow: 0 4px 15px var(--emerald-glow);
+}
+
+.btn-donation-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-donation-ok:active {
+  transform: translateY(0);
+}
+
 .modal-auth-dialog {
   max-width: 440px;
   background: var(--bg-secondary);
