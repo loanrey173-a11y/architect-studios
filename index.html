@@ -15,9 +15,201 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./style.css?v=32">
+  <link rel="stylesheet" href="./style.css?v=40">
+
+  <!-- Critical Preloader CSS (Instant 0ms render for weak connections / slow network) -->
+  <style>
+    .page-preloader {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 999999;
+      background: #080b11;
+      background: radial-gradient(circle at 50% 42%, #131d2e 0%, #080b11 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease, transform 0.5s ease;
+      user-select: none;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .page-preloader.preloader-hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: scale(1.02);
+    }
+    .preloader-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      padding: 2.2rem 1.8rem;
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(16, 185, 129, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .preloader-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 0.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+    .preloader-title .dots span {
+      color: #10b981;
+      animation: dotPulse 1.4s infinite ease-in-out both;
+    }
+    .preloader-title .dots span:nth-child(1) { animation-delay: 0s; }
+    .preloader-title .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .preloader-title .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse {
+      0%, 80%, 100% { opacity: 0.2; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-3px); }
+    }
+    .preloader-subtitle {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      margin: 0 0 1.2rem;
+    }
+    .preloader-bar-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .preloader-bar-fill {
+      height: 100%;
+      width: 15%;
+      background: linear-gradient(90deg, #10b981, #00f0ff);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+    }
+  </style>
 </head>
 <body>
+
+  <!-- App Preloader / Loading Screen (Optimizado para conexiones lentas y baja señal) -->
+  <div id="pagePreloader" class="page-preloader" aria-live="polite" aria-label="Cargando galería de Minecraft...">
+    <div class="preloader-card">
+      <div class="preloader-cube-wrap">
+        <div class="minecraft-3d-block">
+          <div class="block-face face-front"></div>
+          <div class="block-face face-back"></div>
+          <div class="block-face face-right"></div>
+          <div class="block-face face-left"></div>
+          <div class="block-face face-top"></div>
+          <div class="block-face face-bottom"></div>
+        </div>
+        <div class="preloader-pulse-ring"></div>
+      </div>
+      
+      <div class="preloader-text-group">
+        <h2 class="preloader-title">
+          <span>Cargando</span>
+          <span class="dots"><span>.</span><span>.</span><span>.</span></span>
+        </h2>
+        <p class="preloader-subtitle" id="preloaderStatusText">Generando mundo y cargando construcciones...</p>
+      </div>
+      
+      <div class="preloader-bar-track">
+        <div class="preloader-bar-fill" id="preloaderBarFill"></div>
+      </div>
+
+      <div class="preloader-footer">
+        <div class="preloader-signal-status" id="preloaderSignalStatus">
+          <i class="fa-solid fa-bolt"></i>
+          <span id="preloaderSignalLabel">Optimizando texturas para tu conexión</span>
+        </div>
+        <div class="preloader-tip" id="preloaderTip">
+          <i class="fa-solid fa-lightbulb"></i> <span id="preloaderTipText">Tip: Imágenes comprimidas para una carga ultrarrápida.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Inicia inmediatamente el progreso para responder al instante ante baja señal
+    (function() {
+      var fill = document.getElementById('preloaderBarFill');
+      var status = document.getElementById('preloaderStatusText');
+      var signal = document.getElementById('preloaderSignalLabel');
+      var tip = document.getElementById('preloaderTipText');
+      var progress = 20;
+      
+      var tips = [
+        "Tip: Imágenes comprimidas y optimizadas para navegar con poca señal.",
+        "Tip: Explora villas modernas, biomas de sakura y casas de playa.",
+        "Tip: Dale corazón ❤️ a tus casas favoritas para subirlas en el ranking.",
+        "Tip: Abre la ficha detallada para ver todos los bloques y materiales.",
+        "Tip: Comenta tus ideas en tiempo real con la comunidad de arquitectos."
+      ];
+      var tipIdx = 0;
+
+      var slowTimer = setTimeout(function() {
+        if (status) status.textContent = "Conexión lenta detectada... Cargando texturas ligeras";
+        if (signal) signal.textContent = "Modo de ahorro y baja señal activo 📶";
+      }, 1600);
+
+      var tipInterval = setInterval(function() {
+        if (tip) {
+          tipIdx = (tipIdx + 1) % tips.length;
+          tip.textContent = tips[tipIdx];
+        }
+      }, 2300);
+
+      var progInterval = setInterval(function() {
+        if (progress < 88) {
+          progress += Math.floor(Math.random() * 10) + 4;
+          if (progress > 88) progress = 88;
+          if (fill) fill.style.width = progress + '%';
+        }
+      }, 120);
+
+      window.hidePagePreloader = function() {
+        clearInterval(progInterval);
+        clearInterval(tipInterval);
+        clearTimeout(slowTimer);
+        if (fill) fill.style.width = '100%';
+        if (status) status.textContent = "¡Mundo cargado con éxito!";
+        setTimeout(function() {
+          var preloader = document.getElementById('pagePreloader');
+          if (preloader) {
+            preloader.classList.add('preloader-hidden');
+            setTimeout(function() {
+              if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+            }, 600);
+          }
+        }, 300);
+      };
+
+      window.addEventListener('load', function() {
+        setTimeout(window.hidePagePreloader, 150);
+      });
+
+      // Timeout de seguridad máximo para conexiones extremadamente lentas
+      setTimeout(function() {
+        if (document.getElementById('pagePreloader')) {
+          window.hidePagePreloader();
+        }
+      }, 3000);
+    })();
+  </script>
 
   <!-- Ambient Particle Canvas -->
   <canvas id="particleCanvas" class="particle-canvas" aria-hidden="true"></canvas>
@@ -57,6 +249,12 @@
           <i class="fa-solid fa-moon"></i>
         </button>
 
+        <!-- Submit Idea Red Button -->
+        <button id="openSubmitIdeaBtn" class="btn-submit-idea" aria-label="Agregar tu idea de construcción" title="Postula tu construcción o idea para la galería">
+          <i class="fa-solid fa-fire"></i>
+          <span>Agrega tu idea</span>
+        </button>
+
         <!-- Comments Button -->
         <button id="openCommentsBtn" class="btn-primary" aria-label="Ir a sección de comentarios">
           <i class="fa-solid fa-comments"></i>
@@ -90,15 +288,15 @@
       </div>
       <ul class="drawer-menu-list">
         <li>
-          <button class="drawer-item-btn highlight-item" id="drawerSortPopularBtn" title="Ver solo las construcciones más votadas">
-            <div class="drawer-icon-box item-fav" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.15)); color: #ef4444;">
-              <i class="fa-solid fa-fire-flame-curved" style="color: #f87171;"></i>
+          <button type="button" class="drawer-item-btn highlight-idea" id="drawerSubmitIdeaBtn" title="Postular idea o construcción">
+            <div class="drawer-icon-box item-redstone">
+              <i class="fa-solid fa-fire"></i>
             </div>
             <div class="drawer-item-text">
-              <span class="drawer-item-title">Ver Más Votadas</span>
-              <span class="drawer-item-desc">Muestra únicamente las construcciones con más corazones</span>
+              <span class="drawer-item-title">Agrega tu Idea</span>
+              <span class="drawer-item-desc">Postula tus casas o planos para la galería</span>
             </div>
-            <i class="fa-solid fa-arrow-trend-up drawer-chevron"></i>
+            <i class="fa-solid fa-chevron-right drawer-chevron"></i>
           </button>
         </li>
         <li>
@@ -126,19 +324,6 @@
           <span class="ddev-role">Desarrollador Oficial</span>
         </div>
         <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="ddev-insta-link" title="Instagram de loanrey17">
-          <i class="fa-brands fa-instagram"></i>
-        </a>
-      </div>
-
-      <div class="drawer-dev-card" style="margin-top: 0.6rem; border-color: rgba(244, 114, 182, 0.4);">
-        <div class="ddev-avatar" style="background: linear-gradient(135deg, #f472b6, #ec4899); color: #fff;">
-          <i class="fa-solid fa-crown" style="color: var(--gold);"></i>
-        </div>
-        <div class="ddev-info">
-          <span class="ddev-name">DANN_YAZ2</span>
-          <span class="ddev-role">Co-creadora Oficial</span>
-        </div>
-        <a href="https://www.instagram.com/dann_yaz1/" target="_blank" rel="noopener noreferrer" class="ddev-insta-link" title="Instagram de DANN_YAZ2 (@dann_yaz1)">
           <i class="fa-brands fa-instagram"></i>
         </a>
       </div>
@@ -255,10 +440,16 @@
     <section class="comments-section" id="commentsSection">
       <div class="comments-container" id="comments-container">
         <div class="comments-header">
-          <div class="comments-header-title">
-            <div class="heading-pill"><i class="fa-solid fa-comments"></i> Comunidad de Arquitectos</div>
-            <span class="live-status-pill" title="Sincronización en tiempo real activa"><span class="live-pulse-dot"></span> Firestore En Vivo</span>
-            <h2>Comentarios y Opiniones (<span id="commentsCount">0</span>)</h2>
+          <div class="comments-header-top-row">
+            <div class="comments-header-title">
+              <div class="heading-pill"><i class="fa-solid fa-comments"></i> Comunidad de Arquitectos</div>
+              <span class="live-status-pill" title="Sincronización en tiempo real activa"><span class="live-pulse-dot"></span> Firestore En Vivo</span>
+              <h2>Comentarios y Opiniones (<span id="commentsCount">0</span>)</h2>
+            </div>
+            <button type="button" class="btn-submit-idea-compact" id="commentsSectionSubmitIdeaBtn" title="Postula tu diseño o idea de construcción">
+              <i class="fa-solid fa-fire"></i>
+              <span>Agrega tu idea</span>
+            </button>
           </div>
           <p class="comments-subtitle">Comparte tus ideas, comentarios sobre los diseños o qué casas te gustaría ver en tiempo real.</p>
         </div>
@@ -266,12 +457,7 @@
         <!-- Comment Form -->
         <form id="commentForm" class="comment-form-card">
           <div class="comment-form-row">
-            <div class="form-group flex-1" id="commentAuthorGroup">
-              <label for="commentAuthor"><i class="fa-solid fa-user-astronaut"></i> Tu Nombre o GamerTag <span class="req">*</span></label>
-              <input type="text" id="commentAuthor" placeholder="Ej. MinerCraft..." required maxlength="30">
-            </div>
-
-            <!-- Authenticated Author Badge (Only for Desarrollador Josue & Creadora Danna) -->
+            <!-- Authenticated Author Badge (Only for Desarrollador Josue) -->
             <div class="form-group flex-1" id="commentAuthBadgeGroup" style="display: none;">
               <label><i class="fa-solid fa-id-badge"></i> Publicando como:</label>
               <div class="auth-commenter-card" id="authCommenterCard">
@@ -283,12 +469,12 @@
               <label for="commentHouseRef"><i class="fa-solid fa-cube"></i> Tema / Construcción</label>
               <select id="commentHouseRef">
                 <option value="General">💬 Opinión General</option>
-                <option value="Mansión Moderna Sakura">🌸 Mansión Moderna Sakura (Danna)</option>
-                <option value="Residencia de Cerezo con Chimenea">🔥 Residencia de Cerezo con Chimenea (Danna)</option>
-                <option value="Villa Imperial Cherry">🏯 Villa Imperial Cherry (Danna)</option>
-                <option value="Mansión Monumental de la Selva">🌴 Mansión Monumental de la Selva (Danna)</option>
-                <option value="Villa Costera Moderna">🏖️ Villa Costera Moderna (Josue)</option>
-                <option value="Mansión de Playa con Muelle">🌊 Mansión de Playa con Muelle (Josue)</option>
+                <option value="Mansión Moderna Sakura">🌸 Mansión Moderna Sakura</option>
+                <option value="Residencia de Cerezo con Chimenea">🔥 Residencia de Cerezo con Chimenea</option>
+                <option value="Villa Imperial Cherry">🏯 Villa Imperial Cherry</option>
+                <option value="Mansión Monumental de la Selva">🌴 Mansión Monumental de la Selva</option>
+                <option value="Villa Costera Moderna">🏖️ Villa Costera Moderna</option>
+                <option value="Mansión de Playa con Muelle">🌊 Mansión de Playa con Muelle</option>
               </select>
             </div>
           </div>
@@ -338,17 +524,6 @@
             <div class="insta-text-box">
               <span class="insta-platform"><i class="fa-solid fa-crown" style="color: var(--gold); font-size: 0.65rem;"></i> Desarrollador</span>
               <span class="insta-username">loanrey17</span>
-            </div>
-            <i class="fa-solid fa-arrow-up-right-from-square insta-arrow"></i>
-          </a>
-
-          <a href="https://www.instagram.com/dann_yaz1/" target="_blank" rel="noopener noreferrer" class="instagram-dev-badge" title="Instagram de Creadora DANN_YAZ2 (@dann_yaz1)">
-            <div class="insta-icon-box" style="background: linear-gradient(135deg, #f472b6, #ec4899);">
-              <i class="fa-brands fa-instagram"></i>
-            </div>
-            <div class="insta-text-box">
-              <span class="insta-platform"><i class="fa-solid fa-crown" style="color: var(--gold); font-size: 0.65rem;"></i> Creadora</span>
-              <span class="insta-username">DANN_YAZ2</span>
             </div>
             <i class="fa-solid fa-arrow-up-right-from-square insta-arrow"></i>
           </a>
@@ -506,7 +681,7 @@
           <div class="detail-creator-banner" id="detailCreatorBanner">
             <div class="creator-left-group">
               <div class="creator-badge-avatar">
-                <i class="fa-solid fa-crown"></i>
+                <i class="fa-solid fa-cube"></i>
               </div>
               <div class="creator-text-info">
                 <span class="creator-role-title">Construido por</span>
@@ -588,6 +763,245 @@
     </div>
   </div>
 
+  <!-- Submit Idea / Postulación & Quejas Modal -->
+  <div class="modal-backdrop submit-idea-modal-backdrop" id="submitIdeaModal" aria-hidden="true">
+    <div class="modal-dialog modal-submit-idea">
+      <button class="modal-close-btn" id="closeSubmitIdeaModalBtn" aria-label="Cerrar ventana">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Segmented Navigation Tabs: Postular Idea vs Quejas / Sugerencias -->
+      <div class="submit-modal-nav-tabs" id="submitModalNavTabs">
+        <button type="button" class="smodal-tab-btn active" id="tabBtnBuild" data-tab="build">
+          <i class="fa-solid fa-fire"></i>
+          <span>Postular Construcción</span>
+        </button>
+        <button type="button" class="smodal-tab-btn" id="tabBtnFeedback" data-tab="feedback">
+          <i class="fa-solid fa-bullhorn"></i>
+          <span>Quejas o Sugerencias</span>
+        </button>
+      </div>
+
+      <!-- VIEW 1: Postular Construcción / Idea -->
+      <div class="submit-tab-pane active" id="paneSubmitBuild">
+        <div class="submit-idea-header">
+          <div class="submit-idea-badge">
+            <i class="fa-solid fa-fire"></i> Postulaciones de la Comunidad
+          </div>
+          <h3 class="submit-idea-title">Agrega tu Idea o Construcción</h3>
+          <p class="submit-idea-subtitle">
+            Envía los datos de tu diseño de Minecraft para revisión de <strong>@loanrey17</strong> y publicación en la galería comunitaria.
+          </p>
+        </div>
+
+        <!-- Form View -->
+        <form id="submitIdeaForm" class="submit-idea-form">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="ideaTitle"><i class="fa-solid fa-monument"></i> Título de la Obra <span class="req">*</span></label>
+              <input type="text" id="ideaTitle" placeholder="Ej: Mansión Moderna de Roble y Cuarzo" required maxlength="100">
+            </div>
+
+            <div class="form-group">
+              <label for="ideaCreator"><i class="fa-solid fa-user-astronaut"></i> Tu Nombre / Nickname <span class="req">*</span></label>
+              <input type="text" id="ideaCreator" placeholder="Ej: MineArchitect_99" required maxlength="50">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="ideaInstagram"><i class="fa-brands fa-instagram"></i> Tu Instagram (Opcional)</label>
+              <div class="input-with-prefix">
+                <span class="input-prefix">@</span>
+                <input type="text" id="ideaInstagram" placeholder="tu_usuario_de_instagram" maxlength="60">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="ideaCategory"><i class="fa-solid fa-layer-group"></i> Categoría <span class="req">*</span></label>
+              <select id="ideaCategory" required>
+                <option value="Cerezo / Sakura">🌸 Cerezo / Sakura</option>
+                <option value="Moderna">🏢 Moderna / Contemporánea</option>
+                <option value="Playa / Costera">🏖️ Playa / Costera</option>
+                <option value="Rústica / Medieval">🏰 Rústica / Medieval</option>
+                <option value="Nether / Fantasía">🔥 Nether / Fantasía</option>
+                <option value="Otra / Temática">✨ Otra Temática</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="ideaVersion"><i class="fa-solid fa-gamepad"></i> Versión de Minecraft <span class="req">*</span></label>
+              <select id="ideaVersion" required>
+                <option value="Java Edition">☕ Java Edition</option>
+                <option value="Bedrock Edition">📱 Bedrock / Consolas / Móvil</option>
+                <option value="Java & Bedrock">🌐 Compatible con Ambas (Java & Bedrock)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="ideaShaders"><i class="fa-solid fa-wand-magic-sparkles"></i> Shaders / Texturas (Opcional)</label>
+              <input type="text" id="ideaShaders" placeholder="Ej: BSL Shaders + Faithful 32x o Vanilla" maxlength="120">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="ideaImageLink"><i class="fa-solid fa-link"></i> Enlace de Imágenes / Capturas <span class="req">*</span></label>
+            <input type="url" id="ideaImageLink" placeholder="https://imgur.com/... o enlace de Drive, ImgBB, Discord o Pinterest" required>
+            <span class="input-hint"><i class="fa-solid fa-circle-info"></i> Sube tus fotos a Imgur, Google Drive, ImgBB o Discord y pega el enlace aquí.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="ideaDescription"><i class="fa-solid fa-align-left"></i> Descripción y Detalles de la Construcción <span class="req">*</span></label>
+            <textarea id="ideaDescription" rows="3" placeholder="Describe los materiales principales, bioma ideal, número de habitaciones, características especiales..." required maxlength="800"></textarea>
+            <div class="form-hint-row">
+              <span class="char-counter" id="ideaCharCounter">0 / 800</span>
+            </div>
+          </div>
+
+          <div class="submit-idea-actions">
+            <button type="button" class="btn-secondary" id="cancelSubmitIdeaBtn">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-submit-red" id="sendIdeaBtn">
+              <i class="fa-solid fa-paper-plane"></i> Enviar Postulación
+            </button>
+          </div>
+        </form>
+
+        <!-- Success Confirmation View -->
+        <div id="submitIdeaSuccessView" class="submit-idea-success-view" style="display: none;">
+          <div class="success-icon-wrap">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <h4 class="success-title">¡Postulación Enviada con Éxito!</h4>
+          <p class="success-msg">
+            Tu diseño ha sido registrado en Firebase bajo estado <strong>PENDIENTE DE REVISIÓN</strong>. El moderador revisará tus imágenes y detalles.
+          </p>
+
+          <!-- Formatted Instagram Message Box -->
+          <div class="instagram-format-preview">
+            <div class="preview-header">
+              <span><i class="fa-brands fa-instagram"></i> Mensaje Estructurado para @loanrey17</span>
+              <button type="button" class="btn-copy-preview" id="copyIdeaMessageBtn" title="Copiar mensaje">
+                <i class="fa-regular fa-copy"></i> Copiar
+              </button>
+            </div>
+            <pre id="ideaMessagePreviewText" class="preview-content"></pre>
+          </div>
+
+          <div class="success-actions-row">
+            <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="btn-instagram-dm" id="directDmInstagramBtn">
+              <i class="fa-brands fa-instagram"></i> Notificar a @loanrey17 en Instagram
+            </a>
+            <button type="button" class="btn-primary" id="finishSubmitIdeaBtn">
+              <i class="fa-solid fa-check"></i> Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: Quejas o Sugerencias -->
+      <div class="submit-tab-pane" id="paneSubmitFeedback" style="display: none;">
+        <div class="submit-idea-header">
+          <div class="submit-idea-badge badge-feedback">
+            <i class="fa-solid fa-bullhorn"></i> Buzón de la Comunidad
+          </div>
+          <h3 class="submit-idea-title">Quejas o Sugerencias</h3>
+          <p class="submit-idea-subtitle">
+            ¿Tienes sugerencias para el sitio web, encontraste algún fallo o deseas compartir una queja? Déjanos tu mensaje para <strong>@loanrey17</strong>.
+          </p>
+        </div>
+
+        <!-- Feedback Form -->
+        <form id="feedbackForm" class="submit-idea-form">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="feedbackType"><i class="fa-solid fa-tag"></i> Tipo de Mensaje <span class="req">*</span></label>
+              <select id="feedbackType" required>
+                <option value="💡 Sugerencia para el Sitio">💡 Sugerencia de Mejora</option>
+                <option value="⚠️ Queja o Inconformidad">⚠️ Queja o Inconformidad</option>
+                <option value="🐛 Reporte de Error / Bug">🐛 Reporte de Error o Bug</option>
+                <option value="🎨 Sugerencia de Nuevas Casas">🎨 Sugerir Nuevas Casas / Estilos</option>
+                <option value="💬 Otra Consulta">💬 Otra Consulta</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="feedbackName"><i class="fa-solid fa-user"></i> Tu Nombre / Nickname <span class="req">*</span></label>
+              <input type="text" id="feedbackName" placeholder="Ej: MinePlayer_12" required maxlength="50">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="feedbackInstagram"><i class="fa-brands fa-instagram"></i> Tu Instagram o Contacto (Opcional)</label>
+              <div class="input-with-prefix">
+                <span class="input-prefix">@</span>
+                <input type="text" id="feedbackInstagram" placeholder="tu_instagram" maxlength="60">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="feedbackSubject"><i class="fa-solid fa-heading"></i> Asunto Breve <span class="req">*</span></label>
+              <input type="text" id="feedbackSubject" placeholder="Ej: Filtro de búsqueda o sugerencia de diseño" required maxlength="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="feedbackMessage"><i class="fa-solid fa-comment-dots"></i> Detalle de tu Queja o Sugerencia <span class="req">*</span></label>
+            <textarea id="feedbackMessage" rows="4" placeholder="Explícanos tu queja, fallo encontrado o la sugerencia detallada que te gustaría ver en la página..." required maxlength="700"></textarea>
+            <div class="form-hint-row">
+              <span class="char-counter" id="feedbackCharCounter">0 / 700</span>
+            </div>
+          </div>
+
+          <div class="submit-idea-actions">
+            <button type="button" class="btn-secondary" id="cancelFeedbackBtn">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-submit-red" id="sendFeedbackBtn">
+              <i class="fa-solid fa-paper-plane"></i> Enviar Mensaje
+            </button>
+          </div>
+        </form>
+
+        <!-- Feedback Success Confirmation View -->
+        <div id="feedbackSuccessView" class="submit-idea-success-view" style="display: none;">
+          <div class="success-icon-wrap">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <h4 class="success-title">¡Mensaje Recibido con Éxito!</h4>
+          <p class="success-msg">
+            Tu queja o sugerencia ha sido registrada en Firebase. Agradecemos mucho tu aporte para seguir mejorando la galería.
+          </p>
+
+          <!-- Formatted Instagram Message Box -->
+          <div class="instagram-format-preview">
+            <div class="preview-header">
+              <span><i class="fa-brands fa-instagram"></i> Mensaje para @loanrey17</span>
+              <button type="button" class="btn-copy-preview" id="copyFeedbackMessageBtn" title="Copiar mensaje">
+                <i class="fa-regular fa-copy"></i> Copiar
+              </button>
+            </div>
+            <pre id="feedbackMessagePreviewText" class="preview-content"></pre>
+          </div>
+
+          <div class="success-actions-row">
+            <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="btn-instagram-dm" id="feedbackDmInstagramBtn">
+              <i class="fa-brands fa-instagram"></i> Enviar a @loanrey17 por Instagram
+            </a>
+            <button type="button" class="btn-primary" id="finishFeedbackBtn">
+              <i class="fa-solid fa-check"></i> Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="assertive"></div>
 
@@ -606,7 +1020,9 @@
       deleteDoc,
       updateDoc,
       increment,
-      setDoc
+      setDoc,
+      arrayUnion,
+      arrayRemove
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Configuración de tu proyecto
@@ -623,11 +1039,15 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const commentsCollection = collection(db, "comentarios");
+      const postulacionesCollection = collection(db, "postulaciones");
+      const quejasCollection = collection(db, "quejas_sugerencias");
 
       window.FirebaseCommentsBridge = {
         app,
         db,
         commentsCollection,
+        postulacionesCollection,
+        quejasCollection,
         isReady: true,
         subscribe(onUpdate, onError) {
           return onSnapshot(commentsCollection, onUpdate, onError);
@@ -641,8 +1061,29 @@
             houseRef: data.houseRef || "General",
             role: data.role || null,
             likes: typeof data.likes === "number" ? data.likes : 0,
+            replies: [],
             fecha: serverTimestamp(),
             createdAtMs: Date.now()
+          });
+        },
+        async addReply(commentId, replyData) {
+          const commentDoc = doc(db, "comentarios", commentId);
+          return await updateDoc(commentDoc, {
+            replies: arrayUnion({
+              id: replyData.id || ("rep-" + Date.now()),
+              author: replyData.author || "Anónimo",
+              text: replyData.text || "",
+              replyTo: replyData.replyTo || null,
+              role: replyData.role || null,
+              likes: typeof replyData.likes === "number" ? replyData.likes : 0,
+              createdAtMs: Date.now()
+            })
+          });
+        },
+        async updateReplies(commentId, repliesArray) {
+          const commentDoc = doc(db, "comentarios", commentId);
+          return await updateDoc(commentDoc, {
+            replies: repliesArray
           });
         },
         async deleteComment(commentId) {
@@ -651,6 +1092,33 @@
         async toggleLike(commentId, delta) {
           return await updateDoc(doc(db, "comentarios", commentId), {
             likes: increment(delta)
+          });
+        },
+        async submitPostulacion(data) {
+          return await addDoc(postulacionesCollection, {
+            titulo: data.titulo || "Sin título",
+            creador: data.creador || "Anónimo",
+            instagram: data.instagram || "",
+            categoria: data.categoria || "General",
+            version: data.version || "Java / Bedrock",
+            shaders: data.shaders || "Vanilla",
+            descripcion: data.descripcion || "",
+            imagenesUrl: data.imagenesUrl || "",
+            status: "PENDIENTE DE REVISIÓN",
+            fecha: serverTimestamp(),
+            createdAtMs: Date.now()
+          });
+        },
+        async submitQuejaSugerencia(data) {
+          return await addDoc(quejasCollection, {
+            tipo: data.tipo || "Sugerencia",
+            nombre: data.nombre || "Anónimo",
+            instagram: data.instagram || "",
+            asunto: data.asunto || "Sin asunto",
+            mensaje: data.mensaje || "",
+            status: "NUEVO",
+            fecha: serverTimestamp(),
+            createdAtMs: Date.now()
           });
         },
         // Sincronización en tiempo real de corazones / likes de las casas
@@ -673,6 +1141,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=33"></script>
+  <script src="./app.js?v=40"></script>
 </body>
 </html>

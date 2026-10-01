@@ -96,12 +96,12 @@
       difficultyLevel: 3,
       time: '~3.0 Horas',
       biome: 'Arboleda de Cerezos',
-      creator: 'Co-creadora',
-      creatorDisplay: 'Co-creadora',
-      creatorRole: 'Co-creadora',
+      creator: 'dann_yaz1',
+      creatorDisplay: 'dann_yaz1',
+      creatorRole: 'Instagram',
       instagram: {
-        name: 'DANN_YAZ2',
-        url: 'https://www.instagram.com/dann_yaz1/'
+        name: 'dann_yaz1',
+        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
       },
       image: './casa_danna_1_fachada.jpg',
       gallery: [
@@ -134,12 +134,12 @@
       difficultyLevel: 2,
       time: '~2.0 Horas',
       biome: 'Bosque de Cerezos / Colinas',
-      creator: 'Co-creadora',
-      creatorDisplay: 'Co-creadora',
-      creatorRole: 'Co-creadora',
+      creator: 'dann_yaz1',
+      creatorDisplay: 'dann_yaz1',
+      creatorRole: 'Instagram',
       instagram: {
-        name: 'DANN_YAZ2',
-        url: 'https://www.instagram.com/dann_yaz1/'
+        name: 'dann_yaz1',
+        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
       },
       image: './casa_danna_2_fachada.jpg',
       gallery: [
@@ -171,12 +171,12 @@
       difficultyLevel: 3,
       time: '~3.5 Horas',
       biome: 'Montaña de Cerezos',
-      creator: 'Co-creadora',
-      creatorDisplay: 'Co-creadora',
-      creatorRole: 'Co-creadora',
+      creator: 'dann_yaz1',
+      creatorDisplay: 'dann_yaz1',
+      creatorRole: 'Instagram',
       instagram: {
-        name: 'DANN_YAZ2',
-        url: 'https://www.instagram.com/dann_yaz1/'
+        name: 'dann_yaz1',
+        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
       },
       image: './casa_danna_3_exterior.jpg',
       gallery: [
@@ -208,12 +208,12 @@
       difficultyLevel: 3,
       time: '~4.0 Horas',
       biome: 'Selva / Jungla Tropical',
-      creator: 'Co-creadora',
-      creatorDisplay: 'Co-creadora',
-      creatorRole: 'Co-creadora',
+      creator: 'dann_yaz1',
+      creatorDisplay: 'dann_yaz1',
+      creatorRole: 'Instagram',
       instagram: {
-        name: 'DANN_YAZ2',
-        url: 'https://www.instagram.com/dann_yaz1/'
+        name: 'dann_yaz1',
+        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
       },
       image: './casa_danna_4_fachada.jpg',
       gallery: [
@@ -245,12 +245,12 @@
       difficultyLevel: 2,
       time: '~1.5 Horas',
       biome: 'Playa / Costa',
-      creator: 'heber jhosue',
-      creatorDisplay: 'heber jhosue',
-      creatorRole: 'Creador',
+      creator: 'loanrey17',
+      creatorDisplay: 'loanrey17',
+      creatorRole: 'Desarrollador',
       instagram: {
-        name: 'heber jhosue',
-        url: 'https://www.instagram.com/heberjhosue/'
+        name: 'loanrey17',
+        url: 'https://www.instagram.com/loanrey17'
       },
       image: './casa_de_playa_1.jpg',
       gallery: [
@@ -280,12 +280,12 @@
       difficultyLevel: 3,
       time: '~2.5 Horas',
       biome: 'Playa Tropical',
-      creator: 'heber jhosue',
-      creatorDisplay: 'heber jhosue',
-      creatorRole: 'Creador',
+      creator: 'loanrey17',
+      creatorDisplay: 'loanrey17',
+      creatorRole: 'Desarrollador',
       instagram: {
-        name: 'heber jhosue',
-        url: 'https://www.instagram.com/heberjhosue/'
+        name: 'loanrey17',
+        url: 'https://www.instagram.com/loanrey17'
       },
       image: './casa_de_playa_2.jpg',
       gallery: [
@@ -317,7 +317,20 @@
       date: 'Hace 1 hora',
       likes: 3,
       likedByUser: false,
-      timestamp: Date.now() - 3600000
+      timestamp: Date.now() - 3600000,
+      replies: [
+        {
+          id: 'rep-1-1',
+          author: 'Josue',
+          role: 'creator',
+          replyTo: 'Alex_Builder',
+          text: '¡Muchas gracias Alex! Es uno de los diseños más pedidos para supervivencia.',
+          date: 'Hace 45 min',
+          likes: 2,
+          likedByUser: false,
+          timestamp: Date.now() - 2700000
+        }
+      ]
     },
     {
       id: 'comm-2',
@@ -327,7 +340,8 @@
       date: 'Hace 30 minutos',
       likes: 5,
       likedByUser: false,
-      timestamp: Date.now() - 1800000
+      timestamp: Date.now() - 1800000,
+      replies: []
     }
   ];
 
@@ -729,9 +743,17 @@
       this.userLikes = this.loadUserLikes();
       this.userCommentLikes = this.loadUserCommentLikes();
       this.adminRole = localStorage.getItem(STORAGE_KEYS.ADMIN_ROLE) || 'none';
+      if (this.adminRole === 'co-creator') {
+        this.adminRole = 'none';
+        localStorage.removeItem(STORAGE_KEYS.ADMIN_ROLE);
+      }
       this.firebaseUnsubscribe = null;
       this.firebaseLikesUnsubscribe = null;
       this.isFirebaseConnected = false;
+      
+      this.expandedThreads = new Set();
+      this.activeReplyParentId = null;
+      this.activeReplyTargetAuthor = null;
       
       this.currentCategory = 'all';
       this.currentSearch = '';
@@ -757,6 +779,11 @@
 
       // Initialize Ambient Particles
       new AmbientParticles('particleCanvas');
+
+      // Preloader dismiss trigger once DOM and initial app state is rendered
+      if (typeof window.hidePagePreloader === 'function') {
+        setTimeout(() => window.hidePagePreloader(), 250);
+      }
     }
 
     /* ------------------------------------------------------------------------
@@ -805,14 +832,24 @@
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.filter((c) => !deleted.includes(c.id));
+            return parsed
+              .filter((c) => !deleted.includes(c.id))
+              .map((c) => ({
+                ...c,
+                replies: Array.isArray(c.replies) ? c.replies : []
+              }));
           }
         }
       } catch (e) {
         console.warn('Error reading stored comments:', e);
       }
       const deleted = this.loadDeletedComments();
-      return JSON.parse(JSON.stringify(INITIAL_COMMENTS)).filter((c) => !deleted.includes(c.id));
+      return JSON.parse(JSON.stringify(INITIAL_COMMENTS))
+        .filter((c) => !deleted.includes(c.id))
+        .map((c) => ({
+          ...c,
+          replies: Array.isArray(c.replies) ? c.replies : []
+        }));
     }
 
     saveComments() {
@@ -913,11 +950,29 @@
               const author = data.author || data.autor || 'Anónimo';
               const text = data.text || data.texto || '';
               const houseRef = data.houseRef || 'General';
-              const role = data.role || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
+              const role = data.role === 'creator' || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17') ? 'creator' : null;
               const likes = typeof data.likes === 'number' ? data.likes : 0;
               const likedByUser = this.userCommentLikes.includes(doc.id);
               const date = this.formatCommentDate(data.fecha || data.createdAtMs);
               const timestamp = (data.fecha && data.fecha.seconds) ? data.fecha.seconds * 1000 : (data.createdAtMs || (data.timestamp || Date.now()));
+
+              const rawReplies = Array.isArray(data.replies) ? data.replies : [];
+              const replies = rawReplies.map((r) => {
+                const rAuthor = r.author || r.autor || 'Anónimo';
+                const rRole = r.role === 'creator' || (rAuthor.toLowerCase() === 'josue' || rAuthor.toLowerCase() === 'loanrey17') ? 'creator' : null;
+                const rId = r.id || ('rep-' + Math.random().toString(36).substr(2, 9));
+                return {
+                  id: rId,
+                  author: rAuthor,
+                  text: r.text || r.texto || '',
+                  replyTo: r.replyTo || null,
+                  role: rRole,
+                  likes: typeof r.likes === 'number' ? r.likes : 0,
+                  likedByUser: this.userCommentLikes.includes(rId),
+                  date: this.formatCommentDate(r.fecha || r.createdAtMs || r.timestamp),
+                  timestamp: (r.fecha && r.fecha.seconds) ? r.fecha.seconds * 1000 : (r.createdAtMs || (r.timestamp || Date.now()))
+                };
+              });
 
               loaded.push({
                 id: doc.id,
@@ -928,7 +983,8 @@
                 likes,
                 likedByUser,
                 date,
-                timestamp
+                timestamp,
+                replies
               });
             });
 
@@ -1038,7 +1094,6 @@
       this.soundFxBtn = document.getElementById('soundFxBtn');
       this.themeToggleBtn = document.getElementById('themeToggleBtn');
       this.openCommentsBtn = document.getElementById('openCommentsBtn');
-      this.drawerSortPopularBtn = document.getElementById('drawerSortPopularBtn');
 
       // Search & Filters
       this.searchInput = document.getElementById('searchInput');
@@ -1123,6 +1178,48 @@
       this.authPasswordInput = document.getElementById('authPasswordInput');
       this.toggleAuthPassBtn = document.getElementById('toggleAuthPassBtn');
 
+      // Submit Idea / Postulaciones Modal
+      this.openSubmitIdeaBtn = document.getElementById('openSubmitIdeaBtn');
+      this.drawerSubmitIdeaBtn = document.getElementById('drawerSubmitIdeaBtn');
+      this.commentsSectionSubmitIdeaBtn = document.getElementById('commentsSectionSubmitIdeaBtn');
+      this.submitIdeaModal = document.getElementById('submitIdeaModal');
+      this.closeSubmitIdeaModalBtn = document.getElementById('closeSubmitIdeaModalBtn');
+      this.cancelSubmitIdeaBtn = document.getElementById('cancelSubmitIdeaBtn');
+      this.submitIdeaForm = document.getElementById('submitIdeaForm');
+      this.sendIdeaBtn = document.getElementById('sendIdeaBtn');
+      this.ideaTitle = document.getElementById('ideaTitle');
+      this.ideaCreator = document.getElementById('ideaCreator');
+      this.ideaInstagram = document.getElementById('ideaInstagram');
+      this.ideaCategory = document.getElementById('ideaCategory');
+      this.ideaVersion = document.getElementById('ideaVersion');
+      this.ideaShaders = document.getElementById('ideaShaders');
+      this.ideaImageLink = document.getElementById('ideaImageLink');
+      this.ideaDescription = document.getElementById('ideaDescription');
+      this.ideaCharCounter = document.getElementById('ideaCharCounter');
+      this.submitIdeaSuccessView = document.getElementById('submitIdeaSuccessView');
+      this.copyIdeaMessageBtn = document.getElementById('copyIdeaMessageBtn');
+      this.ideaMessagePreviewText = document.getElementById('ideaMessagePreviewText');
+      this.finishSubmitIdeaBtn = document.getElementById('finishSubmitIdeaBtn');
+
+      // Quejas o Sugerencias Elements
+      this.tabBtnBuild = document.getElementById('tabBtnBuild');
+      this.tabBtnFeedback = document.getElementById('tabBtnFeedback');
+      this.paneSubmitBuild = document.getElementById('paneSubmitBuild');
+      this.paneSubmitFeedback = document.getElementById('paneSubmitFeedback');
+      this.feedbackForm = document.getElementById('feedbackForm');
+      this.feedbackType = document.getElementById('feedbackType');
+      this.feedbackName = document.getElementById('feedbackName');
+      this.feedbackInstagram = document.getElementById('feedbackInstagram');
+      this.feedbackSubject = document.getElementById('feedbackSubject');
+      this.feedbackMessage = document.getElementById('feedbackMessage');
+      this.feedbackCharCounter = document.getElementById('feedbackCharCounter');
+      this.cancelFeedbackBtn = document.getElementById('cancelFeedbackBtn');
+      this.sendFeedbackBtn = document.getElementById('sendFeedbackBtn');
+      this.feedbackSuccessView = document.getElementById('feedbackSuccessView');
+      this.copyFeedbackMessageBtn = document.getElementById('copyFeedbackMessageBtn');
+      this.feedbackMessagePreviewText = document.getElementById('feedbackMessagePreviewText');
+      this.finishFeedbackBtn = document.getElementById('finishFeedbackBtn');
+
       // Toast Container
       this.toastContainer = document.getElementById('toastContainer');
     }
@@ -1182,26 +1279,6 @@
         });
       }
 
-      if (this.drawerSortPopularBtn) {
-        this.drawerSortPopularBtn.addEventListener('click', () => {
-          this.sound.playPop();
-          this.closeDrawer();
-          this.currentCategory = 'mas_votadas';
-          this.currentSort = 'popular';
-          if (this.sortSelect) this.sortSelect.value = 'popular';
-
-          document.querySelectorAll('.tab-btn').forEach((b) => {
-            b.classList.toggle('active', b.getAttribute('data-category') === 'mas_votadas');
-          });
-
-          this.render();
-          if (this.cardsGrid) {
-            this.cardsGrid.scrollIntoView({ behavior: 'smooth' });
-          }
-          this.showToast('🔥 Mostrando solo las construcciones más votadas', 'info');
-        });
-      }
-
       // Close drawer on link click inside drawer
       const drawerLinks = document.querySelectorAll('.drawer-menu-list a, .ddev-insta-link');
       drawerLinks.forEach((link) => {
@@ -1240,7 +1317,7 @@
           if (this.commentsSection) {
             this.commentsSection.scrollIntoView({ behavior: 'smooth' });
             setTimeout(() => {
-              if (this.commentAuthor) this.commentAuthor.focus();
+              if (this.commentText) this.commentText.focus();
             }, 600);
           }
         });
@@ -1318,6 +1395,143 @@
           this.handleAuthSubmit();
         });
       }
+
+      // Submit Idea Button & Modal Listeners
+      const openSubmitIdeaHandlers = [this.openSubmitIdeaBtn, this.drawerSubmitIdeaBtn, this.commentsSectionSubmitIdeaBtn];
+      openSubmitIdeaHandlers.forEach((btn) => {
+        if (btn) {
+          btn.addEventListener('click', () => {
+            this.sound.playPop();
+            this.openSubmitIdeaModal();
+          });
+        }
+      });
+
+      if (this.closeSubmitIdeaModalBtn) {
+        this.closeSubmitIdeaModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeSubmitIdeaModal();
+        });
+      }
+
+      if (this.cancelSubmitIdeaBtn) {
+        this.cancelSubmitIdeaBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeSubmitIdeaModal();
+        });
+      }
+
+      if (this.finishSubmitIdeaBtn) {
+        this.finishSubmitIdeaBtn.addEventListener('click', () => {
+          this.sound.playSuccess();
+          this.closeSubmitIdeaModal();
+        });
+      }
+
+      if (this.submitIdeaModal) {
+        this.submitIdeaModal.addEventListener('click', (e) => {
+          if (e.target === this.submitIdeaModal) {
+            this.sound.playPop();
+            this.closeSubmitIdeaModal();
+          }
+        });
+      }
+
+      if (this.ideaDescription && this.ideaCharCounter) {
+        this.ideaDescription.addEventListener('input', (e) => {
+          const len = e.target.value.length;
+          this.ideaCharCounter.textContent = `${len} / 800`;
+        });
+      }
+
+      if (this.submitIdeaForm) {
+        this.submitIdeaForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleSubmitIdeaForm();
+        });
+      }
+
+      if (this.copyIdeaMessageBtn && this.ideaMessagePreviewText) {
+        this.copyIdeaMessageBtn.addEventListener('click', () => {
+          const textToCopy = this.ideaMessagePreviewText.textContent;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+              this.sound.playPop();
+              const origHtml = this.copyIdeaMessageBtn.innerHTML;
+              this.copyIdeaMessageBtn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Copiado!';
+              setTimeout(() => {
+                this.copyIdeaMessageBtn.innerHTML = origHtml;
+              }, 2000);
+            });
+          }
+        });
+      }
+
+      // Tab Switching in Modal (Postular vs Quejas / Sugerencias)
+      if (this.tabBtnBuild && this.tabBtnFeedback) {
+        this.tabBtnBuild.addEventListener('click', () => {
+          this.sound.playPop();
+          this.switchSubmitModalTab('build');
+        });
+        this.tabBtnFeedback.addEventListener('click', () => {
+          this.sound.playPop();
+          this.switchSubmitModalTab('feedback');
+        });
+      }
+
+      // Feedback Form Listeners
+      if (this.feedbackMessage && this.feedbackCharCounter) {
+        this.feedbackMessage.addEventListener('input', (e) => {
+          const len = e.target.value.length;
+          this.feedbackCharCounter.textContent = `${len} / 700`;
+        });
+      }
+
+      if (this.feedbackForm) {
+        this.feedbackForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleFeedbackSubmit();
+        });
+      }
+
+      if (this.cancelFeedbackBtn) {
+        this.cancelFeedbackBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeSubmitIdeaModal();
+        });
+      }
+
+      if (this.finishFeedbackBtn) {
+        this.finishFeedbackBtn.addEventListener('click', () => {
+          this.sound.playSuccess();
+          this.closeSubmitIdeaModal();
+        });
+      }
+
+      if (this.copyFeedbackMessageBtn && this.feedbackMessagePreviewText) {
+        this.copyFeedbackMessageBtn.addEventListener('click', () => {
+          const textToCopy = this.feedbackMessagePreviewText.textContent;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+              this.sound.playPop();
+              const origHtml = this.copyFeedbackMessageBtn.innerHTML;
+              this.copyFeedbackMessageBtn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Copiado!';
+              setTimeout(() => {
+                this.copyFeedbackMessageBtn.innerHTML = origHtml;
+              }, 2000);
+            });
+          }
+        });
+      }
+
+      // Escape key to close modals
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (this.submitIdeaModal && this.submitIdeaModal.classList.contains('open')) {
+            this.closeSubmitIdeaModal();
+          }
+        }
+      });
 
       // 6. Search Bar & Debounce
       if (this.searchInput) {
@@ -1719,8 +1933,12 @@
         ? `<span class="badge-photo-count"><i class="fa-solid fa-images"></i> ${house.gallery.length} fotos</span>`
         : '';
 
-      const creatorRole = house.creatorRole || (house.category === 'cerezo' || house.creator === 'Co-creadora' ? 'Co-creadora' : 'Creador');
-      const creatorDisplay = house.creatorDisplay || house.creator || 'Co-creadora';
+      const creatorRole = house.creatorRole || 'Desarrollador';
+      const creatorDisplay = house.creatorDisplay || house.creator || '';
+      const isDeveloper = creatorRole === 'Desarrollador' || house.creator === 'loanrey17';
+      const crownIcon = isDeveloper
+        ? '<i class="fa-solid fa-crown creator-crown" style="color: var(--gold); font-size: 0.72rem; margin-right: 0.25rem;"></i>'
+        : '';
 
       const igBannerHTML = house.instagram
         ? `
@@ -1729,7 +1947,7 @@
               <img src="./instagram_logo.png" alt="Logo Instagram" class="card-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
             </div>
             <div class="card-ig-info">
-              <span class="card-ig-subtitle"><i class="fa-solid fa-crown creator-crown"></i> ${creatorRole}</span>
+              <span class="card-ig-subtitle">${crownIcon}${creatorRole}</span>
               <span class="card-ig-handle">${creatorDisplay} <span class="card-ig-at">@${house.instagram.name}</span></span>
             </div>
             <div class="card-ig-badge-action">
@@ -1743,7 +1961,7 @@
       return `
         <article class="house-card" data-house-id="${house.id}" tabindex="0" role="button" aria-label="Ver detalles de ${house.title}">
           <div class="card-image-wrap">
-            <img src="${house.image}" alt="${house.title}" class="card-img" loading="lazy" onerror="window.handleImgFallback(this, '${house.id}')">
+            <img src="${house.image}" alt="${house.title}" class="card-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="window.handleImgFallback(this, '${house.id}')">
             <div class="card-overlay-gradient"></div>
             
             <div class="card-top-badges">
@@ -2026,35 +2244,50 @@
       }
 
       // Populate Creator Name & Instagram
-      const creatorRole = house.creatorRole || (house.category === 'cerezo' || house.creator === 'Co-creadora' ? 'Co-creadora' : 'Creador');
-      const creatorDisplay = house.creatorDisplay || house.creator || 'Co-creadora';
+      const detailCreatorBanner = document.getElementById('detailCreatorBanner');
+      if (detailCreatorBanner) {
+        if (house.creator || house.creatorDisplay) {
+          detailCreatorBanner.style.display = 'flex';
+          const creatorRole = house.creatorRole || 'Desarrollador';
+          const creatorDisplay = house.creatorDisplay || house.creator;
+          const isDev = creatorRole === 'Desarrollador' || house.creator === 'loanrey17';
 
-      if (this.detailCreatorName) {
-        this.detailCreatorName.textContent = creatorDisplay;
-      }
+          if (this.detailCreatorName) {
+            this.detailCreatorName.textContent = creatorDisplay;
+          }
 
-      const detailCreatorIgWrap = document.getElementById('detailCreatorIgWrap');
-      if (detailCreatorIgWrap) {
-        if (house.instagram) {
-          detailCreatorIgWrap.innerHTML = `
-            <a href="${house.instagram.url}" target="_blank" rel="noopener noreferrer" class="detail-ig-banner-box" title="Instagram de ${house.instagram.name}" aria-label="Instagram de ${house.instagram.name}">
-              <div class="detail-ig-logo-wrap">
-                <img src="./instagram_logo.png" alt="Instagram ${house.instagram.name}" class="detail-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
-              </div>
-              <div class="detail-ig-info-col">
-                <span class="detail-ig-role"><i class="fa-solid fa-crown"></i> ${creatorRole} Oficial</span>
-                <span class="detail-ig-username">${creatorDisplay} <span class="detail-ig-handle-pill">@${house.instagram.name}</span></span>
-              </div>
-              <div class="detail-ig-follow-btn">
-                <span>Seguir</span>
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-              </div>
-            </a>
-          `;
-          detailCreatorIgWrap.style.display = 'flex';
+          const creatorBadgeAvatar = detailCreatorBanner.querySelector('.creator-badge-avatar');
+          if (creatorBadgeAvatar) {
+            creatorBadgeAvatar.innerHTML = isDev ? '<i class="fa-solid fa-crown"></i>' : '<i class="fa-solid fa-cube"></i>';
+          }
+
+          const detailCreatorIgWrap = document.getElementById('detailCreatorIgWrap');
+          if (detailCreatorIgWrap) {
+            if (house.instagram) {
+              const devCrown = isDev ? '<i class="fa-solid fa-crown" style="color: var(--gold); font-size: 0.72rem; margin-right: 0.25rem;"></i>' : '';
+              detailCreatorIgWrap.innerHTML = `
+                <a href="${house.instagram.url}" target="_blank" rel="noopener noreferrer" class="detail-ig-banner-box" title="Instagram de ${house.instagram.name}" aria-label="Instagram de ${house.instagram.name}">
+                  <div class="detail-ig-logo-wrap">
+                    <img src="./instagram_logo.png" alt="Instagram ${house.instagram.name}" class="detail-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
+                  </div>
+                  <div class="detail-ig-info-col">
+                    <span class="detail-ig-role">${devCrown}${isDev ? 'Desarrollador Oficial' : (creatorRole || 'Instagram')}</span>
+                    <span class="detail-ig-username">${creatorDisplay} <span class="detail-ig-handle-pill">@${house.instagram.name}</span></span>
+                  </div>
+                  <div class="detail-ig-follow-btn">
+                    <span>Seguir</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </div>
+                </a>
+              `;
+              detailCreatorIgWrap.style.display = 'flex';
+            } else {
+              detailCreatorIgWrap.innerHTML = '';
+              detailCreatorIgWrap.style.display = 'none';
+            }
+          }
         } else {
-          detailCreatorIgWrap.innerHTML = '';
-          detailCreatorIgWrap.style.display = 'none';
+          detailCreatorBanner.style.display = 'none';
         }
       }
 
@@ -2101,9 +2334,12 @@
       const activeCaption = typeof activeItem === 'string' ? this.activeModalHouse.title : (activeItem.caption || this.activeModalHouse.title);
 
       if (this.detailModalImg) {
+        this.detailModalImg.classList.remove('loaded');
+        this.detailModalImg.decoding = 'async';
         this.detailModalImg.src = activeUrl;
         this.detailModalImg.alt = activeCaption;
         this.detailModalImg.dataset.retryStep = '0';
+        this.detailModalImg.onload = () => this.detailModalImg.classList.add('loaded');
         this.detailModalImg.onerror = () => window.handleImgFallback(this.detailModalImg, this.activeModalHouse.id);
       }
 
@@ -2317,16 +2553,10 @@
        ------------------------------------------------------------------------ */
 
     updateCommentAuthorUI() {
-      const authorGroup = document.getElementById('commentAuthorGroup');
       const authBadgeGroup = document.getElementById('commentAuthBadgeGroup');
       const authCard = document.getElementById('authCommenterCard');
 
       if (this.adminRole === 'creator') {
-        if (this.commentAuthor) {
-          this.commentAuthor.value = 'Josue';
-          this.commentAuthor.required = false;
-        }
-        if (authorGroup) authorGroup.style.display = 'none';
         if (authBadgeGroup) authBadgeGroup.style.display = 'block';
         if (authCard) {
           authCard.innerHTML = `
@@ -2348,41 +2578,7 @@
             });
           }
         }
-      } else if (this.adminRole === 'co-creator') {
-        if (this.commentAuthor) {
-          this.commentAuthor.value = 'Danna';
-          this.commentAuthor.required = false;
-        }
-        if (authorGroup) authorGroup.style.display = 'none';
-        if (authBadgeGroup) authBadgeGroup.style.display = 'block';
-        if (authCard) {
-          authCard.innerHTML = `
-            <div class="auth-commenter-badge cocreator-auth-badge">
-              <div class="auth-badge-avatar cocreator-avatar"><i class="fa-solid fa-crown"></i></div>
-              <div class="auth-badge-text">
-                <span class="auth-badge-name">Danna</span>
-                <span class="auth-badge-role"><i class="fa-solid fa-crown"></i> Creadora Oficial</span>
-              </div>
-              <button type="button" class="btn-logout-role" id="btnLogoutRole" title="Cerrar sesión de creadora">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-              </button>
-            </div>
-          `;
-          const logoutBtn = authCard.querySelector('#btnLogoutRole');
-          if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-              this.logoutRole();
-            });
-          }
-        }
       } else {
-        if (this.commentAuthor) {
-          if (this.commentAuthor.value === 'Josue' || this.commentAuthor.value === 'Danna') {
-            this.commentAuthor.value = '';
-          }
-          this.commentAuthor.required = true;
-        }
-        if (authorGroup) authorGroup.style.display = 'block';
         if (authBadgeGroup) authBadgeGroup.style.display = 'none';
         if (authCard) authCard.innerHTML = '';
       }
@@ -2401,22 +2597,12 @@
       const pass = this.authPasswordInput ? this.authPasswordInput.value.trim() : '';
 
       if (pass === '385178Hbr') {
-        // DESARROLLADOR PRINCIPAL (Josue)
+        // DESARROLLADOR PRINCIPAL (Josue / loanrey17)
         this.sound.playSuccess();
         this.adminRole = 'creator';
         localStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, 'creator');
         this.closeAuthModal();
         this.updateCommentAuthorUI();
-        this.showToast('👑 ¡Modo Desarrollador activado! Publicando como Josue', 'success');
-        this.renderComments();
-      } else if (pass === '160409dn') {
-        // CREADORA OFICIAL (Danna)
-        this.sound.playSuccess();
-        this.adminRole = 'co-creator';
-        localStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, 'co-creator');
-        this.closeAuthModal();
-        this.updateCommentAuthorUI();
-        this.showToast('👑 ¡Modo Creadora activado! Publicando como Danna', 'success');
         this.renderComments();
       } else if (pass === '12345') {
         // TRAMPA / DESPISTE (Muestra mensaje falso de éxito, pero NO asigna distintivos)
@@ -2425,12 +2611,293 @@
         localStorage.removeItem(STORAGE_KEYS.ADMIN_ROLE);
         this.closeAuthModal();
         this.updateCommentAuthorUI();
-        this.showToast('¡Modo Creador activado!', 'success');
         this.renderComments();
       } else {
         // Contraseña incorrecta
         this.sound.playPop();
-        this.showToast('Contraseña incorrecta', 'error');
+      }
+    }
+
+    /* ------------------------------------------------------------------------
+       Submit Idea Modal & Processing Engine (Moderation & Feedback System)
+       ------------------------------------------------------------------------ */
+
+    switchSubmitModalTab(tab = 'build') {
+      if (tab === 'build') {
+        if (this.tabBtnBuild) this.tabBtnBuild.classList.add('active');
+        if (this.tabBtnFeedback) this.tabBtnFeedback.classList.remove('active');
+        if (this.paneSubmitBuild) this.paneSubmitBuild.style.display = 'block';
+        if (this.paneSubmitFeedback) this.paneSubmitFeedback.style.display = 'none';
+      } else {
+        if (this.tabBtnBuild) this.tabBtnBuild.classList.remove('active');
+        if (this.tabBtnFeedback) this.tabBtnFeedback.classList.add('active');
+        if (this.paneSubmitBuild) this.paneSubmitBuild.style.display = 'none';
+        if (this.paneSubmitFeedback) this.paneSubmitFeedback.style.display = 'block';
+        if (this.feedbackForm && this.feedbackSuccessView && this.feedbackSuccessView.style.display !== 'flex') {
+          this.feedbackForm.style.display = 'flex';
+        }
+      }
+    }
+
+    openSubmitIdeaModal(defaultTab = 'build') {
+      if (this.submitIdeaModal) {
+        // Reset build form
+        if (this.submitIdeaForm) {
+          this.submitIdeaForm.reset();
+          this.submitIdeaForm.style.display = 'flex';
+        }
+        if (this.submitIdeaSuccessView) {
+          this.submitIdeaSuccessView.style.display = 'none';
+        }
+        if (this.ideaCharCounter) {
+          this.ideaCharCounter.textContent = '0 / 800';
+        }
+        if (this.sendIdeaBtn) {
+          this.sendIdeaBtn.disabled = false;
+          this.sendIdeaBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Postulación';
+        }
+
+        // Reset feedback form
+        if (this.feedbackForm) {
+          this.feedbackForm.reset();
+          this.feedbackForm.style.display = 'flex';
+        }
+        if (this.feedbackSuccessView) {
+          this.feedbackSuccessView.style.display = 'none';
+        }
+        if (this.feedbackCharCounter) {
+          this.feedbackCharCounter.textContent = '0 / 700';
+        }
+        if (this.sendFeedbackBtn) {
+          this.sendFeedbackBtn.disabled = false;
+          this.sendFeedbackBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Mensaje';
+        }
+
+        this.switchSubmitModalTab(defaultTab);
+
+        this.submitIdeaModal.classList.add('active');
+        this.submitIdeaModal.classList.add('open');
+        this.submitIdeaModal.setAttribute('aria-hidden', 'false');
+
+        setTimeout(() => {
+          if (defaultTab === 'build' && this.ideaTitle) {
+            this.ideaTitle.focus();
+          } else if (defaultTab === 'feedback' && this.feedbackName) {
+            this.feedbackName.focus();
+          }
+        }, 150);
+      }
+    }
+
+    closeSubmitIdeaModal() {
+      if (this.submitIdeaModal) {
+        this.submitIdeaModal.classList.remove('active');
+        this.submitIdeaModal.classList.remove('open');
+        this.submitIdeaModal.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    async handleFeedbackSubmit() {
+      const tipo = this.feedbackType ? this.feedbackType.value : '💡 Sugerencia para el Sitio';
+      const nombre = this.feedbackName ? this.feedbackName.value.trim() : '';
+      const rawIg = this.feedbackInstagram ? this.feedbackInstagram.value.trim().replace(/^@+/, '') : '';
+      const instagram = rawIg ? `@${rawIg}` : 'No especificado';
+      const asunto = this.feedbackSubject ? this.feedbackSubject.value.trim() : '';
+      const mensaje = this.feedbackMessage ? this.feedbackMessage.value.trim() : '';
+
+      if (!nombre || !asunto || !mensaje) {
+        this.sound.playPop();
+        alert('⚠️ Por favor completa todos los campos requeridos con asterisco (*).');
+        return;
+      }
+
+      // Profanity Filter
+      if (this.profanityFilter.isProfane(nombre) || this.profanityFilter.isProfane(asunto) || this.profanityFilter.isProfane(mensaje)) {
+        this.sound.playPop();
+        if (this.feedbackMessage) {
+          this.feedbackMessage.classList.add('input-error-shake');
+          setTimeout(() => {
+            if (this.feedbackMessage) this.feedbackMessage.classList.remove('input-error-shake');
+          }, 650);
+        }
+        alert('⚠️ Tu mensaje contiene lenguaje inapropiado y no puede ser enviado.');
+        return;
+      }
+
+      if (this.sendFeedbackBtn) {
+        this.sendFeedbackBtn.disabled = true;
+        this.sendFeedbackBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando a Firebase...';
+      }
+
+      const structuredMessage = 
+`📢 NUEVA QUEJA / SUGERENCIA RECIBIDA 📢
+
+🏷️ Tipo: ${tipo}
+👤 De: ${nombre} (${instagram})
+📌 Asunto: ${asunto}
+📝 Mensaje:
+${mensaje}
+
+✅ Estado: REGISTRADO EN BUZÓN DE COMUNIDAD`;
+
+      // Save to Firebase Firestore under collection 'quejas_sugerencias'
+      try {
+        if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && typeof window.FirebaseCommentsBridge.submitQuejaSugerencia === 'function') {
+          await window.FirebaseCommentsBridge.submitQuejaSugerencia({
+            tipo,
+            nombre,
+            instagram: rawIg,
+            asunto,
+            mensaje
+          });
+        }
+      } catch (err) {
+        console.warn('Error registrando queja/sugerencia en Firebase:', err);
+      }
+
+      // Save locally as backup
+      try {
+        const localSaved = JSON.parse(localStorage.getItem('mc_quejas_v1') || '[]');
+        localSaved.unshift({
+          tipo,
+          nombre,
+          instagram,
+          asunto,
+          mensaje,
+          date: new Date().toISOString()
+        });
+        localStorage.setItem('mc_quejas_v1', JSON.stringify(localSaved));
+      } catch (e) {
+        // Ignore local storage error
+      }
+
+      this.sound.playSuccess();
+
+      // Show formatted preview in success view
+      if (this.feedbackMessagePreviewText) {
+        this.feedbackMessagePreviewText.textContent = structuredMessage;
+      }
+
+      if (this.feedbackForm) {
+        this.feedbackForm.style.display = 'none';
+      }
+      if (this.feedbackSuccessView) {
+        this.feedbackSuccessView.style.display = 'flex';
+      }
+    }
+
+    async handleSubmitIdeaForm() {
+      const titulo = this.ideaTitle ? this.ideaTitle.value.trim() : '';
+      const creador = this.ideaCreator ? this.ideaCreator.value.trim() : '';
+      const rawIg = this.ideaInstagram ? this.ideaInstagram.value.trim().replace(/^@+/, '') : '';
+      const instagram = rawIg ? `@${rawIg}` : 'No especificado';
+      const categoria = this.ideaCategory ? this.ideaCategory.value : 'General';
+      const version = this.ideaVersion ? this.ideaVersion.value : 'Java Edition';
+      const shaders = this.ideaShaders ? (this.ideaShaders.value.trim() || 'Vanilla / Predeterminado') : 'Vanilla';
+      const imagenesUrl = this.ideaImageLink ? this.ideaImageLink.value.trim() : '';
+      const descripcion = this.ideaDescription ? this.ideaDescription.value.trim() : '';
+
+      if (!titulo || !creador || !imagenesUrl || !descripcion) {
+        this.sound.playPop();
+        alert('⚠️ Por favor completa todos los campos requeridos con asterisco (*).');
+        return;
+      }
+
+      // Profanity and Spam Moderation Check
+      if (this.profanityFilter.isProfane(titulo) || this.profanityFilter.isProfane(creador) || this.profanityFilter.isProfane(descripcion)) {
+        this.sound.playPop();
+        if (this.ideaDescription) {
+          this.ideaDescription.classList.add('input-error-shake');
+          setTimeout(() => {
+            if (this.ideaDescription) this.ideaDescription.classList.remove('input-error-shake');
+          }, 650);
+        }
+        alert('⚠️ Tu postulación contiene palabras o lenguaje inapropiado y no puede ser enviada.');
+        return;
+      }
+
+      // Validate Image Link
+      if (!/^https?:\/\/.+/i.test(imagenesUrl)) {
+        this.sound.playPop();
+        if (this.ideaImageLink) {
+          this.ideaImageLink.classList.add('input-error-shake');
+          setTimeout(() => {
+            if (this.ideaImageLink) this.ideaImageLink.classList.remove('input-error-shake');
+          }, 650);
+          this.ideaImageLink.focus();
+        }
+        alert('⚠️ Por favor ingresa un enlace web válido (ej: https://imgur.com/... o enlace de Drive/Discord) para las imágenes.');
+        return;
+      }
+
+      if (this.sendIdeaBtn) {
+        this.sendIdeaBtn.disabled = true;
+        this.sendIdeaBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando en Firebase...';
+      }
+
+      // Format Structured Review Message for Instagram
+      const structuredMessage = 
+`📩 NUEVA CONSTRUCCIÓN RECIBIDA 📩
+
+📌 Título: ${titulo}
+🏗️ Creador: ${creador} (${instagram})
+🏷️ Categoría: ${categoria} | Versión: ${version}
+🎨 Shaders/Texturas: ${shaders}
+📝 Descripción: ${descripcion}
+🖼️ Enlace de imágenes: ${imagenesUrl}
+
+✅ Estado: PENDIENTE DE REVISIÓN`;
+
+      // Save to Firebase Firestore under collection 'postulaciones'
+      try {
+        if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && typeof window.FirebaseCommentsBridge.submitPostulacion === 'function') {
+          await window.FirebaseCommentsBridge.submitPostulacion({
+            titulo,
+            creador,
+            instagram: rawIg,
+            categoria,
+            version,
+            shaders,
+            descripcion,
+            imagenesUrl
+          });
+        }
+      } catch (err) {
+        console.warn('Error registrando postulación en Firebase:', err);
+      }
+
+      // Save locally as backup
+      try {
+        const localSaved = JSON.parse(localStorage.getItem('mc_postulaciones_v1') || '[]');
+        localSaved.unshift({
+          titulo,
+          creador,
+          instagram,
+          categoria,
+          version,
+          shaders,
+          descripcion,
+          imagenesUrl,
+          status: 'PENDIENTE DE REVISIÓN',
+          date: new Date().toISOString()
+        });
+        localStorage.setItem('mc_postulaciones_v1', JSON.stringify(localSaved));
+      } catch (e) {
+        // Ignore local storage error
+      }
+
+      this.sound.playSuccess();
+
+      // Show formatted preview in success view
+      if (this.ideaMessagePreviewText) {
+        this.ideaMessagePreviewText.textContent = structuredMessage;
+      }
+
+      if (this.submitIdeaForm) {
+        this.submitIdeaForm.style.display = 'none';
+      }
+      if (this.submitIdeaSuccessView) {
+        this.submitIdeaSuccessView.style.display = 'flex';
       }
     }
 
@@ -2439,32 +2906,17 @@
        ------------------------------------------------------------------------ */
 
     async handleCommentSubmit() {
-      let author = this.commentAuthor ? this.commentAuthor.value.trim() : '';
+      let author = 'Anónimo';
       const houseRef = this.commentHouseRef ? this.commentHouseRef.value : 'General';
       const text = this.commentText ? this.commentText.value.trim() : '';
 
       if (this.adminRole === 'creator') {
         author = 'Josue';
-      } else if (this.adminRole === 'co-creator') {
-        author = 'Danna';
       }
 
-      if (!author || !text) {
-        this.showToast('Por favor completa todos los campos requeridos', 'error');
-        return;
-      }
-
-      // Anti-Profanity & Leetspeak Check for Author Name
-      if (this.adminRole === 'none' && this.profanityFilter.isProfane(author)) {
-        this.sound.playPop();
-        if (this.commentAuthor) {
-          this.commentAuthor.classList.add('input-error-shake');
-          setTimeout(() => {
-            if (this.commentAuthor) this.commentAuthor.classList.remove('input-error-shake');
-          }, 650);
-          this.commentAuthor.focus();
-        }
-        this.showToast('⚠️ Tu nombre de usuario contiene lenguaje no permitido o inapropiado.', 'error');
+      if (!text) {
+        this.showToast('Por favor escribe tu comentario', 'error');
+        if (this.commentText) this.commentText.focus();
         return;
       }
 
@@ -2488,7 +2940,7 @@
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
       }
 
-      const assignedRole = this.adminRole !== 'none' ? this.adminRole : (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17' ? 'creator' : (author.toLowerCase() === 'danna' ? 'co-creator' : null));
+      const assignedRole = this.adminRole === 'creator' || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17') ? 'creator' : null;
 
       // Optimistically add comment to memory and UI so all comments stay present
       const tempId = 'comm-' + Date.now();
@@ -2501,7 +2953,8 @@
         likes: 0,
         likedByUser: false,
         role: assignedRole,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        replies: []
       };
 
       this.comments.unshift(optimisticComment);
@@ -2546,8 +2999,15 @@
     renderComments() {
       if (!this.commentsList) return;
 
+      // Count total main comments + all replies
+      let totalCount = 0;
+      this.comments.forEach((c) => {
+        totalCount += 1;
+        if (Array.isArray(c.replies)) totalCount += c.replies.length;
+      });
+
       if (this.commentsCount) {
-        this.commentsCount.textContent = this.comments.length;
+        this.commentsCount.textContent = totalCount;
       }
 
       if (this.comments.length === 0) {
@@ -2563,8 +3023,7 @@
       this.commentsList.innerHTML = this.comments
         .map((comm) => {
           const isCreator = comm.role === 'creator' || comm.isCreator || (comm.author && (comm.author.toLowerCase() === 'josue' || comm.author.toLowerCase() === 'loanrey17'));
-          const isCoCreator = comm.role === 'co-creator' || (comm.author && comm.author.toLowerCase() === 'danna');
-          const isAdminUser = this.adminRole === 'creator' || this.adminRole === 'co-creator';
+          const isAdminUser = this.adminRole === 'creator';
 
           let cardClass = 'comment-card animate-slide-in';
           let avatarClass = 'comment-avatar';
@@ -2576,11 +3035,6 @@
             avatarClass += ' creator-golden-avatar';
             avatarContent = '<i class="fa-solid fa-crown"></i>';
             roleBadge = '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>';
-          } else if (isCoCreator) {
-            cardClass += ' neon-pink-verified-card';
-            avatarClass += ' co-creator-pink-avatar';
-            avatarContent = '<i class="fa-solid fa-crown"></i>';
-            roleBadge = '<span class="co-creator-pink-pill"><i class="fa-solid fa-crown"></i> Creadora</span>';
           }
 
           // Trash button only for authenticated Administrators
@@ -2590,10 +3044,96 @@
                </button>`
             : '';
 
+          const replies = Array.isArray(comm.replies) ? comm.replies : [];
+          const hasReplies = replies.length > 0;
+          const isExpanded = this.expandedThreads.has(comm.id);
+          const isReplyBoxOpen = this.activeReplyParentId === comm.id;
+
+          // TikTok-style replies thread
+          let repliesSectionHTML = '';
+          if (hasReplies) {
+            const repliesToggleBtn = `
+              <button class="btn-toggle-replies ${isExpanded ? 'expanded' : ''}" data-comment-action="toggle-replies" data-id="${comm.id}">
+                <span class="thread-dash">──</span> 
+                <span class="replies-toggle-label">${isExpanded ? 'Ocultar respuestas' : `Ver ${replies.length} ${replies.length === 1 ? 'respuesta' : 'respuestas'}`}</span> 
+                <i class="fa-solid ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'}"></i>
+              </button>
+            `;
+
+            const repliesItemsHTML = replies.map((reply) => {
+              const isRepCreator = reply.role === 'creator' || (reply.author && (reply.author.toLowerCase() === 'josue' || reply.author.toLowerCase() === 'loanrey17'));
+              const repAvatarClass = isRepCreator ? 'reply-avatar creator-golden-avatar' : 'reply-avatar';
+              const repAvatarContent = isRepCreator ? '<i class="fa-solid fa-crown"></i>' : (reply.author ? reply.author.charAt(0).toUpperCase() : 'A');
+              const repRoleBadge = isRepCreator ? '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>' : '';
+              const repToBadge = reply.replyTo ? `<span class="reply-to-tag">▶ @${this.escapeHTML(reply.replyTo)}</span>` : '';
+              
+              const repTrashBtn = isAdminUser
+                ? `<button class="btn-reply-trash" data-reply-action="delete" data-parent-id="${comm.id}" data-id="${reply.id}" title="Eliminar respuesta (Admin)">
+                    <i class="fa-solid fa-trash-can"></i>
+                   </button>`
+                : '';
+
+              return `
+                <div class="reply-item ${isRepCreator ? 'gold-verified-reply' : ''}" data-reply-id="${reply.id}">
+                  <div class="${repAvatarClass}">${repAvatarContent}</div>
+                  <div class="reply-body">
+                    <div class="reply-header-row">
+                      <span class="reply-author-name">${this.escapeHTML(reply.author)}</span>
+                      ${repRoleBadge}
+                      ${repToBadge}
+                      <span class="reply-date"><i class="fa-regular fa-clock"></i> ${reply.date || 'Hace unos momentos'}</span>
+                    </div>
+                    <p class="reply-text">${this.escapeHTML(reply.text)}</p>
+                    <div class="reply-actions">
+                      <button class="btn-reply-like ${reply.likedByUser ? 'liked' : ''}" data-reply-action="like" data-parent-id="${comm.id}" data-id="${reply.id}" title="${reply.likedByUser ? 'Quitar me gusta' : 'Dar me gusta'}">
+                        <i class="${reply.likedByUser ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                        <span>${reply.likes || 0}</span>
+                      </button>
+                      <button class="btn-reply-subreply" data-comment-action="reply-to-user" data-parent-id="${comm.id}" data-author="${this.escapeHTML(reply.author)}" title="Responder a @${this.escapeHTML(reply.author)}">
+                        <i class="fa-solid fa-reply"></i> Responder
+                      </button>
+                      ${repTrashBtn}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            repliesSectionHTML = `
+              <div class="tiktok-replies-wrapper">
+                ${repliesToggleBtn}
+                ${isExpanded ? `<div class="comment-replies-list" id="repliesList-${comm.id}">${repliesItemsHTML}</div>` : ''}
+              </div>
+            `;
+          }
+
+          // Inline TikTok reply input box
+          const targetAuthor = this.activeReplyTargetAuthor || comm.author;
+          const replyBoxHTML = isReplyBoxOpen
+            ? `
+              <div class="reply-input-box" id="replyBox-${comm.id}">
+                <div class="replying-to-header">
+                  <span><i class="fa-solid fa-reply"></i> Respondiendo a <strong class="reply-target-author">@${this.escapeHTML(targetAuthor)}</strong></span>
+                  <button type="button" class="btn-cancel-reply" data-comment-action="cancel-reply" data-id="${comm.id}" title="Cancelar respuesta">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+                <form class="reply-form" data-parent-id="${comm.id}" data-reply-to="${this.escapeHTML(targetAuthor)}">
+                  <div class="reply-input-row">
+                    <textarea class="reply-textarea" placeholder="Escribe tu respuesta a @${this.escapeHTML(targetAuthor)}..." rows="1" maxlength="400" required></textarea>
+                    <button type="submit" class="btn-send-reply" title="Publicar respuesta">
+                      <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            `
+            : '';
+
           return `
           <article class="${cardClass}" data-comment-id="${comm.id}">
             <div class="${avatarClass}">${avatarContent}</div>
-            <div class="comment-content">
+            <div class="comment-content" style="flex: 1; min-width: 0;">
               <div class="comment-header-row">
                 <div class="comment-author-info">
                   <span class="comment-author-name">${this.escapeHTML(comm.author)}</span>
@@ -2608,8 +3148,15 @@
                   <i class="${comm.likedByUser ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                   <span>${comm.likes || 0}</span>
                 </button>
+                <button class="btn-comment-reply" data-comment-action="reply" data-id="${comm.id}" data-author="${this.escapeHTML(comm.author)}" title="Responder a este comentario">
+                  <i class="fa-solid fa-reply"></i>
+                  <span>Responder</span>
+                </button>
                 ${trashBtn}
               </div>
+              
+              ${repliesSectionHTML}
+              ${replyBoxHTML}
             </div>
           </article>
         `;
@@ -2617,10 +3164,18 @@
         .join('');
 
       this.attachCommentEventListeners();
+
+      // Auto-focus active reply textarea if open
+      if (this.activeReplyParentId) {
+        const activeTextarea = this.commentsList.querySelector(`.reply-form[data-parent-id="${this.activeReplyParentId}"] .reply-textarea`);
+        if (activeTextarea) {
+          activeTextarea.focus();
+        }
+      }
     }
 
     attachCommentEventListeners() {
-      // Like buttons
+      // Main Comment Like buttons
       const likeBtns = this.commentsList.querySelectorAll('[data-comment-action="like"]');
       likeBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -2629,7 +3184,7 @@
         });
       });
 
-      // Admin delete buttons
+      // Admin Comment delete buttons
       const deleteBtns = this.commentsList.querySelectorAll('[data-comment-action="delete"]');
       deleteBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
@@ -2638,11 +3193,225 @@
           this.deleteComment(commId);
         });
       });
+
+      // Toggle replies button
+      const toggleBtns = this.commentsList.querySelectorAll('[data-comment-action="toggle-replies"]');
+      toggleBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const commId = btn.getAttribute('data-id');
+          this.sound.playPop();
+          if (this.expandedThreads.has(commId)) {
+            this.expandedThreads.delete(commId);
+          } else {
+            this.expandedThreads.add(commId);
+          }
+          this.renderComments();
+        });
+      });
+
+      // "Responder" on main comment
+      const replyBtns = this.commentsList.querySelectorAll('[data-comment-action="reply"]');
+      replyBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const commId = btn.getAttribute('data-id');
+          const author = btn.getAttribute('data-author') || 'Usuario';
+          this.sound.playPop();
+          this.activeReplyParentId = commId;
+          this.activeReplyTargetAuthor = author;
+          this.expandedThreads.add(commId);
+          this.renderComments();
+        });
+      });
+
+      // "Responder" to sub-reply
+      const subreplyBtns = this.commentsList.querySelectorAll('[data-comment-action="reply-to-user"]');
+      subreplyBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const parentId = btn.getAttribute('data-parent-id');
+          const author = btn.getAttribute('data-author') || 'Usuario';
+          this.sound.playPop();
+          this.activeReplyParentId = parentId;
+          this.activeReplyTargetAuthor = author;
+          this.expandedThreads.add(parentId);
+          this.renderComments();
+        });
+      });
+
+      // Cancel reply
+      const cancelBtns = this.commentsList.querySelectorAll('[data-comment-action="cancel-reply"]');
+      cancelBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.activeReplyParentId = null;
+          this.activeReplyTargetAuthor = null;
+          this.renderComments();
+        });
+      });
+
+      // Reply form submissions
+      const replyForms = this.commentsList.querySelectorAll('.reply-form');
+      replyForms.forEach((form) => {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const parentId = form.getAttribute('data-parent-id');
+          const replyTo = form.getAttribute('data-reply-to') || '';
+          const textarea = form.querySelector('.reply-textarea');
+          const text = textarea ? textarea.value.trim() : '';
+          if (text) {
+            this.handleReplySubmit(parentId, text, replyTo);
+          }
+        });
+      });
+
+      // Reply Likes
+      const replyLikeBtns = this.commentsList.querySelectorAll('[data-reply-action="like"]');
+      replyLikeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const parentId = btn.getAttribute('data-parent-id');
+          const replyId = btn.getAttribute('data-id');
+          this.toggleReplyLike(parentId, replyId);
+        });
+      });
+
+      // Admin Reply Deletes
+      const replyTrashBtns = this.commentsList.querySelectorAll('[data-reply-action="delete"]');
+      replyTrashBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const parentId = btn.getAttribute('data-parent-id');
+          const replyId = btn.getAttribute('data-id');
+          this.deleteReply(parentId, replyId);
+        });
+      });
+    }
+
+    async handleReplySubmit(parentId, text, replyTo) {
+      const comment = this.comments.find((c) => c.id === parentId);
+      if (!comment) return;
+
+      if (!text) {
+        return;
+      }
+
+      // Profanity check
+      if (this.profanityFilter.isProfane(text)) {
+        this.sound.playPop();
+        const textarea = this.commentsList.querySelector(`.reply-form[data-parent-id="${parentId}"] .reply-textarea`);
+        if (textarea) {
+          textarea.classList.add('input-error-shake');
+          setTimeout(() => textarea.classList.remove('input-error-shake'), 650);
+        }
+        return;
+      }
+
+      let author = 'Anónimo';
+      if (this.adminRole === 'creator') {
+        author = 'Josue';
+      }
+      const assignedRole = this.adminRole === 'creator' || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17') ? 'creator' : null;
+
+      const replyId = 'rep-' + Date.now();
+      const newReply = {
+        id: replyId,
+        author: author,
+        text: text,
+        replyTo: replyTo || null,
+        role: assignedRole,
+        likes: 0,
+        likedByUser: false,
+        date: 'Hace unos momentos',
+        timestamp: Date.now()
+      };
+
+      if (!Array.isArray(comment.replies)) {
+        comment.replies = [];
+      }
+
+      comment.replies.push(newReply);
+      this.expandedThreads.add(parentId);
+      this.activeReplyParentId = null;
+      this.activeReplyTargetAuthor = null;
+
+      this.sound.playSuccess();
+      this.saveComments();
+      this.renderComments();
+
+      // Firebase Sync
+      try {
+        if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !parentId.startsWith('comm-')) {
+          if (typeof window.FirebaseCommentsBridge.addReply === 'function') {
+            await window.FirebaseCommentsBridge.addReply(parentId, newReply);
+          } else if (typeof window.FirebaseCommentsBridge.updateReplies === 'function') {
+            await window.FirebaseCommentsBridge.updateReplies(parentId, comment.replies);
+          }
+        }
+      } catch (err) {
+        console.warn('Error enviando respuesta a Firebase:', err);
+      }
+    }
+
+    async toggleReplyLike(parentId, replyId) {
+      const comment = this.comments.find((c) => c.id === parentId);
+      if (!comment || !Array.isArray(comment.replies)) return;
+
+      const reply = comment.replies.find((r) => r.id === replyId);
+      if (!reply) return;
+
+      this.sound.playHeart();
+      const alreadyLiked = this.userCommentLikes.includes(replyId);
+
+      if (alreadyLiked) {
+        this.userCommentLikes = this.userCommentLikes.filter((id) => id !== replyId);
+        reply.likes = Math.max(0, (reply.likes || 0) - 1);
+        reply.likedByUser = false;
+      } else {
+        this.userCommentLikes.push(replyId);
+        reply.likes = (reply.likes || 0) + 1;
+        reply.likedByUser = true;
+      }
+
+      this.saveUserCommentLikes();
+      this.saveComments();
+      this.renderComments();
+
+      if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !parentId.startsWith('comm-')) {
+        try {
+          if (typeof window.FirebaseCommentsBridge.updateReplies === 'function') {
+            await window.FirebaseCommentsBridge.updateReplies(parentId, comment.replies);
+          }
+        } catch (err) {
+          console.warn('Error actualizando like de respuesta en Firebase:', err);
+        }
+      }
+    }
+
+    async deleteReply(parentId, replyId) {
+      if (this.adminRole !== 'creator') return;
+
+      const comment = this.comments.find((c) => c.id === parentId);
+      if (!comment || !Array.isArray(comment.replies)) return;
+
+      const repIndex = comment.replies.findIndex((r) => r.id === replyId);
+      if (repIndex === -1) return;
+
+      comment.replies.splice(repIndex, 1);
+      this.sound.playPop();
+      this.saveComments();
+      this.renderComments();
+
+      if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !parentId.startsWith('comm-')) {
+        try {
+          if (typeof window.FirebaseCommentsBridge.updateReplies === 'function') {
+            await window.FirebaseCommentsBridge.updateReplies(parentId, comment.replies);
+          }
+        } catch (err) {
+          console.warn('Error eliminando respuesta en Firebase:', err);
+        }
+      }
     }
 
     async deleteComment(commId) {
-      if (this.adminRole !== 'creator' && this.adminRole !== 'co-creator') {
-        this.showToast('No tienes permisos de administrador', 'error');
+      if (this.adminRole !== 'creator') {
         return;
       }
 
@@ -2704,38 +3473,12 @@
     }
 
     /* ------------------------------------------------------------------------
-       Toast Notification System
+       Toast Notification System (Disabled per user request)
        ------------------------------------------------------------------------ */
 
     showToast(message, type = 'success') {
-      if (!this.toastContainer) return;
-
-      const toast = document.createElement('div');
-      toast.className = `toast-item toast-${type}`;
-
-      let icon = '<i class="fa-solid fa-circle-check"></i>';
-      if (type === 'error') icon = '<i class="fa-solid fa-triangle-exclamation"></i>';
-      if (type === 'info') icon = '<i class="fa-solid fa-circle-info"></i>';
-
-      toast.innerHTML = `
-        <div class="toast-icon">${icon}</div>
-        <div class="toast-msg">${message}</div>
-      `;
-
-      this.toastContainer.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.add('toast-show');
-      }, 20);
-
-      setTimeout(() => {
-        toast.classList.remove('toast-show');
-        setTimeout(() => {
-          if (toast.parentNode) {
-            toast.parentNode.removeChild(toast);
-          }
-        }, 300);
-      }, 3200);
+      // Disabled: user actions execute silently without floating text popups
+      return;
     }
 
     escapeHTML(str) {
