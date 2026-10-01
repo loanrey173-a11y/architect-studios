@@ -370,6 +370,12 @@ body {
   color: #e1306c;
 }
 
+.drawer-icon-box.item-tutorials {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(14, 165, 233, 0.35));
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
 .drawer-item-btn:hover .drawer-icon-box {
   transform: scale(1.1);
 }
@@ -1662,6 +1668,69 @@ body {
   transform: scale(1.25);
 }
 
+.whatsapp-community-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all var(--tr-bounce);
+  box-shadow: var(--shadow-sm);
+}
+
+.whatsapp-community-badge:hover {
+  border-color: #25d366;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+
+.whatsapp-text-box {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.whatsapp-platform {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #25d366;
+  font-weight: 800;
+}
+
+.whatsapp-title {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.whatsapp-arrow {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  transition: transform var(--tr-fast);
+}
+
+.whatsapp-community-badge:hover .whatsapp-arrow {
+  transform: translate(2px, -2px);
+  color: #25d366;
+}
+
 .footer-legal-disclaimer {
   font-size: 0.75rem;
   color: var(--text-dim);
@@ -2347,25 +2416,38 @@ body {
   }
 }
 
-/* Responsive */
+/* Responsive Base Overrides */
 @media (max-width: 1024px) {
   .hero-title {
-    font-size: 2.3rem;
+    font-size: 2.2rem;
   }
   .stage-image-container img {
-    max-height: 400px;
+    max-height: 380px;
+  }
+  .cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.4rem;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+}
+
+@media (max-width: 620px) {
   .header-container {
     flex-wrap: wrap;
+    padding: 0.65rem 0.9rem;
   }
   .hero-title {
-    font-size: 1.85rem;
+    font-size: 1.65rem;
   }
   .cards-grid {
     grid-template-columns: 1fr;
+    gap: 1.1rem;
   }
   .header-actions .btn-text {
     display: none;
@@ -2721,6 +2803,148 @@ body {
 
 .btn-donation-ok:active {
   transform: translateY(0);
+}
+
+/* Developer Tutorials In-Progress Notice Modal */
+.modal-tutorials-dialog {
+  max-width: 440px;
+  width: 90vw;
+  text-align: center;
+  padding: 2.2rem 1.8rem 1.8rem;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(56, 189, 248, 0.2);
+  position: relative;
+}
+
+.tutorials-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.tutorials-icon-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.2));
+  border: 2px solid rgba(56, 189, 248, 0.45);
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.3);
+  margin-top: 0.2rem;
+}
+
+.tutorials-main-icon {
+  font-size: 2rem;
+  color: #38bdf8;
+}
+
+.tutorials-icon-sparkle {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 1.15rem;
+}
+
+.tutorials-title {
+  font-family: var(--font-main);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.tutorials-message-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.tutorials-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-full);
+}
+
+.tutorials-notice-text {
+  font-size: 0.96rem;
+  color: var(--text-main);
+  line-height: 1.55;
+  margin: 0;
+  font-style: italic;
+  text-align: center;
+}
+
+.tutorials-actions-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  margin-top: 0.3rem;
+}
+
+.btn-tutorials-contact {
+  width: 100%;
+  padding: 0.75rem 1.2rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(225, 48, 108, 0.35);
+  transition: all var(--tr-bounce);
+}
+
+.btn-tutorials-contact:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(225, 48, 108, 0.55);
+}
+
+.btn-tutorials-ok {
+  width: 100%;
+  padding: 0.75rem 1.2rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  transition: all var(--tr-fast);
+}
+
+.btn-tutorials-ok:hover {
+  background: var(--bg-card-hover);
+  border-color: #38bdf8;
+  color: #38bdf8;
 }
 
 .modal-auth-dialog {
@@ -4720,4 +4944,472 @@ body {
     padding: 1.5rem 1.1rem;
   }
 }
+
+/* ==========================================================================
+   Instagram "Cómo hacerlo" Link & Tutorial Modal
+   ========================================================================== */
+
+.form-group-instagram {
+  position: relative;
+}
+
+.how-to-link-btn {
+  background: transparent;
+  border: none;
+  color: #f43f5e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.4rem;
+  margin-top: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--tr-fast);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  width: fit-content;
+}
+
+.how-to-link-btn:hover {
+  color: #fb7185;
+  background: rgba(244, 63, 94, 0.12);
+  transform: translateX(2px);
+}
+
+.howto-ig-modal-backdrop {
+  z-index: 10500 !important;
+}
+
+.modal-howto-ig {
+  max-width: 580px;
+  width: 92vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(225, 48, 108, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(225, 48, 108, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  position: relative;
+}
+
+.modal-howto-ig::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.howto-ig-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.howto-ig-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(225, 48, 108, 0.35);
+}
+
+.howto-ig-title {
+  font-family: var(--font-main);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+  line-height: 1.25;
+}
+
+.howto-ig-subtitle {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.howto-ig-instruction-box {
+  background: rgba(225, 48, 108, 0.08);
+  border: 1px solid rgba(225, 48, 108, 0.25);
+  border-left: 4px solid #e1306c;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.howto-instruction-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #f43f5e;
+  margin-bottom: 0.4rem;
+}
+
+.howto-instruction-text {
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--text-main);
+  font-style: italic;
+  margin: 0;
+}
+
+.howto-ig-steps-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.howto-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.95rem;
+  transition: all var(--tr-fast);
+}
+
+.howto-step-item:hover {
+  border-color: rgba(225, 48, 108, 0.4);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.howto-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #e1306c, #f77737);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.howto-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.howto-step-body .step-title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.howto-step-body .step-title i {
+  color: #e1306c;
+  font-size: 0.8rem;
+}
+
+.howto-step-body .step-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.howto-step-body .step-desc code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  color: #38bdf8;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.howto-ig-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-howto-close {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.4rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(225, 48, 108, 0.35);
+  transition: all var(--tr-bounce);
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-howto-close:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(225, 48, 108, 0.55);
+}
+
+@media (max-width: 640px) {
+  .modal-howto-ig {
+    padding: 1.4rem 1.1rem;
+  }
+  .howto-ig-header {
+    gap: 0.75rem;
+  }
+  .howto-ig-icon-badge {
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+  }
+  .howto-ig-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* ==========================================================================
+   Complete Universal Responsive Design System (Mobile, Tablet, Desktop, Ultra-Wide)
+   ========================================================================== */
+
+/* Universal viewport & smooth touch scroll */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Safe areas for iPhone dynamic island, notches, and home indicator */
+.main-header {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+.main-footer {
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+.side-drawer {
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+}
+
+/* Horizontal chip filters on touch screens */
+.filter-chips-wrapper,
+.categories-chips-scroll {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0.2rem 0;
+}
+
+.filter-chips-wrapper::-webkit-scrollbar,
+.categories-chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ultra-Wide Monitors (> 1440px) */
+@media (min-width: 1441px) {
+  .main-container,
+  .gallery-section,
+  .footer-container {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.8rem;
+  }
+}
+
+/* Standard Desktops & Laptops (1025px - 1440px) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Tablets in Portrait / Large Foldables (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-section {
+    padding: 3rem 1.5rem 2rem;
+  }
+  .hero-title {
+    font-size: 2.1rem;
+  }
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.35rem;
+  }
+  .modal-dialog.modal-detail {
+    max-width: 92vw;
+    width: 92vw;
+  }
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+  .stage-image-container {
+    max-height: 340px;
+  }
+  .stage-image-container img {
+    max-height: 340px;
+  }
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.8rem;
+  }
+  .footer-left {
+    max-width: 100%;
+  }
+  .footer-brand {
+    justify-content: center;
+  }
+}
+
+/* Mobile Devices & Small Tablets (<= 767px) */
+@media (max-width: 767px) {
+  .header-brand h1,
+  .header-brand h2,
+  .header-brand .brand-title {
+    font-size: 1.05rem;
+  }
+  .brand-tagline {
+    display: none;
+  }
+  .hero-section {
+    padding: 2rem 1rem 1.6rem;
+  }
+  .hero-title {
+    font-size: 1.55rem;
+    line-height: 1.25;
+  }
+  .search-box-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+  .search-input-group input {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+  }
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  .house-card {
+    border-radius: var(--radius-md);
+  }
+  .card-img-wrapper {
+    aspect-ratio: 16 / 10;
+  }
+  .card-body {
+    padding: 1rem 0.9rem;
+  }
+  
+  /* All Modal Windows on Mobile */
+  .modal-dialog {
+    width: 94vw !important;
+    max-width: 94vw !important;
+    max-height: 92dvh !important;
+    margin: 10px auto !important;
+    padding: 1.4rem 1.1rem !important;
+    border-radius: var(--radius-lg) !important;
+  }
+  .modal-close-btn {
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
+  }
+
+  /* Form Elements Touch Friendly */
+  .form-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem !important;
+  }
+  input, select, textarea, button {
+    min-height: 44px;
+  }
+
+  /* Footer & Badges */
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  .footer-left {
+    max-width: 100%;
+  }
+  .footer-brand {
+    justify-content: center;
+  }
+  .footer-badges-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+  .whatsapp-community-badge,
+  .instagram-dev-badge,
+  .paypal-donation-badge {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.65rem 1rem;
+  }
+  .footer-stats {
+    width: 100%;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+}
+
+/* Extra Small Phones (<= 380px) */
+@media (max-width: 380px) {
+  .hero-title {
+    font-size: 1.35rem;
+  }
+  .btn-submit-idea {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.75rem;
+  }
+  .card-footer-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
 

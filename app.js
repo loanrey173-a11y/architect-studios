@@ -1170,6 +1170,12 @@
       this.closeDonationModalBtn = document.getElementById('closeDonationModalBtn');
       this.donationModalOkBtn = document.getElementById('donationModalOkBtn');
 
+      // Tutorials Notice Modal & Drawer Button
+      this.drawerTutorialsBtn = document.getElementById('drawerTutorialsBtn');
+      this.tutorialsNoticeModal = document.getElementById('tutorialsNoticeModal');
+      this.closeTutorialsModalBtn = document.getElementById('closeTutorialsModalBtn');
+      this.tutorialsModalOkBtn = document.getElementById('tutorialsModalOkBtn');
+
       // Auth Decoy Modal
       this.logoGroup = document.querySelector('.logo-group');
       this.authModal = document.getElementById('authModal');
@@ -1196,6 +1202,10 @@
       this.ideaImageLink = document.getElementById('ideaImageLink');
       this.ideaDescription = document.getElementById('ideaDescription');
       this.ideaCharCounter = document.getElementById('ideaCharCounter');
+      this.openHowToIgModalBtn = document.getElementById('openHowToIgModalBtn');
+      this.howToInstagramModal = document.getElementById('howToInstagramModal');
+      this.closeHowToIgModalBtn = document.getElementById('closeHowToIgModalBtn');
+      this.gotItHowToIgBtn = document.getElementById('gotItHowToIgBtn');
       this.submitIdeaSuccessView = document.getElementById('submitIdeaSuccessView');
       this.copyIdeaMessageBtn = document.getElementById('copyIdeaMessageBtn');
       this.ideaMessagePreviewText = document.getElementById('ideaMessagePreviewText');
@@ -1354,6 +1364,38 @@
         });
       }
 
+      // Tutorials Button & Modal Listeners
+      if (this.drawerTutorialsBtn) {
+        this.drawerTutorialsBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeDrawer();
+          this.openTutorialsModal();
+        });
+      }
+
+      if (this.closeTutorialsModalBtn) {
+        this.closeTutorialsModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeTutorialsModal();
+        });
+      }
+
+      if (this.tutorialsModalOkBtn) {
+        this.tutorialsModalOkBtn.addEventListener('click', () => {
+          this.sound.playSuccess();
+          this.closeTutorialsModal();
+        });
+      }
+
+      if (this.tutorialsNoticeModal) {
+        this.tutorialsNoticeModal.addEventListener('click', (e) => {
+          if (e.target === this.tutorialsNoticeModal) {
+            this.sound.playPop();
+            this.closeTutorialsModal();
+          }
+        });
+      }
+
       // 5. Logo 1-Click Detection (Opens Secret Popup immediately)
       if (this.logoGroup) {
         this.logoGroup.addEventListener('click', () => {
@@ -1463,6 +1505,41 @@
                 this.copyIdeaMessageBtn.innerHTML = origHtml;
               }, 2000);
             });
+          }
+        });
+      }
+
+      // Instagram How-To Guide Modal Listeners
+      if (this.openHowToIgModalBtn) {
+        this.openHowToIgModalBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.sound.playPop();
+          this.openHowToInstagramModal();
+        });
+      }
+
+      if (this.closeHowToIgModalBtn) {
+        this.closeHowToIgModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeHowToInstagramModal();
+        });
+      }
+
+      if (this.gotItHowToIgBtn) {
+        this.gotItHowToIgBtn.addEventListener('click', () => {
+          this.sound.playSuccess();
+          this.closeHowToInstagramModal();
+          if (this.ideaInstagram) {
+            this.ideaInstagram.focus();
+          }
+        });
+      }
+
+      if (this.howToInstagramModal) {
+        this.howToInstagramModal.addEventListener('click', (e) => {
+          if (e.target === this.howToInstagramModal) {
+            this.sound.playPop();
+            this.closeHowToInstagramModal();
           }
         });
       }
@@ -1659,6 +1736,9 @@
           this.closeDrawer();
           this.closeAuthModal();
           this.closeDonationModal();
+          this.closeTutorialsModal();
+          this.closeSubmitIdeaModal();
+          this.closeHowToInstagramModal();
         } else if (this.activeModalHouse && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) {
           this.prevModalImage();
         } else if (this.activeModalHouse && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) {
@@ -2518,6 +2598,26 @@
     }
 
     /* ------------------------------------------------------------------------
+       Tutorials Notice Modal Methods
+       ------------------------------------------------------------------------ */
+
+    openTutorialsModal() {
+      if (this.tutorialsNoticeModal) {
+        this.tutorialsNoticeModal.classList.add('active');
+        this.tutorialsNoticeModal.classList.add('open');
+        this.tutorialsNoticeModal.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    closeTutorialsModal() {
+      if (this.tutorialsNoticeModal) {
+        this.tutorialsNoticeModal.classList.remove('active');
+        this.tutorialsNoticeModal.classList.remove('open');
+        this.tutorialsNoticeModal.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    /* ------------------------------------------------------------------------
        Creator Authentication & Decoy Methods
        ------------------------------------------------------------------------ */
 
@@ -2695,6 +2795,23 @@
         this.submitIdeaModal.classList.remove('open');
         this.submitIdeaModal.setAttribute('aria-hidden', 'true');
       }
+      this.closeHowToInstagramModal();
+    }
+
+    openHowToInstagramModal() {
+      if (this.howToInstagramModal) {
+        this.howToInstagramModal.classList.add('active');
+        this.howToInstagramModal.classList.add('open');
+        this.howToInstagramModal.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    closeHowToInstagramModal() {
+      if (this.howToInstagramModal) {
+        this.howToInstagramModal.classList.remove('active');
+        this.howToInstagramModal.classList.remove('open');
+        this.howToInstagramModal.setAttribute('aria-hidden', 'true');
+      }
     }
 
     async handleFeedbackSubmit() {
@@ -2789,8 +2906,17 @@ ${mensaje}
     async handleSubmitIdeaForm() {
       const titulo = this.ideaTitle ? this.ideaTitle.value.trim() : '';
       const creador = this.ideaCreator ? this.ideaCreator.value.trim() : '';
-      const rawIg = this.ideaInstagram ? this.ideaInstagram.value.trim().replace(/^@+/, '') : '';
-      const instagram = rawIg ? `@${rawIg}` : 'No especificado';
+      const rawIg = this.ideaInstagram ? this.ideaInstagram.value.trim() : '';
+      let instagram = 'No especificado';
+      if (rawIg) {
+        if (/^https?:\/\//i.test(rawIg)) {
+          instagram = rawIg;
+        } else if (rawIg.includes('instagram.com/')) {
+          instagram = `https://${rawIg.replace(/^https?:\/\//i, '')}`;
+        } else {
+          instagram = `@${rawIg.replace(/^@+/, '')}`;
+        }
+      }
       const categoria = this.ideaCategory ? this.ideaCategory.value : 'General';
       const version = this.ideaVersion ? this.ideaVersion.value : 'Java Edition';
       const shaders = this.ideaShaders ? (this.ideaShaders.value.trim() || 'Vanilla / Predeterminado') : 'Vanilla';

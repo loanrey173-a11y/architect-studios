@@ -2,8 +2,11 @@
 <html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Casas de Minecraft & Diseños Épicos - Galería de Construcciones</title>
   <meta name="description" content="Galería interactiva para explorar construcciones, mansiones y casas de Minecraft con planos, listas de materiales y comentarios en tiempo real.">
   
@@ -16,7 +19,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./style.css?v=40">
+  <link rel="stylesheet" href="./style.css?v=50">
 
   <!-- Critical Preloader CSS (Instant 0ms render for weak connections / slow network) -->
   <style>
@@ -301,6 +304,18 @@
           </button>
         </li>
         <li>
+          <button type="button" class="drawer-item-btn" id="drawerTutorialsBtn" title="Tutoriales de construcción">
+            <div class="drawer-icon-box item-tutorials">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="drawer-item-text">
+              <span class="drawer-item-title">Tutoriales</span>
+              <span class="drawer-item-desc">Aprende técnicas y pasos de construcción</span>
+            </div>
+            <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+          </button>
+        </li>
+        <li>
           <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="drawer-item-btn" id="drawerSendBuildBtn" title="Enviar tu construcción a @loanrey17 en Instagram">
             <div class="drawer-icon-box item-instagram">
               <i class="fa-brands fa-instagram"></i>
@@ -518,6 +533,17 @@
           <i class="fa-solid fa-hammer"></i> Créditos & Apoyo:
         </p>
         <div class="footer-badges-group">
+          <a href="https://chat.whatsapp.com/L2rtYwkSrnI55ZenYPKurO?s=cl&p=a&mlu=0" target="_blank" rel="noopener noreferrer" class="whatsapp-community-badge" title="Únete a la comunidad de arquitectos en WhatsApp">
+            <div class="whatsapp-icon-box">
+              <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <div class="whatsapp-text-box">
+              <span class="whatsapp-platform"><i class="fa-solid fa-users" style="color: #25d366; font-size: 0.65rem;"></i> Comunidad WhatsApp</span>
+              <span class="whatsapp-title">Únete a la comunidad de arquitectos</span>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square whatsapp-arrow"></i>
+          </a>
+
           <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="instagram-dev-badge" title="Instagram del Desarrollador loanrey17">
             <div class="insta-icon-box">
               <i class="fa-brands fa-instagram"></i>
@@ -726,6 +752,42 @@
     </div>
   </div>
 
+  <!-- Tutorials In-Progress Notice Modal -->
+  <div class="modal-backdrop tutorials-modal-backdrop" id="tutorialsNoticeModal" aria-hidden="true">
+    <div class="modal-dialog modal-tutorials-dialog">
+      <button class="modal-close-btn" id="closeTutorialsModalBtn" aria-label="Cerrar ventana de tutoriales">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="tutorials-modal-content">
+        <div class="tutorials-icon-wrap">
+          <i class="fa-solid fa-person-digging tutorials-main-icon"></i>
+          <span class="tutorials-icon-sparkle">🎬</span>
+        </div>
+
+        <h3 class="tutorials-title">Sección de Tutoriales</h3>
+        
+        <div class="tutorials-message-box">
+          <div class="tutorials-badge-pill">
+            <i class="fa-solid fa-screwdriver-wrench"></i> En Desarrollo
+          </div>
+          <p class="tutorials-notice-text">
+            estamos trabajando en ello si tienes videos o tutoriales escribele al desarrollador para agregar esa funcion
+          </p>
+        </div>
+
+        <div class="tutorials-actions-group">
+          <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="btn-tutorials-contact" id="contactDevTutorialsBtn">
+            <i class="fa-brands fa-instagram"></i> Escribir al Desarrollador (@loanrey17)
+          </a>
+          <button type="button" class="btn-tutorials-ok" id="tutorialsModalOkBtn">
+            <i class="fa-solid fa-check"></i> Entendido
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Creator Auth / Security Decoy Modal (Easter Egg) -->
   <div class="modal-backdrop auth-modal-backdrop" id="authModal" aria-hidden="true">
     <div class="modal-dialog modal-auth-dialog">
@@ -810,12 +872,15 @@
           </div>
 
           <div class="form-grid-2">
-            <div class="form-group">
+            <div class="form-group form-group-instagram">
               <label for="ideaInstagram"><i class="fa-brands fa-instagram"></i> Tu Instagram (Opcional)</label>
               <div class="input-with-prefix">
-                <span class="input-prefix">@</span>
-                <input type="text" id="ideaInstagram" placeholder="tu_usuario_de_instagram" maxlength="60">
+                <span class="input-prefix"><i class="fa-brands fa-instagram"></i></span>
+                <input type="text" id="ideaInstagram" placeholder="ingresa la direccion de ti instagram" maxlength="150">
               </div>
+              <button type="button" class="how-to-link-btn" id="openHowToIgModalBtn" title="Ver instrucciones para copiar el link">
+                <i class="fa-solid fa-circle-question"></i> (como hacerlo)
+              </button>
             </div>
 
             <div class="form-group">
@@ -1003,6 +1068,76 @@
     </div>
   </div>
 
+  <!-- Modal Tutorial: Cómo obtener el enlace de Instagram -->
+  <div class="modal-backdrop howto-ig-modal-backdrop" id="howToInstagramModal" aria-hidden="true">
+    <div class="modal-dialog modal-howto-ig">
+      <button class="modal-close-btn" id="closeHowToIgModalBtn" aria-label="Cerrar guía">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="howto-ig-header">
+        <div class="howto-ig-icon-badge">
+          <i class="fa-brands fa-instagram"></i>
+        </div>
+        <div>
+          <h3 class="howto-ig-title">¿Cómo obtener el enlace de tu Instagram?</h3>
+          <p class="howto-ig-subtitle">Sigue estos pasos para obtener el link de tu perfil fácilmente:</p>
+        </div>
+      </div>
+
+      <!-- User's exact requested instruction text formatted prominently -->
+      <div class="howto-ig-instruction-box">
+        <div class="howto-instruction-tag">
+          <i class="fa-solid fa-circle-info"></i> Paso a paso
+        </div>
+        <p class="howto-instruction-text">
+          entra a tu navegador web (safari, google chrome, brave etc. ) y escribe instagram a continuacion ingresa tus datos para acceder a tu perfil y despues de ingresar tus datos copia la URL de tu navegador ubicado en la parte de arriba y pegalo (donde pide tu usuario)
+        </p>
+      </div>
+
+      <!-- Step by step visual cards -->
+      <div class="howto-ig-steps-grid">
+        <div class="howto-step-item">
+          <div class="howto-step-num">1</div>
+          <div class="howto-step-body">
+            <span class="step-title"><i class="fa-solid fa-compass"></i> 1. Abre tu navegador web</span>
+            <span class="step-desc">Entra a Safari, Google Chrome, Brave u otro navegador y busca <code>instagram.com</code>.</span>
+          </div>
+        </div>
+
+        <div class="howto-step-item">
+          <div class="howto-step-num">2</div>
+          <div class="howto-step-body">
+            <span class="step-title"><i class="fa-solid fa-arrow-right-to-bracket"></i> 2. Inicia sesión</span>
+            <span class="step-desc">Ingresa tus datos para acceder y ve a la sección de tu <strong>perfil</strong>.</span>
+          </div>
+        </div>
+
+        <div class="howto-step-item">
+          <div class="howto-step-num">3</div>
+          <div class="howto-step-body">
+            <span class="step-title"><i class="fa-solid fa-link"></i> 3. Copia la URL superior</span>
+            <span class="step-desc">Copia la dirección web que aparece en la barra superior (ej: <code>https://instagram.com/tu_usuario/</code>).</span>
+          </div>
+        </div>
+
+        <div class="howto-step-item">
+          <div class="howto-step-num">4</div>
+          <div class="howto-step-body">
+            <span class="step-title"><i class="fa-solid fa-paste"></i> 4. Pégala en el campo</span>
+            <span class="step-desc">Pégala en la casilla donde dice <em>"ingresa la direccion de ti instagram"</em>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="howto-ig-footer">
+        <button type="button" class="btn-howto-close" id="gotItHowToIgBtn">
+          <i class="fa-solid fa-circle-check"></i> ¡Entendido, volver a la postulación!
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="assertive"></div>
 
@@ -1142,6 +1277,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=40"></script>
+  <script src="./app.js?v=50"></script>
 </body>
 </html>
