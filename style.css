@@ -1991,29 +1991,35 @@ body {
 .stage-thumb-btn {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid transparent;
-  padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.65rem 0.3rem 0.35rem;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
   cursor: pointer;
   transition: all var(--tr-fast);
   white-space: nowrap;
   flex-shrink: 0;
+  max-width: 180px;
 }
 
 .stage-thumb-btn img {
-  width: 42px;
-  height: 28px;
+  width: 44px;
+  height: 30px;
   object-fit: cover;
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
 }
 
 .stage-thumb-btn .thumb-lbl {
   font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
 }
 
 .stage-thumb-btn:hover {
@@ -4065,61 +4071,147 @@ body {
     font-size: 0.78rem;
   }
   .modal-dialog.modal-detail {
-    max-width: 95vw;
-    width: 95vw;
-    margin: 10px auto;
-    max-height: 92vh;
-    border-radius: var(--radius-lg);
+    max-width: 95vw !important;
+    width: 95vw !important;
+    margin: 10px auto !important;
+    max-height: 94dvh !important;
+    padding: 0 !important;
+    border-radius: var(--radius-lg) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   .detail-layout {
-    display: flex;
-    flex-direction: column;
-    grid-template-columns: 1fr;
-    overflow-y: auto;
-    max-height: calc(92vh - 10px);
-    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    overflow-y: auto !important;
+    max-height: 94dvh !important;
+    width: 100% !important;
+    -webkit-overflow-scrolling: touch;
   }
   .detail-image-stage {
-    width: 100%;
-    max-width: 100%;
-    flex: 0 0 auto;
-    border-right: none;
-    border-bottom: 1px solid var(--border-subtle);
-    min-height: auto;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    min-height: auto !important;
+    position: relative !important;
+    background: #05080e !important;
   }
   .stage-image-container {
-    max-height: 240px;
-    height: 240px;
-    width: 100%;
+    height: 240px !important;
+    max-height: 280px !important;
+    min-height: 200px !important;
+    width: 100% !important;
+    background: #05080e !important;
   }
   .stage-image-container img {
-    max-height: 240px;
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
+    height: 100% !important;
+    width: 100% !important;
+    max-height: 280px !important;
+    object-fit: cover !important;
   }
   .detail-info-panel {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    flex: 1 0 auto;
-    overflow-y: visible;
-    padding: 1.25rem 1rem 1.75rem;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex: 1 0 auto !important;
+    overflow-y: visible !important;
+    padding: 1.2rem 1.1rem 2rem !important;
+    background: var(--bg-secondary) !important;
   }
   .stage-nav-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 0.9rem;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 0.9rem !important;
   }
-  .stage-thumbnails-container {
-    padding: 0.4rem 0.2rem;
-    gap: 0.4rem;
-    overflow-x: auto;
+  .stage-thumbnails-row {
+    padding: 0.45rem 0.65rem !important;
+    gap: 0.45rem !important;
+    overflow-x: auto !important;
+    background: rgba(6, 9, 14, 0.96) !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: flex !important;
+    align-items: center !important;
+    scrollbar-width: none !important;
+  }
+  .stage-thumbnails-row::-webkit-scrollbar {
+    display: none !important;
   }
   .stage-thumb-btn {
-    width: 58px;
-    height: 40px;
-    min-width: 58px;
+    width: auto !important;
+    min-width: 52px !important;
+    height: 38px !important;
+    padding: 2px !important;
+    border-radius: 8px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+  .stage-thumb-btn img {
+    width: 48px !important;
+    height: 32px !important;
+    object-fit: cover !important;
+    border-radius: 5px !important;
+    border: none !important;
+  }
+  .stage-thumb-btn .thumb-lbl {
+    display: none !important;
+  }
+  .image-toolbar {
+    padding: 0.45rem 0.65rem !important;
+    gap: 0.4rem !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    justify-content: flex-start !important;
+    scrollbar-width: none !important;
+  }
+  .image-toolbar::-webkit-scrollbar {
+    display: none !important;
+  }
+  .zoom-controls {
+    display: flex !important;
+    gap: 0.25rem !important;
+    flex-shrink: 0 !important;
+  }
+  .tool-btn {
+    padding: 0.35rem 0.55rem !important;
+    font-size: 0.78rem !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    border-radius: 8px !important;
+  }
+  .modal-close-btn.detail-close {
+    top: 0.65rem !important;
+    right: 0.65rem !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1rem !important;
+    background: rgba(10, 15, 26, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+    z-index: 35 !important;
+  }
+  .detail-main-title {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.35rem !important;
+  }
+  .detail-tabs-nav {
+    gap: 0.4rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .dtab-btn {
+    font-size: 0.88rem !important;
+    padding: 0.55rem 0.8rem !important;
+    flex: 1 !important;
+    justify-content: center !important;
+    text-align: center !important;
   }
   .drawer-feat-thumb-wrap {
     width: 46px;
@@ -4138,14 +4230,8 @@ body {
   }
   .card-image-wrap {
     aspect-ratio: 16 / 10;
-    max-height: 200px;
-  }
-  .stage-image-container {
-    max-height: 200px;
-    height: 200px;
-  }
-  .stage-image-container img {
-    max-height: 200px;
+    max-height: 220px;
+    min-height: 180px;
   }
   .category-tabs {
     gap: 0.35rem;
@@ -5392,6 +5478,14 @@ html, body {
     margin: 10px auto !important;
     padding: 1.4rem 1.1rem !important;
     border-radius: var(--radius-lg) !important;
+  }
+  .modal-dialog.modal-detail {
+    padding: 0 !important;
+    width: 95vw !important;
+    max-width: 560px !important;
+    max-height: 94dvh !important;
+    border-radius: var(--radius-lg) !important;
+    overflow: hidden !important;
   }
   .modal-close-btn {
     top: 0.75rem;
