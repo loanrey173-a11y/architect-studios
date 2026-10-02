@@ -76,9 +76,9 @@
 
   const STORAGE_KEYS = {
     HOUSES: 'mc_architect_houses_v20',
-    COMMENTS: 'mc_comments_v12',
-    DELETED_COMMENTS: 'mc_deleted_comments_v12',
-    USER_COMMENT_LIKES: 'mc_user_comm_likes_v12',
+    COMMENTS: 'mc_comments_v15',
+    DELETED_COMMENTS: 'mc_deleted_comments_v15',
+    USER_COMMENT_LIKES: 'mc_user_comm_likes_v15',
     THEME: 'mc_theme_v11',
     SOUND: 'mc_sound_v11',
     FAVORITES: 'mc_favs_v11',
@@ -308,42 +308,7 @@
     }
   ];
 
-  const INITIAL_COMMENTS = [
-    {
-      id: 'comm-1',
-      author: 'Alex_Builder',
-      houseRef: 'Villa Costera Moderna',
-      text: '¡Los ventanales panorámicos y la piscina con linternas de mar quedan increíbles en supervivencia! Muy fácil de construir y súper estética.',
-      date: 'Hace 1 hora',
-      likes: 3,
-      likedByUser: false,
-      timestamp: Date.now() - 3600000,
-      replies: [
-        {
-          id: 'rep-1-1',
-          author: 'Josue',
-          role: 'creator',
-          replyTo: 'Alex_Builder',
-          text: '¡Muchas gracias Alex! Es uno de los diseños más pedidos para supervivencia.',
-          date: 'Hace 45 min',
-          likes: 2,
-          likedByUser: false,
-          timestamp: Date.now() - 2700000
-        }
-      ]
-    },
-    {
-      id: 'comm-2',
-      author: 'CraftMaster99',
-      houseRef: 'Mansión de Playa',
-      text: 'La combinación de pilotes de abeto y hormigón blanco es de las mejores para biomas de playa. ¡Excelente galería!',
-      date: 'Hace 30 minutos',
-      likes: 5,
-      likedByUser: false,
-      timestamp: Date.now() - 1800000,
-      replies: []
-    }
-  ];
+  const INITIAL_COMMENTS = [];
 
   /* ==========================================================================
      2. SOUND FX ENGINE (Web Audio API Synthesizer)
@@ -831,25 +796,14 @@
         const deleted = this.loadDeletedComments();
         if (saved) {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed
-              .filter((c) => !deleted.includes(c.id))
-              .map((c) => ({
-                ...c,
-                replies: Array.isArray(c.replies) ? c.replies : []
-              }));
+          if (Array.isArray(parsed)) {
+            return parsed.filter((c) => !deleted.includes(c.id));
           }
         }
       } catch (e) {
         console.warn('Error reading stored comments:', e);
       }
-      const deleted = this.loadDeletedComments();
-      return JSON.parse(JSON.stringify(INITIAL_COMMENTS))
-        .filter((c) => !deleted.includes(c.id))
-        .map((c) => ({
-          ...c,
-          replies: Array.isArray(c.replies) ? c.replies : []
-        }));
+      return [];
     }
 
     saveComments() {
@@ -956,23 +910,33 @@
               const date = this.formatCommentDate(data.fecha || data.createdAtMs);
               const timestamp = (data.fecha && data.fecha.seconds) ? data.fecha.seconds * 1000 : (data.createdAtMs || (data.timestamp || Date.now()));
 
+              // If legacy mock comment was in Firestore, delete it from Firestore
+              if (doc.id === 'comm-1' || doc.id === 'comm-2' || (author && (author.toLowerCase().includes('alex_builder') || author.toLowerCase().includes('craftmaster')))) {
+                if (window.FirebaseCommentsBridge && typeof window.FirebaseCommentsBridge.deleteComment === 'function') {
+                  window.FirebaseCommentsBridge.deleteComment(doc.id).catch(() => {});
+                }
+                return;
+              }
+
               const rawReplies = Array.isArray(data.replies) ? data.replies : [];
-              const replies = rawReplies.map((r) => {
-                const rAuthor = r.author || r.autor || 'Anónimo';
-                const rRole = r.role === 'creator' || (rAuthor.toLowerCase() === 'josue' || rAuthor.toLowerCase() === 'loanrey17') ? 'creator' : null;
-                const rId = r.id || ('rep-' + Math.random().toString(36).substr(2, 9));
-                return {
-                  id: rId,
-                  author: rAuthor,
-                  text: r.text || r.texto || '',
-                  replyTo: r.replyTo || null,
-                  role: rRole,
-                  likes: typeof r.likes === 'number' ? r.likes : 0,
-                  likedByUser: this.userCommentLikes.includes(rId),
-                  date: this.formatCommentDate(r.fecha || r.createdAtMs || r.timestamp),
-                  timestamp: (r.fecha && r.fecha.seconds) ? r.fecha.seconds * 1000 : (r.createdAtMs || (r.timestamp || Date.now()))
-                };
-              });
+              const replies = rawReplies
+                .filter((r) => r.id !== 'rep-1-1')
+                .map((r) => {
+                  const rAuthor = r.author || r.autor || 'Anónimo';
+                  const rRole = r.role === 'creator' || (rAuthor.toLowerCase() === 'josue' || rAuthor.toLowerCase() === 'loanrey17') ? 'creator' : null;
+                  const rId = r.id || ('rep-' + Math.random().toString(36).substr(2, 9));
+                  return {
+                    id: rId,
+                    author: rAuthor,
+                    text: r.text || r.texto || '',
+                    replyTo: r.replyTo || null,
+                    role: rRole,
+                    likes: typeof r.likes === 'number' ? r.likes : 0,
+                    likedByUser: this.userCommentLikes.includes(rId),
+                    date: this.formatCommentDate(r.fecha || r.createdAtMs || r.timestamp),
+                    timestamp: (r.fecha && r.fecha.seconds) ? r.fecha.seconds * 1000 : (r.createdAtMs || (r.timestamp || Date.now()))
+                  };
+                });
 
               loaded.push({
                 id: doc.id,
@@ -989,8 +953,6 @@
             });
 
             const deletedIds = this.loadDeletedComments();
-
-            // Build a unified dictionary merging Firestore comments with pre-existing / local comments so none disappear
             const commentMap = new Map();
 
             // A. Insert all Firestore comments (not marked as deleted)
@@ -1000,7 +962,7 @@
               }
             });
 
-            // B. Preserve any local in-memory comments (including optimistic submissions and initial comments) that haven't been deleted
+            // B. Preserve any local in-memory comments that haven't been deleted
             this.comments.forEach((comm) => {
               if (!commentMap.has(comm.id) && !deletedIds.includes(comm.id)) {
                 commentMap.set(comm.id, comm);
@@ -3124,6 +3086,19 @@ ${mensaje}
 
     renderComments() {
       if (!this.commentsList) return;
+
+      // Unconditionally filter out any mock/test comments from rendering
+      this.comments = (this.comments || []).filter((comm) => {
+        if (!comm) return false;
+        const aut = (comm.author || comm.autor || '').toString().toLowerCase();
+        const txt = (comm.text || comm.texto || '').toString().toLowerCase();
+        return comm.id !== 'comm-1' &&
+               comm.id !== 'comm-2' &&
+               !aut.includes('alex_builder') &&
+               !aut.includes('craftmaster') &&
+               !txt.includes('pilotes') &&
+               !txt.includes('ventanales');
+      });
 
       // Count total main comments + all replies
       let totalCount = 0;

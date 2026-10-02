@@ -4230,46 +4230,91 @@ body {
   100% { transform: translateX(50%); }
 }
 
-/* 3D Rotating Minecraft Block */
+/* 3D Floating Isometric Minecraft Block */
 .preloader-cube-wrap {
-  width: 80px;
-  height: 80px;
+  width: 96px;
+  height: 96px;
   position: relative;
-  margin-bottom: 1.4rem;
-  perspective: 600px;
+  margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.minecraft-3d-block {
-  width: 48px;
-  height: 48px;
+.minecraft-block-floater {
   position: relative;
-  transform-style: preserve-3d;
-  animation: rotateMinecraftBlock 4s infinite linear;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: minecraftBlockHover 2.2s infinite ease-in-out;
 }
 
-@keyframes rotateMinecraftBlock {
-  0% { transform: rotateX(-22deg) rotateY(0deg); }
-  100% { transform: rotateX(-22deg) rotateY(360deg); }
+.preloader-minecraft-cube {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 10px 20px rgba(16, 185, 129, 0.45)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  transform: translateZ(0);
 }
 
-.block-face {
+.preloader-cube-glow {
   position: absolute;
-  width: 48px;
-  height: 48px;
-  box-sizing: border-box;
-  image-rendering: pixelated;
-  border: 1px solid rgba(0, 0, 0, 0.35);
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0) 70%);
+  filter: blur(8px);
+  z-index: -1;
+  animation: preloaderAuraPulse 2.2s infinite ease-in-out;
+  pointer-events: none;
 }
 
-.face-front  { transform: translateZ(24px); background: #557a2b linear-gradient(to bottom, #5b8c32 30%, #795548 30%); box-shadow: inset 0 0 8px rgba(0,0,0,0.3); }
-.face-back   { transform: rotateY(180deg) translateZ(24px); background: #557a2b linear-gradient(to bottom, #5b8c32 30%, #795548 30%); }
-.face-right  { transform: rotateY(90deg) translateZ(24px); background: #476624 linear-gradient(to bottom, #4f7a2b 30%, #6d4c41 30%); }
-.face-left   { transform: rotateY(-90deg) translateZ(24px); background: #476624 linear-gradient(to bottom, #4f7a2b 30%, #6d4c41 30%); }
-.face-top    { transform: rotateX(90deg) translateZ(24px); background: #659a38; box-shadow: inset 0 0 10px rgba(255,255,255,0.25); }
-.face-bottom { transform: rotateX(-90deg) translateZ(24px); background: #5d4037; }
+.preloader-shadow-spot {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 75%);
+  animation: preloaderShadowPulse 2.2s infinite ease-in-out;
+  z-index: 1;
+}
+
+@keyframes minecraftBlockHover {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05) rotate(1.5deg);
+  }
+}
+
+@keyframes preloaderAuraPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes preloaderShadowPulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateX(-50%) scale(0.7);
+    opacity: 0.35;
+  }
+}
 
 .preloader-pulse-ring {
   position: absolute;
