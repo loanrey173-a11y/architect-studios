@@ -20,7 +20,7 @@
   
   <!-- Preload Minecraft Block -->
   <link rel="preload" as="image" href="images/minecraft_block.png">
-  <link rel="stylesheet" href="./style.css?v=56">
+  <link rel="stylesheet" href="./style.css?v=60">
 
   <!-- Critical Preloader CSS (Instant 0ms render for weak connections / slow network) -->
   <style>
@@ -693,16 +693,21 @@
       <div class="detail-layout">
         <!-- Left / Top: Interactive Image Stage -->
         <div class="detail-image-stage">
+          <!-- Full-Bleed Pure Photo Stage (Stretched to top, clean and unobstructed) -->
           <div class="stage-image-container" id="stageImageContainer">
-            <button class="stage-nav-btn prev" id="modalPrevImgBtn" title="Foto anterior (Flecha Izquierda)" aria-label="Foto anterior">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
             <img id="detailModalImg" src="" alt="Vista detallada de la casa">
-            <button class="stage-nav-btn next" id="modalNextImgBtn" title="Foto siguiente (Flecha Derecha)" aria-label="Foto siguiente">
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
             <div class="blueprint-grid-overlay" id="blueprintGridOverlay"></div>
-            <div class="stage-counter-badge" id="modalImgCounter">Foto 1 / 1</div>
+          </div>
+
+          <!-- Bottom Navigation Controls Bar (Below Photo) -->
+          <div class="stage-nav-bottom-bar" id="stageNavBottomBar">
+            <button class="stage-nav-arrow-btn prev" id="modalPrevImgBtn" title="Foto anterior (Flecha Izquierda)" aria-label="Foto anterior">
+              <i class="fa-solid fa-chevron-left"></i> <span>Anterior</span>
+            </button>
+            <div class="stage-counter-badge-inline" id="modalImgCounter">Foto 1 de 1</div>
+            <button class="stage-nav-arrow-btn next" id="modalNextImgBtn" title="Foto siguiente (Flecha Derecha)" aria-label="Foto siguiente">
+              <span>Siguiente</span> <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
 
           <!-- Interactive Multi-Image Thumbnails Gallery -->
@@ -1398,6 +1403,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=65"></script>
+  <script src="./app.js?v=70"></script>
 </body>
 </html>
