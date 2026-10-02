@@ -920,23 +920,27 @@ body {
   box-shadow: var(--shadow-lg), 0 0 25px var(--emerald-glow);
 }
 
-.card-img-wrapper {
+.card-img-wrapper,
+.card-image-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #000;
+  background: #05080e;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
 }
 
 .house-card:hover .card-img {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .card-top-badges {
@@ -2082,12 +2086,13 @@ body {
 }
 
 .detail-info-panel {
-  padding: 2rem;
+  padding: 1.5rem 1.4rem;
   display: flex;
   flex-direction: column;
   background: var(--bg-secondary);
   overflow-y: auto;
   max-height: 100%;
+  gap: 1rem;
 }
 
 .detail-info-panel::-webkit-scrollbar,
@@ -2109,8 +2114,30 @@ body {
   border-radius: var(--radius-full);
 }
 
+/* Distinct Boxed Sections for Detail Modal */
+.detail-info-box {
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 1.25rem 1.35rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  transition: border-color var(--tr-fast);
+}
+
+.detail-info-box:hover {
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+[data-theme="light"] .detail-info-box {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
 .detail-header-card {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0;
 }
 
 .detail-badges-row {
@@ -4103,20 +4130,25 @@ body {
     padding: 0 !important;
   }
   .stage-image-container {
-    height: 360px !important;
-    max-height: 440px !important;
-    min-height: 300px !important;
+    height: auto !important;
+    min-height: 280px !important;
+    max-height: 52vh !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 0 !important;
-    background: #05080e !important;
+    padding: 0.4rem 0 !important;
+    background: #04060a !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   .stage-image-container img {
-    height: 100% !important;
-    width: 100% !important;
-    max-height: 440px !important;
-    object-fit: cover !important;
+    height: auto !important;
+    width: auto !important;
+    max-width: 100% !important;
+    max-height: 50vh !important;
+    object-fit: contain !important;
     display: block !important;
+    margin: 0 auto !important;
   }
   .stage-nav-bottom-bar {
     display: flex !important;

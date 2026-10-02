@@ -20,7 +20,7 @@
   
   <!-- Preload Minecraft Block -->
   <link rel="preload" as="image" href="images/minecraft_block.png">
-  <link rel="stylesheet" href="./style.css?v=60">
+  <link rel="stylesheet" href="./style.css?v=65">
 
   <!-- Critical Preloader CSS (Instant 0ms render for weak connections / slow network) -->
   <style>
@@ -730,10 +730,11 @@
           </div>
         </div>
 
-        <!-- Right / Bottom: Detailed Info & Tabs -->
+        <!-- Right / Bottom: Detailed Info & Tabs (Separated into distinct card boxes) -->
         <div class="detail-info-panel">
           
-          <div class="detail-header-card">
+          <!-- Cuadro 1: Encabezado, Título y Bioma -->
+          <div class="detail-header-card detail-info-box">
             <div class="detail-badges-row">
               <span class="detail-category-badge" id="detailCategoryBadge">🏖️ Playa</span>
               <span class="detail-diff-badge" id="detailDiffBadge">⭐⭐ Intermedia</span>
@@ -742,80 +743,85 @@
             <p id="detailBiome" class="detail-biome-text"><i class="fa-solid fa-map-location-dot"></i> Bioma: <span>Playa</span></p>
           </div>
 
-          <!-- Detail Tabs -->
-          <div class="detail-tabs-nav">
-            <button class="dtab-btn active" data-dtab="overview"><i class="fa-solid fa-circle-info"></i> Resumen</button>
-            <button class="dtab-btn" data-dtab="materials"><i class="fa-solid fa-cubes-stacked"></i> Materiales</button>
-          </div>
-
-          <!-- Tab Content 1: Overview -->
-          <div class="dtab-content active" id="dtab-overview">
-            <div class="overview-desc-box">
-              <h4>Descripción de la Construcción</h4>
-              <p id="detailDescription">Descripción aquí...</p>
+          <!-- Cuadro 2: Pestañas de Contenido (Resumen y Materiales) -->
+          <div class="detail-tabs-section-box detail-info-box">
+            <!-- Detail Tabs -->
+            <div class="detail-tabs-nav">
+              <button class="dtab-btn active" data-dtab="overview"><i class="fa-solid fa-circle-info"></i> Resumen</button>
+              <button class="dtab-btn" data-dtab="materials"><i class="fa-solid fa-cubes-stacked"></i> Materiales</button>
             </div>
 
-            <div class="stats-mini-grid">
-              <div class="mini-stat-card">
-                <i class="fa-solid fa-clock"></i>
-                <div>
-                  <span class="mstat-lbl">Tiempo Aprox.</span>
-                  <span class="mstat-val" id="detailTime">~1.5 Horas</span>
+            <!-- Tab Content 1: Overview -->
+            <div class="dtab-content active" id="dtab-overview">
+              <div class="overview-desc-box">
+                <h4>Descripción de la Construcción</h4>
+                <p id="detailDescription">Descripción aquí...</p>
+              </div>
+
+              <div class="stats-mini-grid">
+                <div class="mini-stat-card">
+                  <i class="fa-solid fa-clock"></i>
+                  <div>
+                    <span class="mstat-lbl">Tiempo Aprox.</span>
+                    <span class="mstat-val" id="detailTime">~1.5 Horas</span>
+                  </div>
+                </div>
+                <div class="mini-stat-card">
+                  <i class="fa-solid fa-lightbulb"></i>
+                  <div>
+                    <span class="mstat-lbl">Iluminación</span>
+                    <span class="mstat-val">Linternas de mar & Faroles</span>
+                  </div>
+                </div>
+                <div class="mini-stat-card">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  <div>
+                    <span class="mstat-lbl">Anti-Mobs</span>
+                    <span class="mstat-val">100% Protegido</span>
+                  </div>
                 </div>
               </div>
-              <div class="mini-stat-card">
-                <i class="fa-solid fa-lightbulb"></i>
-                <div>
-                  <span class="mstat-lbl">Iluminación</span>
-                  <span class="mstat-val">Linternas de mar & Faroles</span>
-                </div>
+            </div>
+
+            <!-- Tab Content 2: Materials Checklist -->
+            <div class="dtab-content" id="dtab-materials">
+              <div class="materials-header-row">
+                <h4>Lista de Bloques Necesarios</h4>
+                <button id="copyMaterialsBtn" class="btn-sm btn-glass">
+                  <i class="fa-solid fa-copy"></i> Copiar Lista
+                </button>
               </div>
-              <div class="mini-stat-card">
-                <i class="fa-solid fa-shield-halved"></i>
-                <div>
-                  <span class="mstat-lbl">Anti-Mobs</span>
-                  <span class="mstat-val">100% Protegido</span>
-                </div>
+              <div class="materials-checklist" id="detailMaterialsList">
+                <!-- Material items injected here -->
               </div>
             </div>
           </div>
 
-          <!-- Tab Content 2: Materials Checklist -->
-          <div class="dtab-content" id="dtab-materials">
-            <div class="materials-header-row">
-              <h4>Lista de Bloques Necesarios</h4>
-              <button id="copyMaterialsBtn" class="btn-sm btn-glass">
-                <i class="fa-solid fa-copy"></i> Copiar Lista
+          <!-- Cuadro 3: Acciones y Creador -->
+          <div class="detail-actions-section-box detail-info-box">
+            <div class="detail-actions-bar">
+              <button id="detailLikeBtn" class="btn-like-big">
+                <i class="fa-solid fa-heart"></i>
+                <span id="detailLikesCount">0</span> Likes
+              </button>
+              <button id="detailShareBtn" class="btn-glass-action">
+                <i class="fa-solid fa-share-nodes"></i> Compartir
               </button>
             </div>
-            <div class="materials-checklist" id="detailMaterialsList">
-              <!-- Material items injected here -->
-            </div>
-          </div>
 
-          <!-- Modal Action Bar -->
-          <div class="detail-actions-bar">
-            <button id="detailLikeBtn" class="btn-like-big">
-              <i class="fa-solid fa-heart"></i>
-              <span id="detailLikesCount">0</span> Likes
-            </button>
-            <button id="detailShareBtn" class="btn-glass-action">
-              <i class="fa-solid fa-share-nodes"></i> Compartir
-            </button>
-          </div>
-
-          <!-- Creator Info (Bottom of Detail Panel) -->
-          <div class="detail-creator-banner" id="detailCreatorBanner">
-            <div class="creator-left-group">
-              <div class="creator-badge-avatar">
-                <i class="fa-solid fa-cube"></i>
+            <!-- Creator Info (Bottom of Detail Panel) -->
+            <div class="detail-creator-banner" id="detailCreatorBanner">
+              <div class="creator-left-group">
+                <div class="creator-badge-avatar">
+                  <i class="fa-solid fa-cube"></i>
+                </div>
+                <div class="creator-text-info">
+                  <span class="creator-role-title">Construido por</span>
+                  <span class="creator-username" id="detailCreatorName">heber jhosue</span>
+                </div>
               </div>
-              <div class="creator-text-info">
-                <span class="creator-role-title">Construido por</span>
-                <span class="creator-username" id="detailCreatorName">heber jhosue</span>
-              </div>
+              <div class="creator-right-group" id="detailCreatorIgWrap"></div>
             </div>
-            <div class="creator-right-group" id="detailCreatorIgWrap"></div>
           </div>
 
         </div>
@@ -1403,6 +1409,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=70"></script>
+  <script src="./app.js?v=75"></script>
 </body>
 </html>
