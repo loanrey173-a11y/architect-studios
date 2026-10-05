@@ -891,13 +891,14 @@ body {
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 1.8rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+  gap: 1.5rem;
+  width: 100%;
   transition: all var(--tr-smooth);
 }
 
 .cards-grid.masonry-mode {
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
 }
 
 .house-card {
@@ -5878,10 +5879,16 @@ body {
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
+  width: 100%;
   -webkit-text-size-adjust: 100%;
+  box-sizing: border-box;
 }
 
-/* Safe areas for iPhone dynamic island, notches, and home indicator */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Safe areas for iPhone Dynamic Island, notches, and home indicator */
 .main-header {
   padding-top: max(0.75rem, env(safe-area-inset-top));
   padding-left: max(1rem, env(safe-area-inset-left));
@@ -5895,31 +5902,17 @@ html, body {
 }
 
 .side-drawer {
-  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-top: max(1.2rem, env(safe-area-inset-top));
   padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
-  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-left: max(1.2rem, env(safe-area-inset-left));
 }
 
-/* Horizontal chip filters on touch screens */
-.filter-chips-wrapper,
-.categories-chips-scroll {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding: 0.2rem 0;
-}
-
-.filter-chips-wrapper::-webkit-scrollbar,
-.categories-chips-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* Ultra-Wide Monitors (> 1440px) */
+/* ==========================================================================
+   1. Ultra-Wide Monitors (> 1440px)
+   ========================================================================== */
 @media (min-width: 1441px) {
-  .main-container,
+  .header-container,
+  .main-layout,
   .gallery-section,
   .footer-container {
     max-width: 1440px;
@@ -5932,7 +5925,9 @@ html, body {
   }
 }
 
-/* Standard Desktops & Laptops (1025px - 1440px) */
+/* ==========================================================================
+   2. Standard Desktops & Laptops (1025px - 1440px)
+   ========================================================================== */
 @media (min-width: 1025px) and (max-width: 1440px) {
   .cards-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -5940,13 +5935,15 @@ html, body {
   }
 }
 
-/* Tablets in Portrait / Large Foldables (768px - 1024px) */
+/* ==========================================================================
+   3. Tablets & Large Foldables (768px - 1024px)
+   ========================================================================== */
 @media (min-width: 768px) and (max-width: 1024px) {
   .hero-section {
     padding: 3rem 1.5rem 2rem;
   }
   .hero-title {
-    font-size: 2.1rem;
+    font-size: clamp(1.8rem, 3.5vw, 2.3rem);
   }
   .cards-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -5955,16 +5952,14 @@ html, body {
   .modal-dialog.modal-detail {
     max-width: 92vw;
     width: 92vw;
+    max-height: 90vh;
   }
   .detail-layout {
     grid-template-columns: 1fr;
   }
   .stage-image-container {
-    max-height: 460px;
-    height: 460px;
-  }
-  .stage-image-container img {
-    max-height: 460px;
+    max-height: 440px;
+    height: 440px;
   }
   .footer-container {
     flex-direction: column;
@@ -5977,45 +5972,154 @@ html, body {
   .footer-brand {
     justify-content: center;
   }
+  .footer-badges-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    gap: 0.85rem;
+  }
 }
 
-/* Mobile Devices & Small Tablets (<= 767px) */
+/* ==========================================================================
+   4. Mobile & Small Tablets (<= 767px)
+   ========================================================================== */
 @media (max-width: 767px) {
-  .header-brand h1,
-  .header-brand h2,
-  .header-brand .brand-title {
-    font-size: 1.05rem;
+  /* Header & Navigation */
+  .main-header {
+    padding: 0.6rem 0.85rem;
   }
-  .brand-tagline {
+  .header-container {
+    gap: 0.4rem;
+  }
+  .header-left-group {
+    gap: 0.5rem;
+  }
+  .hamburger-btn {
+    width: 38px;
+    height: 38px;
+    padding: 6px;
+  }
+  .logo-icon-wrap {
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
+  }
+  .logo-brand {
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+  }
+  .logo-sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+  .header-actions {
+    gap: 0.35rem;
+  }
+  .action-btn {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.78rem;
+  }
+  .action-btn .btn-text {
     display: none;
   }
+  #openCommentsBtn {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  /* Hero Section */
   .hero-section {
-    padding: 2rem 1rem 1.6rem;
+    padding: 2.2rem 1rem 1.6rem;
   }
   .hero-title {
-    font-size: 1.55rem;
+    font-size: clamp(1.45rem, 6vw, 1.95rem);
     line-height: 1.25;
+    margin-bottom: 0.85rem;
   }
   .search-box-wrapper {
     width: 100%;
-    max-width: 100%;
+    margin-top: 1.2rem;
+    gap: 0.75rem;
+  }
+  .search-input-group {
+    padding: 0.3rem 0.4rem 0.3rem 1rem;
   }
   .search-input-group input {
     font-size: 0.9rem;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
   }
+  .search-quick-tags {
+    gap: 0.35rem;
+  }
+  .quick-tag-label {
+    font-size: 0.74rem;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.1rem;
+  }
+  .chip-tag {
+    font-size: 0.75rem;
+    padding: 0.22rem 0.6rem;
+  }
+
+  /* Main Layout & Filter Dashboard */
+  .main-layout {
+    padding: 1rem 0.85rem 3rem;
+  }
+  .filter-dashboard {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+  .category-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.45rem;
+    padding-bottom: 4px;
+    width: 100%;
+  }
+  .category-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 0.8rem;
+    padding: 0.45rem 0.85rem;
+  }
+  .filter-controls-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.6rem;
+  }
+  .select-wrapper {
+    flex: 1;
+  }
+  .select-wrapper select {
+    width: 100%;
+    font-size: 0.82rem;
+    padding: 0.5rem 0.75rem 0.5rem 2rem;
+  }
+
+  /* Cards Grid - 1 Column Fluid Full Width */
   .cards-grid {
-    grid-template-columns: 1fr;
-    gap: 1.35rem;
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
   }
   .house-card {
     border-radius: var(--radius-md);
   }
-  .card-image-wrap,
-  .card-img-wrapper {
+  .card-img-wrapper,
+  .card-image-wrap {
     aspect-ratio: 16 / 10;
-    min-height: 240px;
-    max-height: 300px;
+    min-height: 200px;
+    max-height: 280px;
   }
   .card-img {
     width: 100%;
@@ -6023,10 +6127,149 @@ html, body {
     object-fit: cover;
   }
   .card-body {
-    padding: 1.1rem 1rem;
+    padding: 1rem 0.9rem;
   }
-  
-  /* All Modal Windows on Mobile */
+  .card-title {
+    font-size: 1.15rem;
+  }
+
+  /* Detail Modal on Mobile */
+  .modal-dialog.modal-detail {
+    width: 95vw !important;
+    max-width: 540px !important;
+    max-height: 94dvh !important;
+    margin: 8px auto !important;
+    border-radius: var(--radius-lg) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .detail-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+  }
+  .detail-image-stage {
+    position: relative;
+    width: 100%;
+  }
+  .stage-image-container {
+    height: auto !important;
+    max-height: 38vh !important;
+    aspect-ratio: 16 / 10 !important;
+    border-radius: 0 !important;
+  }
+  .stage-image-container img {
+    height: 100% !important;
+    width: 100% !important;
+    object-fit: contain !important;
+  }
+  .stage-nav-bottom-bar {
+    padding: 0.45rem 0.75rem !important;
+  }
+  .stage-nav-arrow-btn {
+    font-size: 0.78rem !important;
+    padding: 0.35rem 0.65rem !important;
+  }
+  .stage-thumbnails-row {
+    padding: 0.4rem 0.6rem !important;
+    gap: 0.4rem !important;
+  }
+  .image-toolbar {
+    flex-wrap: wrap !important;
+    gap: 0.35rem !important;
+    padding: 0.4rem 0.6rem !important;
+  }
+  .tool-btn {
+    padding: 0.38rem 0.6rem !important;
+    font-size: 0.78rem !important;
+  }
+  .detail-info-panel {
+    padding: 0.9rem !important;
+    gap: 0.75rem !important;
+  }
+  .detail-info-box {
+    padding: 0.9rem 1rem !important;
+  }
+  .detail-main-title {
+    font-size: 1.25rem !important;
+  }
+  .stats-mini-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+  .detail-actions-bar {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 0.6rem !important;
+    width: 100% !important;
+  }
+  .btn-like-big, .btn-glass-action {
+    flex: 1 !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Comments & Google Auth on Mobile */
+  .comments-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+  }
+  .comments-header h2 {
+    font-size: 1.45rem;
+  }
+  .comment-auth-prompt-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    padding: 1.25rem 1rem;
+  }
+  .auth-prompt-left {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .btn-google-auth {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+    font-size: 0.9rem;
+  }
+  .comment-auth-user-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+  }
+  .comment-user-actions {
+    width: 100%;
+  }
+  .btn-user-signout {
+    width: 100%;
+    justify-content: center;
+    min-height: 40px;
+  }
+  .comment-card {
+    padding: 1rem 0.85rem;
+  }
+  .reply-card {
+    margin-left: 0.85rem !important;
+    padding: 0.85rem 0.75rem !important;
+    border-left: 2px solid var(--emerald) !important;
+  }
+  .comment-actions {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .btn-action-comm {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+    min-height: 36px;
+  }
+
+  /* Generic Modals (Gamertag, Tutorials, Donations) */
   .modal-dialog {
     width: 94vw !important;
     max-width: 94vw !important;
@@ -6035,29 +6278,24 @@ html, body {
     padding: 1.4rem 1.1rem !important;
     border-radius: var(--radius-lg) !important;
   }
-  .modal-dialog.modal-detail {
-    padding: 0 !important;
-    width: 95vw !important;
-    max-width: 560px !important;
-    max-height: 94dvh !important;
-    border-radius: var(--radius-lg) !important;
-    overflow: hidden !important;
+  .gamertag-modal-content {
+    padding: 1.4rem 1rem !important;
+  }
+  .gamertag-actions-row {
+    flex-direction: column-reverse;
+    gap: 0.65rem;
+  }
+  .gamertag-actions-row button {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
   }
   .modal-close-btn {
-    top: 0.75rem;
-    right: 0.75rem;
+    top: 0.65rem;
+    right: 0.65rem;
     width: 34px;
     height: 34px;
     font-size: 0.95rem;
-  }
-
-  /* Form Elements Touch Friendly */
-  .form-grid-2 {
-    grid-template-columns: 1fr !important;
-    gap: 0.85rem !important;
-  }
-  input, select, textarea, button {
-    min-height: 44px;
   }
 
   /* Footer & Badges */
@@ -6074,6 +6312,7 @@ html, body {
     justify-content: center;
   }
   .footer-badges-group {
+    display: flex;
     flex-direction: column;
     width: 100%;
     gap: 0.75rem;
@@ -6092,18 +6331,38 @@ html, body {
   }
 }
 
-/* Extra Small Phones (<= 380px) */
+/* ==========================================================================
+   5. Extra Small Phones (<= 380px)
+   ========================================================================== */
 @media (max-width: 380px) {
-  .hero-title {
-    font-size: 1.35rem;
+  .logo-sub {
+    display: none;
   }
-  .btn-submit-idea {
-    padding: 0.45rem 0.65rem;
-    font-size: 0.75rem;
+  .hero-title {
+    font-size: 1.3rem;
+  }
+  .stats-mini-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .detail-main-title {
+    font-size: 1.15rem !important;
+  }
+  .detail-badges-row {
+    flex-wrap: wrap;
+    gap: 0.35rem;
   }
   .card-footer-row {
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
+  }
+  .comment-form-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+  .comment-form-footer button {
+    width: 100%;
+    justify-content: center;
   }
 }
 
