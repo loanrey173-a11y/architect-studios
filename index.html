@@ -20,7 +20,7 @@
   
   <!-- Preload Minecraft Block -->
   <link rel="preload" as="image" href="images/minecraft_block.png">
-  <link rel="stylesheet" href="./style.css?v=88">
+  <link rel="stylesheet" href="./style.css?v=95">
 
   <!-- Critical Preloader CSS (Instant 0ms render for weak connections / slow network) -->
   <style>
@@ -721,6 +721,15 @@
           <div class="stage-image-container" id="stageImageContainer">
             <img id="detailModalImg" src="" alt="Vista detallada de la casa">
             <div class="blueprint-grid-overlay" id="blueprintGridOverlay"></div>
+
+            <!-- Floating Navigation Arrows directly on the Photo -->
+            <button class="stage-floating-arrow prev" id="modalFloatingPrevBtn" title="Foto anterior" aria-label="Foto anterior">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="stage-floating-arrow next" id="modalFloatingNextBtn" title="Foto siguiente" aria-label="Foto siguiente">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            <div class="stage-floating-counter" id="modalFloatingImgCounter">Foto 1 de 1</div>
           </div>
 
           <!-- Bottom Navigation Controls Bar (Below Photo) -->
@@ -746,6 +755,10 @@
 
             <button id="toggleBlueprintGridBtn" class="tool-btn toggle-tool" title="Alternar cuadrícula de bloques">
               <i class="fa-solid fa-border-all"></i> <span class="tool-text">Cuadrícula</span>
+            </button>
+
+            <button id="fullscreenImgBtn" class="tool-btn" title="Pantalla Completa (Doble clic en imagen)">
+              <i class="fa-solid fa-expand"></i> <span class="tool-text">Pantalla Completa</span>
             </button>
 
             <button id="downloadDetailImgBtn" class="tool-btn" title="Descargar imagen HD">
@@ -1593,6 +1606,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=87"></script>
+  <script src="./app.js?v=95"></script>
 </body>
 </html>

@@ -1162,12 +1162,16 @@
       this.modalPrevImgBtn = document.getElementById('modalPrevImgBtn');
       this.modalNextImgBtn = document.getElementById('modalNextImgBtn');
       this.modalImgCounter = document.getElementById('modalImgCounter');
+      this.modalFloatingPrevBtn = document.getElementById('modalFloatingPrevBtn');
+      this.modalFloatingNextBtn = document.getElementById('modalFloatingNextBtn');
+      this.modalFloatingImgCounter = document.getElementById('modalFloatingImgCounter');
       this.stageThumbnailsContainer = document.getElementById('stageThumbnailsContainer');
       this.blueprintGridOverlay = document.getElementById('blueprintGridOverlay');
       this.zoomInBtn = document.getElementById('zoomInBtn');
       this.zoomOutBtn = document.getElementById('zoomOutBtn');
       this.zoomResetBtn = document.getElementById('zoomResetBtn');
       this.toggleBlueprintGridBtn = document.getElementById('toggleBlueprintGridBtn');
+      this.fullscreenImgBtn = document.getElementById('fullscreenImgBtn');
       this.downloadDetailImgBtn = document.getElementById('downloadDetailImgBtn');
 
       this.detailCategoryBadge = document.getElementById('detailCategoryBadge');
@@ -1807,6 +1811,10 @@
 
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+          if (this.stageImageContainer && this.stageImageContainer.classList.contains('is-fullscreen')) {
+            this.toggleFullscreenImage();
+            return;
+          }
           this.closeModal();
           this.closeDrawer();
           this.closeAuthModal();
@@ -1831,6 +1839,21 @@
 
       if (this.modalNextImgBtn) {
         this.modalNextImgBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.nextModalImage();
+        });
+      }
+
+      // Floating Photo Nav Arrows (Directly on Image)
+      if (this.modalFloatingPrevBtn) {
+        this.modalFloatingPrevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.prevModalImage();
+        });
+      }
+
+      if (this.modalFloatingNextBtn) {
+        this.modalFloatingNextBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this.nextModalImage();
         });
@@ -1866,6 +1889,26 @@
           this.blueprintGridOverlay.classList.toggle('active', this.gridActive);
           this.toggleBlueprintGridBtn.classList.toggle('active', this.gridActive);
           this.showToast(this.gridActive ? 'Cuadrícula de bloques activada' : 'Cuadrícula desactivada', 'info');
+        });
+      }
+
+      // Fullscreen Image Toggle
+      if (this.fullscreenImgBtn) {
+        this.fullscreenImgBtn.addEventListener('click', () => {
+          this.toggleFullscreenImage();
+        });
+      }
+
+      // Click or Double-click on Modal Image to toggle Zoom / Fullscreen
+      if (this.detailModalImg) {
+        this.detailModalImg.addEventListener('click', (e) => {
+          if (window.innerWidth <= 768) {
+            this.toggleFullscreenImage();
+          }
+        });
+        this.detailModalImg.addEventListener('dblclick', (e) => {
+          e.preventDefault();
+          this.toggleFullscreenImage();
         });
       }
 
@@ -2503,6 +2546,10 @@
         this.modalImgCounter.textContent = `Foto ${this.currentModalImgIndex + 1} de ${total}`;
         this.modalImgCounter.style.display = total > 1 ? 'block' : 'none';
       }
+      if (this.modalFloatingImgCounter) {
+        this.modalFloatingImgCounter.textContent = `${this.currentModalImgIndex + 1} / ${total}`;
+        this.modalFloatingImgCounter.style.display = total > 1 ? 'inline-flex' : 'none';
+      }
 
       // Show/hide navigation arrows
       if (this.modalPrevImgBtn) {
@@ -2510,6 +2557,12 @@
       }
       if (this.modalNextImgBtn) {
         this.modalNextImgBtn.style.display = total > 1 ? 'flex' : 'none';
+      }
+      if (this.modalFloatingPrevBtn) {
+        this.modalFloatingPrevBtn.style.display = total > 1 ? 'grid' : 'none';
+      }
+      if (this.modalFloatingNextBtn) {
+        this.modalFloatingNextBtn.style.display = total > 1 ? 'grid' : 'none';
       }
 
       // Render thumbnail strip
@@ -2579,6 +2632,15 @@
     }
 
     closeModal() {
+      if (this.stageImageContainer) {
+        this.stageImageContainer.classList.remove('is-fullscreen');
+        if (this.fullscreenImgBtn) {
+          const icon = this.fullscreenImgBtn.querySelector('i');
+          const text = this.fullscreenImgBtn.querySelector('.tool-text');
+          if (icon) icon.className = 'fa-solid fa-expand';
+          if (text) text.textContent = 'Pantalla Completa';
+        }
+      }
       if (this.detailModal) {
         this.detailModal.classList.remove('active');
         this.detailModal.classList.remove('open');
@@ -2586,6 +2648,21 @@
       }
       this.activeModalHouse = null;
       document.body.style.overflow = '';
+    }
+
+    toggleFullscreenImage() {
+      if (!this.stageImageContainer) return;
+      this.sound.playPop();
+      const isFull = this.stageImageContainer.classList.toggle('is-fullscreen');
+      if (isFull) {
+        this.showToast('Pantalla completa activada (Presiona ESC o doble clic para salir) 🔍', 'info');
+      }
+      if (this.fullscreenImgBtn) {
+        const icon = this.fullscreenImgBtn.querySelector('i');
+        const text = this.fullscreenImgBtn.querySelector('.tool-text');
+        if (icon) icon.className = isFull ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+        if (text) text.textContent = isFull ? 'Salir' : 'Pantalla Completa';
+      }
     }
 
     adjustZoom(delta) {

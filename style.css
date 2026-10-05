@@ -925,10 +925,17 @@ body {
 .card-image-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: #05080e;
+  background: #080d1a;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cards-grid.masonry-mode .card-image-wrap {
+  aspect-ratio: 16 / 11;
 }
 
 .card-img {
@@ -936,12 +943,12 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
   display: block;
 }
 
 .house-card:hover .card-img {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .card-top-badges {
@@ -2342,18 +2349,24 @@ body {
 }
 
 .modal-dialog.modal-detail {
-  max-width: 1240px;
+  max-width: min(1440px, 95vw);
   width: 95vw;
   max-height: 90vh;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
 }
 
 .detail-layout {
   display: grid;
-  grid-template-columns: 65% 35%;
+  grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.95fr);
   flex: 1;
-  overflow-y: auto;
-  max-height: calc(90vh - 10px);
-  scroll-behavior: smooth;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
   width: 100%;
 }
 
@@ -2363,33 +2376,64 @@ body {
   flex-direction: column;
   overflow-y: auto;
   background: var(--bg-secondary);
+  height: 100%;
 }
 
 .detail-image-stage {
-  background: #05070a;
+  background: radial-gradient(circle at center, #0f182a 0%, #04070c 100%);
   display: flex;
   flex-direction: column;
   position: relative;
   border-right: 1px solid var(--border-subtle);
-  min-height: 320px;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 .stage-image-container {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
   user-select: none;
+  padding: 1rem;
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 75%);
 }
 
 .stage-image-container img {
   max-width: 100%;
-  max-height: 640px;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
+  object-position: center;
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.12);
   transition: transform 0.2s ease-out;
   cursor: grab;
+}
+
+.stage-image-container.is-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  background: rgba(3, 6, 12, 0.98) !important;
+  padding: 2rem !important;
+  border-radius: 0 !important;
+}
+
+.stage-image-container.is-fullscreen img {
+  max-width: 96vw !important;
+  max-height: 94vh !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(16, 185, 129, 0.2) !important;
 }
 
 .stage-image-container img:active {
@@ -2410,6 +2454,68 @@ body {
 
 .blueprint-grid-overlay.active {
   opacity: 1;
+}
+
+/* Floating Navigation Overlays directly on the Photo Stage */
+.stage-floating-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(8, 12, 20, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 1.15rem;
+  cursor: pointer;
+  z-index: 15;
+  transition: all var(--tr-fast);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.stage-floating-arrow.prev {
+  left: 12px;
+}
+
+.stage-floating-arrow.next {
+  right: 12px;
+}
+
+.stage-floating-arrow:hover {
+  background: var(--emerald);
+  border-color: var(--emerald);
+  color: #05080e;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 18px var(--emerald-glow);
+}
+
+.stage-floating-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.stage-floating-counter {
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  background: rgba(6, 10, 18, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--diamond);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  z-index: 15;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  pointer-events: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 /* Modal Stage Bottom Navigation Bar (Below Photo) */
@@ -3021,7 +3127,11 @@ body {
   aspect-ratio: 16 / 10;
   overflow: hidden;
   cursor: pointer;
-  background: #000;
+  background: #080d1a;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-image-wrap::after {
@@ -5958,8 +6068,19 @@ html, body {
     grid-template-columns: 1fr;
   }
   .stage-image-container {
-    max-height: 440px;
-    height: 440px;
+    height: clamp(300px, 48vh, 520px);
+    max-height: 52vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stage-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
   .footer-container {
     flex-direction: column;
@@ -6133,58 +6254,136 @@ html, body {
     font-size: 1.15rem;
   }
 
-  /* Detail Modal on Mobile */
+  /* Detail Modal on Mobile - Immersive Full-Screen Experience */
+  .modal-backdrop {
+    padding: 0 !important;
+  }
+
   .modal-dialog.modal-detail {
-    width: 95vw !important;
-    max-width: 540px !important;
-    max-height: 94dvh !important;
-    margin: 8px auto !important;
-    border-radius: var(--radius-lg) !important;
-    overflow: hidden !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
     display: flex !important;
     flex-direction: column !important;
+    background: var(--bg-primary) !important;
   }
+
   .detail-layout {
     display: flex !important;
     flex-direction: column !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     width: 100% !important;
-  }
-  .detail-image-stage {
-    position: relative;
-    width: 100%;
-  }
-  .stage-image-container {
-    height: auto !important;
-    max-height: 38vh !important;
-    aspect-ratio: 16 / 10 !important;
-    border-radius: 0 !important;
-  }
-  .stage-image-container img {
     height: 100% !important;
+    flex: 1 !important;
+  }
+
+  .detail-image-stage {
+    position: relative !important;
     width: 100% !important;
-    object-fit: contain !important;
+    background: #020408 !important;
+    flex-shrink: 0 !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
   }
+
+  .stage-image-container {
+    width: 100% !important;
+    aspect-ratio: 16 / 10 !important;
+    min-height: 250px !important;
+    max-height: 52vh !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #000000 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+  }
+
+  .stage-image-container img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: block !important;
+  }
+
+  .modal-close-btn.detail-close {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    z-index: 99 !important;
+    width: 42px !important;
+    height: 42px !important;
+    background: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    font-size: 1.2rem !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  /* Hide separate tall bottom bar on mobile - arrows & counter float directly on the photo */
   .stage-nav-bottom-bar {
-    padding: 0.45rem 0.75rem !important;
+    display: none !important;
   }
-  .stage-nav-arrow-btn {
-    font-size: 0.78rem !important;
-    padding: 0.35rem 0.65rem !important;
-  }
+
   .stage-thumbnails-row {
-    padding: 0.4rem 0.6rem !important;
-    gap: 0.4rem !important;
+    padding: 0.45rem 0.65rem !important;
+    gap: 0.45rem !important;
+    background: rgba(8, 12, 18, 0.98) !important;
+    border-top: none !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
   }
+
+  .stage-thumb-btn {
+    padding: 0.2rem 0.45rem 0.2rem 0.25rem !important;
+    max-width: 140px !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  .stage-thumb-btn img {
+    width: 44px !important;
+    height: 30px !important;
+  }
+
+  .stage-thumb-btn .thumb-lbl {
+    font-size: 0.72rem !important;
+  }
+
   .image-toolbar {
-    flex-wrap: wrap !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0.4rem 0.65rem !important;
     gap: 0.35rem !important;
-    padding: 0.4rem 0.6rem !important;
+    overflow-x: auto !important;
+    background: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    scrollbar-width: none !important;
   }
+
+  .image-toolbar::-webkit-scrollbar {
+    display: none !important;
+  }
+
   .tool-btn {
-    padding: 0.38rem 0.6rem !important;
-    font-size: 0.78rem !important;
+    padding: 0.35rem 0.6rem !important;
+    font-size: 0.76rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
   .detail-info-panel {
     padding: 0.9rem !important;
@@ -6270,7 +6469,7 @@ html, body {
   }
 
   /* Generic Modals (Gamertag, Tutorials, Donations) */
-  .modal-dialog {
+  .modal-dialog:not(.modal-detail) {
     width: 94vw !important;
     max-width: 94vw !important;
     max-height: 92dvh !important;
