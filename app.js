@@ -3492,7 +3492,7 @@ ${mensaje}
         this.sound.playSuccess();
         if (this.commentText) this.commentText.value = '';
         if (this.charCounter) this.charCounter.textContent = '0 / 500';
-        this.showToast('¡Comentario publicado en tiempo real! 🎉', 'success');
+        this.showToast('¡Comentario publicado con éxito! 🎉', 'success');
       } catch (err) {
         console.error('Error enviando comentario a Firebase:', err);
         this.sound.playSuccess();
