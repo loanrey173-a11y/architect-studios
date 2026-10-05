@@ -904,13 +904,14 @@ body {
 .house-card {
   background-color: #3b2716;
   background-image: url('./wood_border.png');
-  background-size: 80px auto;
+  background-size: 70px auto;
   background-repeat: repeat;
   image-rendering: pixelated;
-  padding: 7px;
+  image-rendering: crisp-edges;
+  padding: 8px;
   border-radius: var(--radius-lg);
-  border: 2px solid #241408;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  border: 3px solid #241408;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 200, 130, 0.2), inset 0 0 8px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   transition: transform var(--tr-bounce), box-shadow var(--tr-smooth), border-color var(--tr-fast);
@@ -4300,17 +4301,6 @@ body {
    ========================================================================== */
 
 .house-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(14px);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  transition: transform var(--tr-bounce), box-shadow var(--tr-smooth), border-color var(--tr-fast);
-  position: relative;
-  cursor: pointer;
   min-height: 480px;
 }
 
