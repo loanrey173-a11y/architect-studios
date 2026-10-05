@@ -906,7 +906,8 @@
               const author = data.author || data.autor || 'Anónimo';
               const text = data.text || data.texto || '';
               const houseRef = data.houseRef || 'General';
-              const role = data.role === 'creator' || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17') ? 'creator' : null;
+              const isDev = this.isDeveloperAccount({ author, email, role: data.role });
+              const role = isDev ? 'creator' : 'architect';
               const likes = typeof data.likes === 'number' ? data.likes : 0;
               const likedByUser = this.userCommentLikes.includes(doc.id);
               const date = this.formatCommentDate(data.fecha || data.createdAtMs);
@@ -928,7 +929,8 @@
                 .filter((r) => r.id !== 'rep-1-1')
                 .map((r) => {
                   const rAuthor = r.author || r.autor || 'Anónimo';
-                  const rRole = r.role === 'creator' || (rAuthor.toLowerCase() === 'josue' || rAuthor.toLowerCase() === 'loanrey17') ? 'creator' : null;
+                  const isRDev = this.isDeveloperAccount({ author: rAuthor, email: r.email, role: r.role });
+                  const rRole = isRDev ? 'creator' : 'architect';
                   const rId = r.id || ('rep-' + Math.random().toString(36).substr(2, 9));
                   return {
                     id: rId,
@@ -1132,6 +1134,7 @@
       this.commentUserAvatarFallback = document.getElementById('commentUserAvatarFallback');
       this.commentUserGamertag = document.getElementById('commentUserGamertag');
       this.commentDevCrownPill = document.getElementById('commentDevCrownPill');
+      this.commentArchitectPill = document.getElementById('commentArchitectPill');
       this.commentUserEmail = document.getElementById('commentUserEmail');
       this.commentSignOutBtn = document.getElementById('commentSignOutBtn');
       this.commentHouseRef = document.getElementById('commentHouseRef');
@@ -2804,6 +2807,28 @@
        Google Authentication & Gamertag Methods
        ------------------------------------------------------------------------ */
 
+    isDeveloperAccount(entity) {
+      if (!entity) return false;
+      const email = (entity.email || '').toString().toLowerCase().trim();
+      const name = (entity.username || entity.author || entity.autor || '').toString().toLowerCase().trim();
+      const role = (entity.role || '').toString().toLowerCase().trim();
+
+      // Only loanrey173@gmail.com (and typo loanrey173@gamil.com) is Developer
+      if (email === 'loanrey173@gmail.com' || email === 'loanrey173@gamil.com') {
+        return true;
+      }
+      if (this.adminRole === 'creator') {
+        return true;
+      }
+      if (role === 'creator' || role === 'developer' || role === 'desarrollador') {
+        return true;
+      }
+      if (name === 'loanrey17' || name === 'josue') {
+        return true;
+      }
+      return false;
+    }
+
     updateAuthUI() {
       const isAuth = !!(this.currentUser && this.currentUser.username);
 
@@ -2833,10 +2858,12 @@
           if (this.commentUserAvatarFallback) this.commentUserAvatarFallback.style.display = 'grid';
         }
 
-        const isDev = this.adminRole === 'creator' || 
-                      (this.currentUser.username && (this.currentUser.username.toLowerCase() === 'josue' || this.currentUser.username.toLowerCase() === 'loanrey17'));
+        const isDev = this.isDeveloperAccount(this.currentUser);
         if (this.commentDevCrownPill) {
           this.commentDevCrownPill.style.display = isDev ? 'inline-flex' : 'none';
+        }
+        if (this.commentArchitectPill) {
+          this.commentArchitectPill.style.display = isDev ? 'none' : 'inline-flex';
         }
       }
 
@@ -3445,7 +3472,8 @@ ${mensaje}
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
       }
 
-      const assignedRole = this.adminRole === 'creator' || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17') ? 'creator' : null;
+      const isDev = this.isDeveloperAccount({ author, email, role: this.adminRole });
+      const assignedRole = isDev ? 'creator' : 'architect';
 
       // Optimistically add comment to memory and UI so all comments stay present
       const tempId = 'comm-' + Date.now();
@@ -3546,8 +3574,8 @@ ${mensaje}
 
       this.commentsList.innerHTML = this.comments
         .map((comm) => {
-          const isCreator = comm.role === 'creator' || comm.isCreator || (comm.author && (comm.author.toLowerCase() === 'josue' || comm.author.toLowerCase() === 'loanrey17'));
-          const isAdminUser = this.adminRole === 'creator';
+          const isDev = this.isDeveloperAccount(comm);
+          const isAdminUser = this.adminRole === 'creator' || (this.currentUser && this.isDeveloperAccount(this.currentUser));
           const isOwner = this.currentUser && this.currentUser.uid && comm.uid === this.currentUser.uid;
 
           let cardClass = 'comment-card animate-slide-in';
@@ -3557,17 +3585,20 @@ ${mensaje}
 
           if (comm.userPhoto) {
             avatarContent = `<img src="${this.escapeHTML(comm.userPhoto)}" alt="${this.escapeHTML(comm.author)}" class="comment-avatar-img" onerror="this.style.display='none'">`;
-          } else if (isCreator) {
+          } else if (isDev) {
             cardClass += ' gold-verified-card';
             avatarClass += ' creator-golden-avatar';
             avatarContent = '<i class="fa-solid fa-crown"></i>';
           } else {
-            avatarContent = comm.author ? comm.author.charAt(0).toUpperCase() : '<i class="fa-solid fa-gamepad"></i>';
+            avatarClass += ' architect-avatar';
+            avatarContent = comm.author ? comm.author.charAt(0).toUpperCase() : '<i class="fa-solid fa-compass-drafting"></i>';
           }
 
-          if (isCreator) {
+          if (isDev) {
             cardClass += ' gold-verified-card';
             roleBadge = '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>';
+          } else {
+            roleBadge = '<span class="architect-role-pill"><i class="fa-solid fa-compass-drafting"></i> Arquitecto</span>';
           }
 
           // Trash button for Administrators or Comment Owner
@@ -3594,20 +3625,22 @@ ${mensaje}
             `;
 
             const repliesItemsHTML = replies.map((reply) => {
-              const isRepCreator = reply.role === 'creator' || (reply.author && (reply.author.toLowerCase() === 'josue' || reply.author.toLowerCase() === 'loanrey17'));
+              const isRepDev = this.isDeveloperAccount(reply);
               const isRepOwner = this.currentUser && this.currentUser.uid && reply.uid === this.currentUser.uid;
-              let repAvatarClass = isRepCreator ? 'reply-avatar creator-golden-avatar' : 'reply-avatar';
+              let repAvatarClass = isRepDev ? 'reply-avatar creator-golden-avatar' : 'reply-avatar architect-avatar';
               let repAvatarContent = '';
 
               if (reply.userPhoto) {
                 repAvatarContent = `<img src="${this.escapeHTML(reply.userPhoto)}" alt="${this.escapeHTML(reply.author)}" class="reply-avatar-img" onerror="this.style.display='none'">`;
-              } else if (isRepCreator) {
+              } else if (isRepDev) {
                 repAvatarContent = '<i class="fa-solid fa-crown"></i>';
               } else {
                 repAvatarContent = reply.author ? reply.author.charAt(0).toUpperCase() : 'A';
               }
 
-              const repRoleBadge = isRepCreator ? '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>' : '';
+              const repRoleBadge = isRepDev 
+                ? '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>' 
+                : '<span class="architect-role-pill"><i class="fa-solid fa-compass-drafting"></i> Arquitecto</span>';
               const repToBadge = reply.replyTo ? `<span class="reply-to-tag">▶ @${this.escapeHTML(reply.replyTo)}</span>` : '';
               
               const repTrashBtn = (isAdminUser || isRepOwner)
@@ -3617,7 +3650,7 @@ ${mensaje}
                 : '';
 
               return `
-                <div class="reply-item ${isRepCreator ? 'gold-verified-reply' : ''}" data-reply-id="${reply.id}">
+                <div class="reply-item ${isRepDev ? 'gold-verified-reply' : ''}" data-reply-id="${reply.id}">
                   <div class="${repAvatarClass}">${repAvatarContent}</div>
                   <div class="reply-body">
                     <div class="reply-header-row">
@@ -3871,7 +3904,8 @@ ${mensaje}
       const uid = this.currentUser.uid;
       const email = this.currentUser.email || '';
       const userPhoto = this.currentUser.photoURL || '';
-      const assignedRole = this.adminRole === 'creator' || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17') ? 'creator' : null;
+      const isDev = this.isDeveloperAccount({ author, email, role: this.adminRole });
+      const assignedRole = isDev ? 'creator' : 'architect';
 
       const replyId = 'rep-' + Date.now();
       const newReply = {

@@ -3800,6 +3800,24 @@ body {
   box-shadow: 0 2px 8px var(--gold-glow);
 }
 
+.architect-role-pill {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+}
+
+.architect-avatar {
+  background: linear-gradient(135deg, #0284c7, #1d4ed8) !important;
+  color: #ffffff !important;
+}
+
 /* ==========================================================================
    Administrator Comment Management Styles
    ========================================================================== */
