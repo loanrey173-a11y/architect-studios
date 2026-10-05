@@ -902,23 +902,44 @@ body {
 }
 
 .house-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(14px);
-  border: 1px solid var(--border-subtle);
+  background-color: #3b2716;
+  background-image: url('./wood_border.png');
+  background-size: 80px auto;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+  padding: 7px;
   border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  border: 2px solid #241408;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   transition: transform var(--tr-bounce), box-shadow var(--tr-smooth), border-color var(--tr-fast);
   position: relative;
   cursor: pointer;
+  overflow: hidden;
+}
+
+.house-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--radius-lg) - 2px);
+  border: 1px solid rgba(255, 200, 120, 0.18);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 5;
+  transition: border-color var(--tr-fast), box-shadow var(--tr-fast);
 }
 
 .house-card:hover {
   transform: translateY(-6px);
-  border-color: var(--border-glow);
-  box-shadow: var(--shadow-lg), 0 0 25px var(--emerald-glow);
+  border-color: rgba(245, 158, 11, 0.8);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 25px rgba(245, 158, 11, 0.35);
+}
+
+.house-card:hover::before {
+  border-color: rgba(245, 158, 11, 0.85);
+  box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.3);
 }
 
 .card-img-wrapper,
@@ -928,10 +949,11 @@ body {
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: #080d1a;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-radius: calc(var(--radius-lg) - 5px) calc(var(--radius-lg) - 5px) 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-bottom: 2px solid #241408;
 }
 
 .cards-grid.masonry-mode .card-image-wrap {
@@ -1039,10 +1061,15 @@ body {
 }
 
 .card-body {
-  padding: 1.25rem;
+  padding: 1.25rem 1.15rem;
   display: flex;
   flex-direction: column;
   flex: 1;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border-radius: 0 0 calc(var(--radius-lg) - 4px) calc(var(--radius-lg) - 4px);
+  border: 1px solid var(--border-subtle);
+  border-top: none;
 }
 
 .card-title {
@@ -6234,6 +6261,7 @@ html, body {
     gap: 1.25rem !important;
   }
   .house-card {
+    padding: 6px;
     border-radius: var(--radius-md);
   }
   .card-img-wrapper,
@@ -6241,6 +6269,7 @@ html, body {
     aspect-ratio: 16 / 10;
     min-height: 200px;
     max-height: 280px;
+    border-radius: calc(var(--radius-md) - 3px) calc(var(--radius-md) - 3px) 0 0;
   }
   .card-img {
     width: 100%;
@@ -6249,6 +6278,7 @@ html, body {
   }
   .card-body {
     padding: 1rem 0.9rem;
+    border-radius: 0 0 calc(var(--radius-md) - 3px) calc(var(--radius-md) - 3px);
   }
   .card-title {
     font-size: 1.15rem;
