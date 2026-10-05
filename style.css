@@ -2971,6 +2971,7 @@ body {
   padding-top: 1.25rem;
   border-top: 1px solid var(--border-subtle);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
 }
@@ -3001,6 +3002,38 @@ body {
   background: var(--redstone);
   color: #fff;
   box-shadow: 0 0 15px var(--redstone-glow);
+}
+
+.btn-fav-big {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--tr-bounce);
+}
+
+.btn-fav-big:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: #f59e0b;
+  color: #fff;
+  transform: scale(1.04);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.35);
+}
+
+.btn-fav-big.active,
+.btn-fav-big.favorited {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: #f59e0b;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
 }
 
 .btn-glass-action {

@@ -1187,6 +1187,8 @@
       this.copyMaterialsBtn = document.getElementById('copyMaterialsBtn');
       this.detailLikeBtn = document.getElementById('detailLikeBtn');
       this.detailLikesCount = document.getElementById('detailLikesCount');
+      this.detailFavBtn = document.getElementById('detailFavBtn');
+      this.detailFavText = document.getElementById('detailFavText');
       this.detailShareBtn = document.getElementById('detailShareBtn');
       this.detailCreatorName = document.getElementById('detailCreatorName');
 
@@ -1922,6 +1924,14 @@
         });
       }
 
+      // Modal Favorite Button
+      if (this.detailFavBtn) {
+        this.detailFavBtn.addEventListener('click', () => {
+          if (!this.activeModalHouse) return;
+          this.toggleFavorite(this.activeModalHouse.id);
+        });
+      }
+
       // Modal Share Button
       if (this.detailShareBtn) {
         this.detailShareBtn.addEventListener('click', () => {
@@ -2136,10 +2146,6 @@
                 <span class="badge-diff ${diffBadgeClass}">${house.difficulty}</span>
               </div>
             </div>
-
-            <button class="card-fav-btn ${isFav ? 'active' : ''}" data-action="favorite" data-id="${house.id}" title="${isFav ? 'Quitar de favoritos' : 'Guardar en favoritos'}">
-              <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
-            </button>
           </div>
 
           <div class="card-body">
@@ -2198,15 +2204,6 @@
         if (igBtn) {
           igBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-          });
-        }
-
-        // Favorite button
-        const favBtn = card.querySelector('[data-action="favorite"]');
-        if (favBtn) {
-          favBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.toggleFavorite(houseId);
           });
         }
 
@@ -2348,6 +2345,7 @@
 
     toggleFavorite(houseId) {
       const idx = this.userFavorites.indexOf(houseId);
+      const isNowFav = idx === -1;
       if (idx > -1) {
         this.sound.playPop();
         this.userFavorites.splice(idx, 1);
@@ -2359,7 +2357,23 @@
       }
 
       this.saveFavorites();
+      this.updateModalFavButton(houseId, isNowFav);
       this.render();
+    }
+
+    updateModalFavButton(houseId, isFav) {
+      if (this.activeModalHouse && this.activeModalHouse.id === houseId && this.detailFavBtn) {
+        this.detailFavBtn.classList.toggle('active', isFav);
+        this.detailFavBtn.classList.toggle('favorited', isFav);
+        this.detailFavBtn.title = isFav ? 'Quitar de favoritos' : 'Guardar en favoritos';
+        const icon = this.detailFavBtn.querySelector('i');
+        if (icon) {
+          icon.className = isFav ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
+        }
+        if (this.detailFavText) {
+          this.detailFavText.textContent = isFav ? 'En Favoritos' : 'Guardar en Favoritos';
+        }
+      }
     }
 
     /* ------------------------------------------------------------------------
@@ -2407,6 +2421,9 @@
           icon.className = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
         }
       }
+
+      const isFav = this.userFavorites.includes(house.id);
+      this.updateModalFavButton(house.id, isFav);
 
       // Populate Creator Name & Instagram
       const detailCreatorBanner = document.getElementById('detailCreatorBanner');
