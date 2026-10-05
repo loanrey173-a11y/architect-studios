@@ -2975,7 +2975,7 @@
         this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando disponibilidad...';
       }
 
-      this.showGamertagFeedback('Verificando disponibilidad en Firestore...', 'loading');
+      this.showGamertagFeedback('Verificando disponibilidad...', 'loading');
 
       try {
         // Verificar en la colección usuarios que ningún otro usuario tenga ese mismo nombre
