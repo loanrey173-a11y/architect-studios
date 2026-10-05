@@ -712,6 +712,8 @@
         this.adminRole = 'none';
         localStorage.removeItem(STORAGE_KEYS.ADMIN_ROLE);
       }
+      this.currentUser = null;
+      this.pendingAuthUser = null;
       this.firebaseUnsubscribe = null;
       this.firebaseLikesUnsubscribe = null;
       this.isFirebaseConnected = false;
@@ -909,6 +911,9 @@
               const likedByUser = this.userCommentLikes.includes(doc.id);
               const date = this.formatCommentDate(data.fecha || data.createdAtMs);
               const timestamp = (data.fecha && data.fecha.seconds) ? data.fecha.seconds * 1000 : (data.createdAtMs || (data.timestamp || Date.now()));
+              const uid = data.uid || null;
+              const email = data.email || null;
+              const userPhoto = data.userPhoto || null;
 
               // If legacy mock comment was in Firestore, delete it from Firestore
               if (doc.id === 'comm-1' || doc.id === 'comm-2' || (author && (author.toLowerCase().includes('alex_builder') || author.toLowerCase().includes('craftmaster')))) {
@@ -928,6 +933,9 @@
                   return {
                     id: rId,
                     author: rAuthor,
+                    uid: r.uid || null,
+                    email: r.email || null,
+                    userPhoto: r.userPhoto || null,
                     text: r.text || r.texto || '',
                     replyTo: r.replyTo || null,
                     role: rRole,
@@ -941,6 +949,9 @@
               loaded.push({
                 id: doc.id,
                 author,
+                uid,
+                email,
+                userPhoto,
                 text,
                 houseRef,
                 role,
@@ -1001,6 +1012,36 @@
               this.saveHouses();
               this.render();
               this.updateStats();
+            }
+          });
+        }
+
+        // 3. Firebase Auth State Listener & User Profile Loader
+        if (typeof window.FirebaseCommentsBridge.onAuthStateChanged === 'function') {
+          window.FirebaseCommentsBridge.onAuthStateChanged(async (firebaseUser) => {
+            if (firebaseUser) {
+              try {
+                const profile = await window.FirebaseCommentsBridge.getUserProfile(firebaseUser.uid);
+                if (profile && profile.username) {
+                  this.currentUser = profile;
+                  this.pendingAuthUser = null;
+                  this.updateAuthUI();
+                  this.renderComments();
+                } else {
+                  // User signed in with Google for first time: show Gamertag registration modal!
+                  this.currentUser = null;
+                  this.pendingAuthUser = firebaseUser;
+                  this.updateAuthUI();
+                  this.openGamertagModal(firebaseUser);
+                }
+              } catch (err) {
+                console.warn('Error fetching user profile from Firestore:', err);
+              }
+            } else {
+              this.currentUser = null;
+              this.pendingAuthUser = null;
+              this.updateAuthUI();
+              this.renderComments();
             }
           });
         }
@@ -1080,18 +1121,38 @@
       this.emptyState = document.getElementById('emptyState');
       this.emptyResetBtn = document.getElementById('emptyResetBtn');
 
-      // Comments Section
+      // Comments Section & Google Auth
       this.commentsSection = document.getElementById('commentsSection');
+      this.commentAuthWrapper = document.getElementById('commentAuthWrapper');
+      this.commentAuthPrompt = document.getElementById('commentAuthPrompt');
+      this.commentGoogleSignInBtn = document.getElementById('commentGoogleSignInBtn');
       this.commentForm = document.getElementById('commentForm');
-      this.commentAuthor = document.getElementById('commentAuthor');
-      this.commentAuthorGroup = document.getElementById('commentAuthorGroup');
-      this.commentAuthBadgeGroup = document.getElementById('commentAuthBadgeGroup');
-      this.authCommenterCard = document.getElementById('authCommenterCard');
+      this.commentAuthUserBar = document.getElementById('commentAuthUserBar');
+      this.commentUserAvatarImg = document.getElementById('commentUserAvatarImg');
+      this.commentUserAvatarFallback = document.getElementById('commentUserAvatarFallback');
+      this.commentUserGamertag = document.getElementById('commentUserGamertag');
+      this.commentDevCrownPill = document.getElementById('commentDevCrownPill');
+      this.commentUserEmail = document.getElementById('commentUserEmail');
+      this.commentSignOutBtn = document.getElementById('commentSignOutBtn');
       this.commentHouseRef = document.getElementById('commentHouseRef');
       this.commentText = document.getElementById('commentText');
       this.charCounter = document.getElementById('charCounter');
       this.commentsList = document.getElementById('commentsList');
       this.commentsCount = document.getElementById('commentsCount');
+
+      // Gamertag Modal Elements
+      this.gamertagModal = document.getElementById('gamertagModal');
+      this.closeGamertagModalBtn = document.getElementById('closeGamertagModalBtn');
+      this.cancelGamertagBtn = document.getElementById('cancelGamertagBtn');
+      this.gamertagForm = document.getElementById('gamertagForm');
+      this.gamertagInput = document.getElementById('gamertagInput');
+      this.gamertagGoogleAvatar = document.getElementById('gamertagGoogleAvatar');
+      this.gamertagAvatarFallback = document.getElementById('gamertagAvatarFallback');
+      this.gamertagGoogleName = document.getElementById('gamertagGoogleName');
+      this.gamertagGoogleEmail = document.getElementById('gamertagGoogleEmail');
+      this.gamertagFeedback = document.getElementById('gamertagFeedback');
+      this.saveGamertagBtn = document.getElementById('saveGamertagBtn');
+      this.gamertagCharCounter = document.getElementById('gamertagCharCounter');
 
       // Detail Modal
       this.detailModal = document.getElementById('detailModal');
@@ -1673,6 +1734,58 @@
         this.commentForm.addEventListener('submit', (e) => {
           e.preventDefault();
           this.handleCommentSubmit();
+        });
+      }
+
+      // Google Sign-In button in comment section
+      if (this.commentGoogleSignInBtn) {
+        this.commentGoogleSignInBtn.addEventListener('click', () => {
+          this.handleGoogleSignIn();
+        });
+      }
+
+      // Google Sign-Out button in comment user bar
+      if (this.commentSignOutBtn) {
+        this.commentSignOutBtn.addEventListener('click', () => {
+          this.handleGoogleSignOut();
+        });
+      }
+
+      // Gamertag Registration Form & Modal Listeners
+      if (this.gamertagForm) {
+        this.gamertagForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleGamertagSubmit();
+        });
+      }
+
+      if (this.gamertagInput && this.gamertagCharCounter) {
+        this.gamertagInput.addEventListener('input', (e) => {
+          const val = e.target.value;
+          this.gamertagCharCounter.textContent = `${val.length}/20`;
+          if (this.gamertagFeedback) {
+            this.gamertagFeedback.style.display = 'none';
+          }
+        });
+      }
+
+      if (this.closeGamertagModalBtn) {
+        this.closeGamertagModalBtn.addEventListener('click', () => {
+          this.closeGamertagModal();
+        });
+      }
+
+      if (this.cancelGamertagBtn) {
+        this.cancelGamertagBtn.addEventListener('click', () => {
+          this.closeGamertagModal();
+        });
+      }
+
+      if (this.gamertagModal) {
+        this.gamertagModal.addEventListener('click', (e) => {
+          if (e.target === this.gamertagModal) {
+            this.closeGamertagModal();
+          }
         });
       }
 
@@ -2611,6 +2724,227 @@
     }
 
     /* ------------------------------------------------------------------------
+       Google Authentication & Gamertag Methods
+       ------------------------------------------------------------------------ */
+
+    updateAuthUI() {
+      const isAuth = !!(this.currentUser && this.currentUser.username);
+
+      if (this.commentAuthPrompt) {
+        this.commentAuthPrompt.style.display = isAuth ? 'none' : 'flex';
+      }
+
+      if (this.commentForm) {
+        this.commentForm.style.display = isAuth ? 'block' : 'none';
+      }
+
+      if (isAuth) {
+        if (this.commentUserGamertag) {
+          this.commentUserGamertag.textContent = this.currentUser.username;
+        }
+
+        if (this.commentUserEmail) {
+          this.commentUserEmail.textContent = this.currentUser.email || '';
+        }
+
+        if (this.currentUser.photoURL && this.commentUserAvatarImg) {
+          this.commentUserAvatarImg.src = this.currentUser.photoURL;
+          this.commentUserAvatarImg.style.display = 'block';
+          if (this.commentUserAvatarFallback) this.commentUserAvatarFallback.style.display = 'none';
+        } else {
+          if (this.commentUserAvatarImg) this.commentUserAvatarImg.style.display = 'none';
+          if (this.commentUserAvatarFallback) this.commentUserAvatarFallback.style.display = 'grid';
+        }
+
+        const isDev = this.adminRole === 'creator' || 
+                      (this.currentUser.username && (this.currentUser.username.toLowerCase() === 'josue' || this.currentUser.username.toLowerCase() === 'loanrey17'));
+        if (this.commentDevCrownPill) {
+          this.commentDevCrownPill.style.display = isDev ? 'inline-flex' : 'none';
+        }
+      }
+
+      this.updateCommentAuthorUI();
+    }
+
+    async handleGoogleSignIn() {
+      this.sound.playPop();
+      if (!window.FirebaseCommentsBridge || !window.FirebaseCommentsBridge.isReady) {
+        alert('Firebase aún no está listo. Por favor espera un momento.');
+        return;
+      }
+
+      try {
+        await window.FirebaseCommentsBridge.signInWithGoogle();
+        this.sound.playSuccess();
+      } catch (err) {
+        if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
+          console.warn('Error iniciando sesión con Google:', err);
+          alert('Hubo un error al iniciar sesión con Google: ' + (err.message || err));
+        }
+      }
+    }
+
+    async handleGoogleSignOut() {
+      this.sound.playPop();
+      if (window.FirebaseCommentsBridge && typeof window.FirebaseCommentsBridge.signOutUser === 'function') {
+        try {
+          await window.FirebaseCommentsBridge.signOutUser();
+        } catch (e) {}
+      }
+      this.currentUser = null;
+      this.pendingAuthUser = null;
+      this.updateAuthUI();
+      this.renderComments();
+      this.showToast('Sesión de Google cerrada', 'info');
+    }
+
+    openGamertagModal(user) {
+      if (!this.gamertagModal || !user) return;
+
+      if (this.gamertagGoogleName) {
+        this.gamertagGoogleName.textContent = user.displayName || 'Jugador';
+      }
+      if (this.gamertagGoogleEmail) {
+        this.gamertagGoogleEmail.textContent = user.email || '';
+      }
+
+      if (user.photoURL && this.gamertagGoogleAvatar) {
+        this.gamertagGoogleAvatar.src = user.photoURL;
+        this.gamertagGoogleAvatar.style.display = 'block';
+        if (this.gamertagAvatarFallback) this.gamertagAvatarFallback.style.display = 'none';
+      } else {
+        if (this.gamertagGoogleAvatar) this.gamertagGoogleAvatar.style.display = 'none';
+        if (this.gamertagAvatarFallback) this.gamertagAvatarFallback.style.display = 'grid';
+      }
+
+      if (this.gamertagInput) {
+        // Pre-fill suggested Gamertag from displayName (sanitized)
+        const rawSuggested = (user.displayName || '').replace(/[^a-zA-Z0-9_]/g, '');
+        this.gamertagInput.value = rawSuggested.substring(0, 20);
+        if (this.gamertagCharCounter) {
+          this.gamertagCharCounter.textContent = `${this.gamertagInput.value.length}/20`;
+        }
+      }
+
+      if (this.gamertagFeedback) {
+        this.gamertagFeedback.style.display = 'none';
+        this.gamertagFeedback.innerHTML = '';
+      }
+
+      if (this.saveGamertagBtn) {
+        this.saveGamertagBtn.disabled = false;
+        this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Gamertag y Continuar';
+      }
+
+      this.gamertagModal.classList.add('active');
+      this.gamertagModal.classList.add('open');
+      this.gamertagModal.setAttribute('aria-hidden', 'false');
+
+      setTimeout(() => {
+        if (this.gamertagInput) this.gamertagInput.focus();
+      }, 150);
+    }
+
+    closeGamertagModal() {
+      if (this.gamertagModal) {
+        this.gamertagModal.classList.remove('active');
+        this.gamertagModal.classList.remove('open');
+        this.gamertagModal.setAttribute('aria-hidden', 'true');
+      }
+      // If closing without completing Gamertag registration, sign out
+      if (!this.currentUser && window.FirebaseCommentsBridge && typeof window.FirebaseCommentsBridge.signOutUser === 'function') {
+        window.FirebaseCommentsBridge.signOutUser().catch(() => {});
+        this.pendingAuthUser = null;
+        this.updateAuthUI();
+      }
+    }
+
+    showGamertagFeedback(message, type = 'error') {
+      if (!this.gamertagFeedback) return;
+      this.gamertagFeedback.className = `gamertag-feedback-box ${type}`;
+      let icon = '<i class="fa-solid fa-circle-exclamation"></i>';
+      if (type === 'success') icon = '<i class="fa-solid fa-circle-check"></i>';
+      if (type === 'loading') icon = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      this.gamertagFeedback.innerHTML = `${icon} <span>${message}</span>`;
+      this.gamertagFeedback.style.display = 'flex';
+    }
+
+    async handleGamertagSubmit() {
+      if (!this.pendingAuthUser) return;
+      const tag = this.gamertagInput ? this.gamertagInput.value.trim() : '';
+
+      if (!tag) {
+        this.showGamertagFeedback('Por favor ingresa un Gamertag', 'error');
+        return;
+      }
+
+      if (tag.length < 3 || tag.length > 20) {
+        this.showGamertagFeedback('El Gamertag debe tener entre 3 y 20 caracteres.', 'error');
+        return;
+      }
+
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(tag)) {
+        this.showGamertagFeedback('Solo se permiten letras (a-z, A-Z), números (0-9) y guión bajo (_). Sin espacios.', 'error');
+        return;
+      }
+
+      if (this.profanityFilter.isProfane(tag)) {
+        this.showGamertagFeedback('⚠️ Este nombre contiene palabras o términos no permitidos.', 'error');
+        return;
+      }
+
+      if (this.saveGamertagBtn) {
+        this.saveGamertagBtn.disabled = true;
+        this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando disponibilidad...';
+      }
+
+      this.showGamertagFeedback('Verificando disponibilidad en Firestore...', 'loading');
+
+      try {
+        // Verificar en la colección usuarios que ningún otro usuario tenga ese mismo nombre
+        const isTaken = await window.FirebaseCommentsBridge.isGamertagTaken(tag, this.pendingAuthUser.uid);
+        if (isTaken) {
+          this.sound.playPop();
+          this.showGamertagFeedback(`⚠️ El Gamertag "${tag}" ya está en uso por otro jugador. Por favor elige otro.`, 'error');
+          if (this.saveGamertagBtn) {
+            this.saveGamertagBtn.disabled = false;
+            this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Gamertag y Continuar';
+          }
+          if (this.gamertagInput) this.gamertagInput.focus();
+          return;
+        }
+
+        // Guardar el perfil en la colección usuarios en Firestore
+        const profile = await window.FirebaseCommentsBridge.registerGamertag(this.pendingAuthUser, tag);
+        this.currentUser = profile;
+        this.pendingAuthUser = null;
+
+        this.sound.playSuccess();
+        this.showGamertagFeedback(`¡Gamertag "${tag}" registrado con éxito!`, 'success');
+
+        setTimeout(() => {
+          if (this.gamertagModal) {
+            this.gamertagModal.classList.remove('active');
+            this.gamertagModal.classList.remove('open');
+            this.gamertagModal.setAttribute('aria-hidden', 'true');
+          }
+          this.updateAuthUI();
+          this.renderComments();
+          this.showToast(`¡Bienvenido, ${tag}! 🎮`, 'success');
+        }, 600);
+
+      } catch (err) {
+        console.warn('Error registrando Gamertag:', err);
+        this.sound.playPop();
+        this.showGamertagFeedback(err.message || 'Error al guardar el Gamertag en Firebase.', 'error');
+        if (this.saveGamertagBtn) {
+          this.saveGamertagBtn.disabled = false;
+          this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Gamertag y Continuar';
+        }
+      }
+    }
+
+    /* ------------------------------------------------------------------------
        Comment Author Dynamic UI for Authenticated Roles
        ------------------------------------------------------------------------ */
 
@@ -2994,13 +3328,19 @@ ${mensaje}
        ------------------------------------------------------------------------ */
 
     async handleCommentSubmit() {
-      let author = 'Anónimo';
+      if (!this.currentUser || !this.currentUser.username) {
+        this.sound.playPop();
+        this.showToast('Por favor inicia sesión con Google para comentar', 'info');
+        this.handleGoogleSignIn();
+        return;
+      }
+
+      const author = this.currentUser.username;
+      const uid = this.currentUser.uid;
+      const email = this.currentUser.email || '';
+      const userPhoto = this.currentUser.photoURL || '';
       const houseRef = this.commentHouseRef ? this.commentHouseRef.value : 'General';
       const text = this.commentText ? this.commentText.value.trim() : '';
-
-      if (this.adminRole === 'creator') {
-        author = 'Josue';
-      }
 
       if (!text) {
         this.showToast('Por favor escribe tu comentario', 'error');
@@ -3035,6 +3375,9 @@ ${mensaje}
       const optimisticComment = {
         id: tempId,
         author: author,
+        uid: uid,
+        email: email,
+        userPhoto: userPhoto,
         houseRef: houseRef,
         text: text,
         date: 'Hace unos momentos',
@@ -3053,6 +3396,9 @@ ${mensaje}
         if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady) {
           const docRef = await window.FirebaseCommentsBridge.addComment({
             author,
+            uid,
+            email,
+            userPhoto,
             text,
             houseRef,
             role: assignedRole
@@ -3115,7 +3461,7 @@ ${mensaje}
         this.commentsList.innerHTML = `
           <div class="empty-comments-box">
             <i class="fa-regular fa-comment-dots"></i>
-            <p>Sé el primero en dejar un comentario o sugerencia de construcción.</p>
+            <p>Sé el primero en dejar un comentario con tu Gamertag.</p>
           </div>
         `;
         return;
@@ -3125,22 +3471,31 @@ ${mensaje}
         .map((comm) => {
           const isCreator = comm.role === 'creator' || comm.isCreator || (comm.author && (comm.author.toLowerCase() === 'josue' || comm.author.toLowerCase() === 'loanrey17'));
           const isAdminUser = this.adminRole === 'creator';
+          const isOwner = this.currentUser && this.currentUser.uid && comm.uid === this.currentUser.uid;
 
           let cardClass = 'comment-card animate-slide-in';
           let avatarClass = 'comment-avatar';
-          let avatarContent = comm.author ? comm.author.charAt(0).toUpperCase() : 'M';
+          let avatarContent = '';
           let roleBadge = '';
 
-          if (isCreator) {
+          if (comm.userPhoto) {
+            avatarContent = `<img src="${this.escapeHTML(comm.userPhoto)}" alt="${this.escapeHTML(comm.author)}" class="comment-avatar-img" onerror="this.style.display='none'">`;
+          } else if (isCreator) {
             cardClass += ' gold-verified-card';
             avatarClass += ' creator-golden-avatar';
             avatarContent = '<i class="fa-solid fa-crown"></i>';
+          } else {
+            avatarContent = comm.author ? comm.author.charAt(0).toUpperCase() : '<i class="fa-solid fa-gamepad"></i>';
+          }
+
+          if (isCreator) {
+            cardClass += ' gold-verified-card';
             roleBadge = '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>';
           }
 
-          // Trash button only for authenticated Administrators
-          const trashBtn = isAdminUser
-            ? `<button class="btn-comment-trash" data-comment-action="delete" data-id="${comm.id}" title="Eliminar comentario (Solo Administrador)" aria-label="Eliminar comentario">
+          // Trash button for Administrators or Comment Owner
+          const trashBtn = (isAdminUser || isOwner)
+            ? `<button class="btn-comment-trash" data-comment-action="delete" data-id="${comm.id}" title="Eliminar comentario" aria-label="Eliminar comentario">
                 <i class="fa-solid fa-trash-can"></i>
                </button>`
             : '';
@@ -3163,13 +3518,23 @@ ${mensaje}
 
             const repliesItemsHTML = replies.map((reply) => {
               const isRepCreator = reply.role === 'creator' || (reply.author && (reply.author.toLowerCase() === 'josue' || reply.author.toLowerCase() === 'loanrey17'));
-              const repAvatarClass = isRepCreator ? 'reply-avatar creator-golden-avatar' : 'reply-avatar';
-              const repAvatarContent = isRepCreator ? '<i class="fa-solid fa-crown"></i>' : (reply.author ? reply.author.charAt(0).toUpperCase() : 'A');
+              const isRepOwner = this.currentUser && this.currentUser.uid && reply.uid === this.currentUser.uid;
+              let repAvatarClass = isRepCreator ? 'reply-avatar creator-golden-avatar' : 'reply-avatar';
+              let repAvatarContent = '';
+
+              if (reply.userPhoto) {
+                repAvatarContent = `<img src="${this.escapeHTML(reply.userPhoto)}" alt="${this.escapeHTML(reply.author)}" class="reply-avatar-img" onerror="this.style.display='none'">`;
+              } else if (isRepCreator) {
+                repAvatarContent = '<i class="fa-solid fa-crown"></i>';
+              } else {
+                repAvatarContent = reply.author ? reply.author.charAt(0).toUpperCase() : 'A';
+              }
+
               const repRoleBadge = isRepCreator ? '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>' : '';
               const repToBadge = reply.replyTo ? `<span class="reply-to-tag">▶ @${this.escapeHTML(reply.replyTo)}</span>` : '';
               
-              const repTrashBtn = isAdminUser
-                ? `<button class="btn-reply-trash" data-reply-action="delete" data-parent-id="${comm.id}" data-id="${reply.id}" title="Eliminar respuesta (Admin)">
+              const repTrashBtn = (isAdminUser || isRepOwner)
+                ? `<button class="btn-reply-trash" data-reply-action="delete" data-parent-id="${comm.id}" data-id="${reply.id}" title="Eliminar respuesta">
                     <i class="fa-solid fa-trash-can"></i>
                    </button>`
                 : '';
@@ -3238,6 +3603,7 @@ ${mensaje}
               <div class="comment-header-row">
                 <div class="comment-author-info">
                   <span class="comment-author-name">${this.escapeHTML(comm.author)}</span>
+                  <span class="verified-gamertag-pill" title="Gamertag verificado"><i class="fa-solid fa-circle-check"></i></span>
                   ${roleBadge}
                   <span class="comment-ref-badge"><i class="fa-solid fa-cube"></i> ${this.escapeHTML(comm.houseRef || 'General')}</span>
                 </div>
@@ -3285,7 +3651,7 @@ ${mensaje}
         });
       });
 
-      // Admin Comment delete buttons
+      // Admin / Owner Comment delete buttons
       const deleteBtns = this.commentsList.querySelectorAll('[data-comment-action="delete"]');
       deleteBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
@@ -3314,6 +3680,12 @@ ${mensaje}
       const replyBtns = this.commentsList.querySelectorAll('[data-comment-action="reply"]');
       replyBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
+          if (!this.currentUser || !this.currentUser.username) {
+            this.sound.playPop();
+            this.showToast('Inicia sesión con Google para responder', 'info');
+            this.handleGoogleSignIn();
+            return;
+          }
           const commId = btn.getAttribute('data-id');
           const author = btn.getAttribute('data-author') || 'Usuario';
           this.sound.playPop();
@@ -3328,6 +3700,12 @@ ${mensaje}
       const subreplyBtns = this.commentsList.querySelectorAll('[data-comment-action="reply-to-user"]');
       subreplyBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
+          if (!this.currentUser || !this.currentUser.username) {
+            this.sound.playPop();
+            this.showToast('Inicia sesión con Google para responder', 'info');
+            this.handleGoogleSignIn();
+            return;
+          }
           const parentId = btn.getAttribute('data-parent-id');
           const author = btn.getAttribute('data-author') || 'Usuario';
           this.sound.playPop();
@@ -3374,7 +3752,7 @@ ${mensaje}
         });
       });
 
-      // Admin Reply Deletes
+      // Admin / Owner Reply Deletes
       const replyTrashBtns = this.commentsList.querySelectorAll('[data-reply-action="delete"]');
       replyTrashBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
@@ -3387,6 +3765,13 @@ ${mensaje}
     }
 
     async handleReplySubmit(parentId, text, replyTo) {
+      if (!this.currentUser || !this.currentUser.username) {
+        this.sound.playPop();
+        this.showToast('Inicia sesión con Google para responder', 'info');
+        this.handleGoogleSignIn();
+        return;
+      }
+
       const comment = this.comments.find((c) => c.id === parentId);
       if (!comment) return;
 
@@ -3405,16 +3790,19 @@ ${mensaje}
         return;
       }
 
-      let author = 'Anónimo';
-      if (this.adminRole === 'creator') {
-        author = 'Josue';
-      }
+      const author = this.currentUser.username;
+      const uid = this.currentUser.uid;
+      const email = this.currentUser.email || '';
+      const userPhoto = this.currentUser.photoURL || '';
       const assignedRole = this.adminRole === 'creator' || (author.toLowerCase() === 'josue' || author.toLowerCase() === 'loanrey17') ? 'creator' : null;
 
       const replyId = 'rep-' + Date.now();
       const newReply = {
         id: replyId,
         author: author,
+        uid: uid,
+        email: email,
+        userPhoto: userPhoto,
         text: text,
         replyTo: replyTo || null,
         role: assignedRole,

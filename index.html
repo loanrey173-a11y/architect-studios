@@ -20,7 +20,7 @@
   
   <!-- Preload Minecraft Block -->
   <link rel="preload" as="image" href="images/minecraft_block.png">
-  <link rel="stylesheet" href="./style.css?v=75">
+  <link rel="stylesheet" href="./style.css?v=87">
 
   <!-- Critical Preloader CSS (Instant 0ms render for weak connections / slow network) -->
   <style>
@@ -543,43 +543,89 @@
           <p class="comments-subtitle">Comparte tus ideas, comentarios sobre los diseños o qué casas te gustaría ver en tiempo real.</p>
         </div>
 
-        <!-- Comment Form -->
-        <form id="commentForm" class="comment-form-card">
-          <div class="comment-form-row">
-            <!-- Authenticated Author Badge (Only for Desarrollador Josue) -->
-            <div class="form-group flex-1" id="commentAuthBadgeGroup" style="display: none;">
-              <label><i class="fa-solid fa-id-badge"></i> Publicando como:</label>
-              <div class="auth-commenter-card" id="authCommenterCard">
-                <!-- Injected dynamically in app.js -->
+        <!-- Comment Auth & Form Card Container -->
+        <div class="comment-auth-wrapper" id="commentAuthWrapper">
+          
+          <!-- Unauthenticated State: Google Sign-In Prompt Box -->
+          <div class="comment-auth-prompt-card" id="commentAuthPrompt">
+            <div class="auth-prompt-left">
+              <div class="auth-prompt-icon-group">
+                <div class="auth-prompt-cube"><i class="fa-solid fa-gamepad"></i></div>
+                <div class="auth-prompt-google-circle"><i class="fa-brands fa-google"></i></div>
+              </div>
+              <div class="auth-prompt-info">
+                <h3>Únete a la conversación con tu Gamertag</h3>
+                <p>Inicia sesión con Google para registrar tu nombre de usuario único y comentar en tiempo real.</p>
+              </div>
+            </div>
+            <button type="button" class="btn-google-auth" id="commentGoogleSignInBtn">
+              <svg class="google-svg-icon" viewBox="0 0 24 24" width="20" height="20">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>Iniciar sesión con Google</span>
+            </button>
+          </div>
+
+          <!-- Authenticated State: Active Comment Form -->
+          <form id="commentForm" class="comment-form-card" style="display: none;">
+            
+            <!-- User Status Top Bar in Form -->
+            <div class="comment-auth-user-bar" id="commentAuthUserBar">
+              <div class="user-profile-badge">
+                <div class="user-avatar-container">
+                  <img id="commentUserAvatarImg" src="" alt="Avatar" class="user-profile-img" style="display: none;">
+                  <div id="commentUserAvatarFallback" class="user-avatar-initials"><i class="fa-solid fa-gamepad"></i></div>
+                </div>
+                <div class="user-profile-details">
+                  <div class="user-gamertag-row">
+                    <span class="user-gamertag-name" id="commentUserGamertag">Gamertag</span>
+                    <span class="verified-gamertag-pill" title="Gamertag único verificado en Firestore"><i class="fa-solid fa-circle-check"></i> Verificado</span>
+                    <span id="commentDevCrownPill" class="creator-crown-pill" style="display: none;"><i class="fa-solid fa-crown"></i> Desarrollador</span>
+                  </div>
+                  <span class="user-email-text" id="commentUserEmail">email@gmail.com</span>
+                </div>
+              </div>
+
+              <div class="comment-user-actions">
+                <button type="button" class="btn-user-signout" id="commentSignOutBtn" title="Cerrar sesión de Google">
+                  <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                  <span>Cerrar sesión</span>
+                </button>
               </div>
             </div>
 
-            <div class="form-group flex-1">
-              <label for="commentHouseRef"><i class="fa-solid fa-cube"></i> Tema / Construcción</label>
-              <select id="commentHouseRef">
-                <option value="General">💬 Opinión General</option>
-                <option value="Mansión Moderna Sakura">🌸 Mansión Moderna Sakura</option>
-                <option value="Residencia de Cerezo con Chimenea">🔥 Residencia de Cerezo con Chimenea</option>
-                <option value="Villa Imperial Cherry">🏯 Villa Imperial Cherry</option>
-                <option value="Mansión Monumental de la Selva">🌴 Mansión Monumental de la Selva</option>
-                <option value="Villa Costera Moderna">🏖️ Villa Costera Moderna</option>
-                <option value="Mansión de Playa con Muelle">🌊 Mansión de Playa con Muelle</option>
-              </select>
+            <div class="comment-form-row">
+              <div class="form-group flex-1">
+                <label for="commentHouseRef"><i class="fa-solid fa-cube"></i> Tema / Construcción</label>
+                <select id="commentHouseRef">
+                  <option value="General">💬 Opinión General</option>
+                  <option value="Mansión Moderna Sakura">🌸 Mansión Moderna Sakura</option>
+                  <option value="Residencia de Cerezo con Chimenea">🔥 Residencia de Cerezo con Chimenea</option>
+                  <option value="Villa Imperial Cherry">🏯 Villa Imperial Cherry</option>
+                  <option value="Mansión Monumental de la Selva">🌴 Mansión Monumental de la Selva</option>
+                  <option value="Villa Costera Moderna">🏖️ Villa Costera Moderna</option>
+                  <option value="Mansión de Playa con Muelle">🌊 Mansión de Playa con Muelle</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label for="commentText"><i class="fa-solid fa-pen"></i> Tu Comentario <span class="req">*</span></label>
-            <textarea id="commentText" rows="3" placeholder="Escribe tu opinión, sugerencia o comentario aquí..." required maxlength="500"></textarea>
-          </div>
+            <div class="form-group">
+              <label for="commentText"><i class="fa-solid fa-pen"></i> Tu Comentario <span class="req">*</span></label>
+              <textarea id="commentText" rows="3" placeholder="Escribe tu opinión, sugerencia o comentario aquí..." required maxlength="500"></textarea>
+            </div>
 
-          <div class="comment-form-footer">
-            <span class="char-counter" id="charCounter">0 / 500</span>
-            <button type="submit" class="btn-emerald" id="submitCommentBtn">
-              <i class="fa-solid fa-paper-plane"></i> Publicar Comentario
-            </button>
-          </div>
-        </form>
+            <div class="comment-form-footer">
+              <span class="char-counter" id="charCounter">0 / 500</span>
+              <button type="submit" class="btn-emerald" id="submitCommentBtn">
+                <i class="fa-solid fa-paper-plane"></i> Publicar Comentario
+              </button>
+            </div>
+          </form>
+
+        </div>
 
         <!-- Comments Live Feed -->
         <div class="comments-list" id="commentsList">
@@ -868,6 +914,74 @@
             <i class="fa-solid fa-check"></i> Entendido
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gamertag Registration Modal (Floating window when signing in for the first time) -->
+  <div class="modal-backdrop gamertag-modal-backdrop" id="gamertagModal" aria-hidden="true">
+    <div class="modal-dialog modal-gamertag-dialog">
+      <button class="modal-close-btn" id="closeGamertagModalBtn" aria-label="Cerrar ventana">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="gamertag-modal-content">
+        <div class="gamertag-icon-header">
+          <div class="gamertag-cube-avatar">
+            <i class="fa-solid fa-gamepad"></i>
+          </div>
+          <span class="gamertag-sparkle-pill"><i class="fa-solid fa-sparkles"></i> Nuevo Arquitecto</span>
+        </div>
+
+        <h3 class="gamertag-title">Crea tu Gamertag Único</h3>
+        <p class="gamertag-subtitle">
+          Iniciaste sesión por primera vez. Registra tu Gamertag oficial para que tus comentarios queden asociados a tu identidad de Minecraft.
+        </p>
+
+        <!-- Google User Preview Card -->
+        <div class="gamertag-user-card" id="gamertagUserPreview">
+          <div class="gamertag-avatar-wrap">
+            <img src="" alt="Avatar de Google" id="gamertagGoogleAvatar" class="gamertag-google-avatar" style="display: none;">
+            <div id="gamertagAvatarFallback" class="gamertag-avatar-fallback"><i class="fa-brands fa-google"></i></div>
+          </div>
+          <div class="gamertag-user-meta">
+            <span class="gamertag-google-name" id="gamertagGoogleName">Jugador</span>
+            <span class="gamertag-google-email" id="gamertagGoogleEmail">correo@gmail.com</span>
+          </div>
+        </div>
+
+        <form id="gamertagForm" class="gamertag-form">
+          <div class="form-group">
+            <label for="gamertagInput"><i class="fa-solid fa-id-badge"></i> Tu Gamertag / Nombre de Usuario <span class="req">*</span></label>
+            <div class="gamertag-input-wrap">
+              <input 
+                type="text" 
+                id="gamertagInput" 
+                class="gamertag-input"
+                placeholder="Ej: MineBuilder_99, AlexCraft, Steve_Pro..." 
+                required 
+                minlength="3" 
+                maxlength="20" 
+                autocomplete="off"
+                spellcheck="false"
+              >
+            </div>
+            <div class="gamertag-hint-row">
+              <span class="gamertag-rules"><i class="fa-solid fa-circle-info"></i> De 3 a 20 caracteres (letras, números y guión bajo). Sin espacios.</span>
+              <span class="gamertag-char-counter" id="gamertagCharCounter">0/20</span>
+            </div>
+            <div id="gamertagFeedback" class="gamertag-feedback-box" style="display: none;"></div>
+          </div>
+
+          <div class="gamertag-actions-row">
+            <button type="button" class="btn-secondary" id="cancelGamertagBtn">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-emerald" id="saveGamertagBtn">
+              <i class="fa-solid fa-check"></i> Guardar Gamertag y Continuar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -1225,15 +1339,24 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="assertive"></div>
 
-  <!-- Firebase SDK v10 (ESM) Realtime Firestore -->
+  <!-- Firebase SDK v10 (ESM) Realtime Firestore & Authentication -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithPopup, 
+      GoogleAuthProvider, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
       getFirestore, 
       collection, 
       getDocs,
+      getDoc,
       addDoc, 
       query, 
+      where,
       orderBy, 
       onSnapshot, 
       serverTimestamp,
@@ -1246,7 +1369,7 @@
       arrayRemove
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Configuración de tu proyecto
+    // Configuración de tu proyecto Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDuAOr9jNlvqufnNOdQm9q49B2ztHM16T8",
       authDomain: "minecraft-comentarios.firebaseapp.com",
@@ -1258,7 +1381,12 @@
 
     try {
       const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const googleProvider = new GoogleAuthProvider();
+      googleProvider.setCustomParameters({ prompt: 'select_account' });
+
       const db = getFirestore(app);
+      const usersCollection = collection(db, "usuarios");
       const commentsCollection = collection(db, "comentarios");
       const postulacionesCollection = collection(db, "postulaciones");
       const quejasCollection = collection(db, "quejas_sugerencias");
@@ -1280,18 +1408,93 @@
       window.FirebaseCommentsBridge = {
         app,
         db,
+        auth,
+        googleProvider,
+        usersCollection,
         commentsCollection,
         postulacionesCollection,
         quejasCollection,
         isReady: true,
+
+        // ================= AUTHENTICATION METHODS =================
+        async signInWithGoogle() {
+          return await signInWithPopup(auth, googleProvider);
+        },
+        async signOutUser() {
+          return await signOut(auth);
+        },
+        onAuthStateChanged(callback) {
+          return onAuthStateChanged(auth, callback);
+        },
+
+        // ================= FIRESTORE USUARIOS COLLECTION =================
+        async getUserProfile(uid) {
+          if (!uid) return null;
+          const userDocRef = doc(db, "usuarios", uid);
+          const snap = await getDoc(userDocRef);
+          if (snap.exists()) {
+            return snap.data();
+          }
+          return null;
+        },
+
+        async isGamertagTaken(gamertag, excludeUid = null) {
+          const clean = (gamertag || "").trim().toLowerCase();
+          if (!clean) return false;
+
+          const snap = await getDocs(usersCollection);
+          let taken = false;
+          snap.forEach((docSnap) => {
+            if (excludeUid && docSnap.id === excludeUid) return;
+            const data = docSnap.data();
+            const existingName = (data.username || data.gamertag || "").trim().toLowerCase();
+            if (existingName === clean) {
+              taken = true;
+            }
+          });
+          return taken;
+        },
+
+        async registerGamertag(user, gamertag) {
+          const cleanGamertag = (gamertag || "").trim();
+          if (!cleanGamertag || cleanGamertag.length < 3 || cleanGamertag.length > 20) {
+            throw new Error("El Gamertag debe tener entre 3 y 20 caracteres.");
+          }
+
+          // Verificar en la colección usuarios que ningún otro usuario tenga ese mismo nombre
+          const taken = await this.isGamertagTaken(cleanGamertag, user.uid);
+          if (taken) {
+            throw new Error(`El Gamertag "${cleanGamertag}" ya está registrado por otro jugador. Por favor elige otro.`);
+          }
+
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const profileData = {
+            uid: user.uid,
+            email: user.email || "",
+            username: cleanGamertag,
+            username_lower: cleanGamertag.toLowerCase(),
+            displayName: user.displayName || cleanGamertag,
+            photoURL: user.photoURL || "",
+            createdAt: serverTimestamp(),
+            createdAtMs: Date.now()
+          };
+
+          await setDoc(userDocRef, profileData, { merge: true });
+          return profileData;
+        },
+
+        // ================= COMMENTS & FEED METHODS =================
         subscribe(onUpdate, onError) {
           return onSnapshot(commentsCollection, onUpdate, onError);
         },
         async addComment(data) {
           return await addDoc(commentsCollection, {
             autor: data.author || data.autor || "Anónimo",
-            texto: data.text || data.texto || "",
             author: data.author || data.autor || "Anónimo",
+            uid: data.uid || null,
+            email: data.email || null,
+            userPhoto: data.userPhoto || null,
+            texto: data.text || data.texto || "",
             text: data.text || data.texto || "",
             houseRef: data.houseRef || "General",
             role: data.role || null,
@@ -1307,6 +1510,9 @@
             replies: arrayUnion({
               id: replyData.id || ("rep-" + Date.now()),
               author: replyData.author || "Anónimo",
+              uid: replyData.uid || null,
+              email: replyData.email || null,
+              userPhoto: replyData.userPhoto || null,
               text: replyData.text || "",
               replyTo: replyData.replyTo || null,
               role: replyData.role || null,
@@ -1371,7 +1577,7 @@
 
       window.dispatchEvent(new CustomEvent('firebase-bridge-ready'));
     } catch (err) {
-      console.warn("Error al inicializar Firebase Firestore:", err);
+      console.warn("Error al inicializar Firebase Firestore & Auth:", err);
     }
   </script>
 
@@ -1387,6 +1593,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=85"></script>
+  <script src="./app.js?v=87"></script>
 </body>
 </html>

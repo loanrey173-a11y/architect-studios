@@ -1270,6 +1270,501 @@ body {
   margin-top: 0.35rem;
 }
 
+/* ==========================================================================
+   Google Auth & Gamertag System in Comments
+   ========================================================================== */
+
+.comment-auth-wrapper {
+  margin-bottom: 2.5rem;
+}
+
+/* Unauthenticated State: Google Auth Card */
+.comment-auth-prompt-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(16, 185, 129, 0.1);
+  transition: all var(--tr-smooth);
+}
+
+.comment-auth-prompt-card:hover {
+  border-color: var(--emerald);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45), 0 0 25px rgba(16, 185, 129, 0.18);
+}
+
+.auth-prompt-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+.auth-prompt-icon-group {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.auth-prompt-cube {
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(135deg, var(--emerald) 0%, #047857 100%);
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 1.4rem;
+  box-shadow: 0 6px 16px var(--emerald-glow);
+}
+
+.auth-prompt-google-circle {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  border: 2px solid var(--bg-secondary);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #ea4335;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.auth-prompt-info h3 {
+  font-family: var(--font-main);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.auth-prompt-info p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.btn-google-auth {
+  background: #ffffff;
+  color: #1f2937;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.4rem;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  transition: all var(--tr-bounce);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-google-auth:hover {
+  background: #f8fafc;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-google-auth:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.google-svg-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Authenticated User Status Bar in Form */
+.comment-auth-user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 1.25rem;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.user-avatar-container {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--emerald);
+  box-shadow: 0 0 10px var(--emerald-glow);
+  background: var(--bg-secondary);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.user-profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.user-avatar-initials {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--emerald);
+  font-size: 1.1rem;
+}
+
+.user-profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.user-gamertag-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.user-gamertag-name {
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
+}
+
+.verified-gamertag-pill {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--emerald);
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.user-email-text {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.btn-user-signout {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all var(--tr-fast);
+}
+
+.btn-user-signout:hover {
+  background: var(--redstone);
+  color: #ffffff;
+  border-color: var(--redstone);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Gamertag Registration Modal
+   ========================================================================== */
+
+.gamertag-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gamertag-modal-backdrop.open,
+.gamertag-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-gamertag-dialog {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-xl);
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(16, 185, 129, 0.2);
+  transform: scale(0.94) translateY(20px);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.gamertag-modal-backdrop.open .modal-gamertag-dialog,
+.gamertag-modal-backdrop.active .modal-gamertag-dialog {
+  transform: scale(1) translateY(0);
+}
+
+.gamertag-modal-content {
+  padding: 2.2rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.gamertag-icon-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.gamertag-cube-avatar {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, var(--emerald) 0%, #047857 100%);
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 1.6rem;
+  box-shadow: 0 8px 20px var(--emerald-glow);
+}
+
+.gamertag-sparkle-pill {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--emerald);
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0.3rem 0.85rem;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.gamertag-title {
+  font-family: var(--font-main);
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: var(--text-main);
+  margin-bottom: 0.45rem;
+}
+
+.gamertag-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 1.4rem;
+}
+
+.gamertag-user-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
+}
+
+.gamertag-avatar-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.gamertag-google-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gamertag-avatar-fallback {
+  color: #ea4335;
+  font-size: 1.25rem;
+}
+
+.gamertag-user-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gamertag-google-name {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gamertag-google-email {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gamertag-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.gamertag-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.gamertag-input-wrap input,
+#gamertagInput {
+  width: 100%;
+  padding: 0.85rem 1.15rem;
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: var(--bg-input);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  box-sizing: border-box;
+  transition: all var(--tr-fast);
+}
+
+.gamertag-input-wrap input:focus,
+#gamertagInput:focus {
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 3px var(--emerald-glow);
+  outline: none;
+}
+
+.gamertag-hint-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+}
+
+.gamertag-rules {
+  color: var(--text-dim);
+}
+
+.gamertag-char-counter {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.gamertag-feedback-box {
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.gamertag-feedback-box.error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.gamertag-feedback-box.success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
+}
+
+.gamertag-feedback-box.loading {
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #7dd3fc;
+}
+
+.gamertag-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  margin-top: 1.4rem;
+}
+
+/* User avatar in comments list */
+.comment-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.reply-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
 .comment-form-card {
   background: var(--bg-card);
   backdrop-filter: blur(14px);
