@@ -732,6 +732,7 @@
       // Zoom & stage state
       this.zoomLevel = 1.0;
       this.gridActive = false;
+      this.imageObserver = null;
 
       this.cacheDOMElements();
       this.initTheme();
@@ -2089,6 +2090,7 @@
       this.cardsGrid.innerHTML = sorted.map((house) => this.createCardHTML(house)).join('');
 
       this.attachCardEventListeners();
+      this.initLazyLoading();
     }
 
     createCardHTML(house) {
@@ -2133,10 +2135,23 @@
         `
         : '';
 
+      // SVG placeholder to prevent early downloads and ensure zero layout shift (CLS)
+      const placeholderSVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'%3E%3C/svg%3E";
+
       return `
         <article class="house-card" data-house-id="${house.id}" tabindex="0" role="button" aria-label="Ver detalles de ${house.title}">
           <div class="card-image-wrap">
-            <img src="${house.image}" alt="${house.title}" class="card-img" loading="lazy" decoding="async" onload="this.classList.add('loaded')" onerror="window.handleImgFallback(this, '${house.id}')">
+            <div class="card-skeleton-shimmer"></div>
+            <img 
+              src="${placeholderSVG}" 
+              data-src="${house.image}" 
+              alt="${house.title}" 
+              class="card-img lazy-img" 
+              loading="lazy" 
+              decoding="async" 
+              onload="this.classList.add('loaded'); const s = this.previousElementSibling; if (s && s.classList.contains('card-skeleton-shimmer')) s.style.opacity = '0';" 
+              onerror="window.handleImgFallback(this, '${house.id}')"
+            >
             <div class="card-overlay-gradient"></div>
             
             <div class="card-top-badges">
@@ -2239,6 +2254,50 @@
           });
         }
       });
+    }
+
+    initLazyLoading() {
+      if (this.imageObserver) {
+        this.imageObserver.disconnect();
+      }
+
+      if (!this.cardsGrid) return;
+      const lazyImages = this.cardsGrid.querySelectorAll('.lazy-img[data-src]');
+      if (!lazyImages || lazyImages.length === 0) return;
+
+      if ('IntersectionObserver' in window) {
+        this.imageObserver = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                const dataSrc = img.getAttribute('data-src');
+                if (dataSrc) {
+                  img.src = dataSrc;
+                  img.removeAttribute('data-src');
+                }
+                observer.unobserve(img);
+              }
+            });
+          },
+          {
+            root: null,
+            rootMargin: '180px 0px', // Precarga suave 180px antes de entrar a la pantalla
+            threshold: 0.01
+          }
+        );
+
+        lazyImages.forEach((img) => this.imageObserver.observe(img));
+      } else {
+        // Fallback para navegadores antiguos sin IntersectionObserver
+        lazyImages.forEach((img) => {
+          const dataSrc = img.getAttribute('data-src');
+          if (dataSrc) {
+            img.src = dataSrc;
+            img.removeAttribute('data-src');
+          }
+        });
+      }
     }
 
     /* ------------------------------------------------------------------------

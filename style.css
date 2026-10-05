@@ -966,8 +966,31 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
   display: block;
+  z-index: 2;
+  position: relative;
+}
+
+.card-img.loaded {
+  opacity: 1;
+}
+
+.card-skeleton-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.8) 50%, rgba(17, 24, 39, 0.95) 100%);
+  background-size: 200% 100%;
+  animation: shimmerCard 1.6s infinite ease-in-out;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+@keyframes shimmerCard {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .house-card:hover .card-img {

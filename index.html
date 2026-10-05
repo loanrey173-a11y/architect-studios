@@ -10,7 +10,9 @@
   <title>Casas de Minecraft & Diseños Épicos - Galería de Construcciones</title>
   <meta name="description" content="Galería interactiva para explorar construcciones, mansiones y casas de Minecraft con planos, listas de materiales y comentarios de la comunidad.">
   
-  <!-- Google Fonts -->
+  <!-- DNS Prefetch & Resource Hints -->
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="https://www.gstatic.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -18,10 +20,10 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <!-- Preload Minecraft Block & Textures -->
+  <!-- Preload Minecraft Textures -->
   <link rel="preload" as="image" href="images/minecraft_block.png">
   <link rel="preload" as="image" href="./wood_border.png">
-  <link rel="stylesheet" href="./style.css?v=99">
+  <link rel="stylesheet" href="./style.css?v=100">
 
   <!-- Critical Preloader CSS (Instant 0ms render for weak connections / slow network) -->
   <style>
@@ -293,13 +295,17 @@
             preloader.classList.add('preloader-hidden');
             setTimeout(function() {
               if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
-            }, 600);
+            }, 450);
           }
-        }, 300);
+        }, 120);
       };
 
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(window.hidePagePreloader, 60);
+      });
+
       window.addEventListener('load', function() {
-        setTimeout(window.hidePagePreloader, 150);
+        window.hidePagePreloader();
       });
 
       // Timeout de seguridad máximo para conexiones extremadamente lentas
