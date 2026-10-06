@@ -919,16 +919,16 @@
               const author = data.author || data.autor || 'Anónimo';
               const text = data.text || data.texto || '';
               const houseRef = data.houseRef || 'General';
-              const isDev = this.isDeveloperAccount({ author, email, role: data.role });
-              const spec = data.especialidad || data.titulo || (data.role === 'engineer' ? 'Ingeniero' : (isDev ? 'Desarrollador' : 'Arquitecto'));
-              const role = isDev ? 'creator' : (spec.toLowerCase().includes('ingenier') ? 'engineer' : 'architect');
-              const likes = typeof data.likes === 'number' ? data.likes : 0;
-              const likedByUser = this.userCommentLikes.includes(doc.id);
-              const date = this.formatCommentDate(data.fecha || data.createdAtMs);
-              const timestamp = (data.fecha && data.fecha.seconds) ? data.fecha.seconds * 1000 : (data.createdAtMs || (data.timestamp || Date.now()));
               const uid = data.uid || null;
               const email = data.email || null;
               const userPhoto = data.userPhoto || null;
+              const isDev = this.isDeveloperAccount({ author, email, role: data.role });
+              const spec = data.especialidad || data.titulo || (data.role === 'engineer' ? 'Ingeniero' : (isDev ? 'Desarrollador' : 'Arquitecto'));
+              const role = isDev ? 'creator' : (spec.toLowerCase().includes('ingenier') ? 'engineer' : 'architect');
+              const likes = typeof data.likes === 'number' ? Math.max(0, data.likes) : 0;
+              const likedByUser = this.userCommentLikes.includes(doc.id);
+              const date = this.formatCommentDate(data.fecha || data.createdAtMs);
+              const timestamp = (data.fecha && data.fecha.seconds) ? data.fecha.seconds * 1000 : (data.createdAtMs || (data.timestamp || Date.now()));
 
               // If legacy mock comment was in Firestore, delete it from Firestore
               if (doc.id === 'comm-1' || doc.id === 'comm-2' || (author && (author.toLowerCase().includes('alex_builder') || author.toLowerCase().includes('craftmaster')))) {
@@ -4201,7 +4201,8 @@ ${mensaje}
       // Main Comment Like buttons
       const likeBtns = this.commentsList.querySelectorAll('[data-comment-action="like"]');
       likeBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           const commId = btn.getAttribute('data-id');
           this.toggleCommentLike(commId);
         });
@@ -4511,6 +4512,7 @@ ${mensaje}
       }
 
       this.saveUserCommentLikes();
+      this.saveComments();
       this.renderComments();
 
       if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !commId.startsWith('comm-')) {

@@ -2032,30 +2032,48 @@ html.drawer-open {
   gap: 0.75rem;
 }
 
+.btn-comment-like,
 .comment-like-btn {
   background: transparent;
   border: 1px solid var(--border-subtle);
   color: var(--text-dim);
+  font-family: var(--font-main);
   font-size: 0.78rem;
   font-weight: 700;
-  padding: 0.25rem 0.65rem;
+  padding: 0.28rem 0.75rem;
   border-radius: var(--radius-full);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   transition: all var(--tr-fast);
 }
 
+.btn-comment-like:hover,
 .comment-like-btn:hover {
   color: var(--redstone);
   border-color: var(--redstone);
+  background: rgba(239, 68, 68, 0.08);
 }
 
+.btn-comment-like.liked,
 .comment-like-btn.liked {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.16);
   border-color: var(--redstone);
   color: var(--redstone);
+}
+
+.btn-comment-like i,
+.comment-like-btn i,
+.btn-reply-like i {
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-comment-like.liked i,
+.comment-like-btn.liked i,
+.btn-reply-like.liked i {
+  color: var(--redstone);
+  transform: scale(1.2);
 }
 
 /* ==========================================================================

@@ -1716,9 +1716,16 @@
           return await deleteDoc(doc(db, "comentarios", commentId));
         },
         async toggleLike(commentId, delta) {
-          return await updateDoc(doc(db, "comentarios", commentId), {
-            likes: increment(delta)
-          });
+          const commentRef = doc(db, "comentarios", commentId);
+          try {
+            return await updateDoc(commentRef, {
+              likes: increment(delta)
+            });
+          } catch (err) {
+            return await setDoc(commentRef, {
+              likes: increment(delta)
+            }, { merge: true });
+          }
         },
         async submitPostulacion(data) {
           return await addDoc(postulacionesCollection, {
