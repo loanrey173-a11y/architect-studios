@@ -388,6 +388,18 @@
       </div>
       <ul class="drawer-menu-list">
         <li>
+          <button type="button" class="drawer-item-btn" id="drawerProfileBtn" title="Ver mi perfil y favoritos guardados">
+            <div class="drawer-icon-box item-profile">
+              <i class="fa-solid fa-user-astronaut"></i>
+            </div>
+            <div class="drawer-item-text">
+              <span class="drawer-item-title">Mi Perfil</span>
+              <span class="drawer-item-desc">Tus casas favoritas guardadas y cuenta</span>
+            </div>
+            <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+          </button>
+        </li>
+        <li>
           <button type="button" class="drawer-item-btn" id="drawerTutorialsBtn" title="Tutoriales de construcción">
             <div class="drawer-icon-box item-tutorials">
               <i class="fa-solid fa-graduation-cap"></i>
@@ -1356,6 +1368,119 @@
     </div>
   </div>
 
+  <!-- User Profile & Favorites Modal -->
+  <div class="modal-backdrop profile-modal-backdrop" id="profileModal" aria-hidden="true">
+    <div class="modal-dialog modal-profile-dialog">
+      <button class="modal-close-btn" id="closeProfileModalBtn" aria-label="Cerrar ventana de perfil">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="profile-modal-content">
+        <!-- Header -->
+        <div class="profile-modal-header">
+          <div class="profile-header-icon-box">
+            <i class="fa-solid fa-user-astronaut"></i>
+          </div>
+          <div>
+            <h3 class="profile-title">Mi Perfil de Jugador</h3>
+            <p class="profile-subtitle">Gestiona tus construcciones favoritas y tu cuenta</p>
+          </div>
+        </div>
+
+        <!-- Estado 1: No autenticado (Guest / Invitado) -->
+        <div id="profileGuestView" class="profile-guest-view" style="display: none;">
+          <div class="profile-guest-card">
+            <div class="guest-card-icon">
+              <i class="fa-brands fa-google"></i>
+            </div>
+            <h4>Inicia sesión con Google</h4>
+            <p>Conéctate con tu cuenta para acceder a tus construcciones guardadas en favoritos desde cualquier dispositivo y gestionar tu identidad.</p>
+            <button type="button" class="btn-google-sign" id="profileGoogleLoginBtn">
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="google-g-icon" width="20" height="20">
+              <span>Continuar con Google</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado 2: Autenticado (User Profile) -->
+        <div id="profileUserView" class="profile-user-view" style="display: none;">
+          <!-- Card de Información de Usuario -->
+          <div class="profile-hero-card">
+            <div class="profile-avatar-wrapper">
+              <img src="" alt="Avatar" id="profileUserAvatarImg" class="profile-avatar-img" style="display: none;">
+              <div id="profileUserAvatarFallback" class="profile-avatar-fallback">
+                <i class="fa-solid fa-compass-drafting"></i>
+              </div>
+            </div>
+            <div class="profile-meta-info">
+              <div class="profile-name-row">
+                <h4 id="profileGamertag" class="profile-gamertag-text">Gamertag</h4>
+                <span id="profileRoleBadgeSlot" class="profile-role-badge-slot"></span>
+              </div>
+              <span id="profileUserEmail" class="profile-email-text">usuario@gmail.com</span>
+              <div class="profile-stats-row">
+                <span class="profile-stat-item"><i class="fa-solid fa-bookmark" style="color: var(--emerald);"></i> <strong id="profileFavCount">0</strong> Guardados</span>
+                <span class="profile-stat-item"><i class="fa-solid fa-circle-check" style="color: #38bdf8;"></i> Cuenta Verificada</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pestaña / Sección de Favoritos Guardados -->
+          <div class="profile-section-block">
+            <div class="profile-section-header">
+              <h5><i class="fa-solid fa-bookmark" style="color: var(--emerald);"></i> Mis Construcciones Favoritas</h5>
+              <span class="profile-favs-badge" id="profileFavsPill">0 casas</span>
+            </div>
+            
+            <div id="profileFavoritesGrid" class="profile-favs-grid">
+              <!-- Dynamically populated favorite cards -->
+            </div>
+          </div>
+
+          <!-- Zona de Gestión y Peligro -->
+          <div class="profile-danger-zone">
+            <div class="danger-zone-header">
+              <i class="fa-solid fa-gear"></i>
+              <span>Opciones de Cuenta</span>
+            </div>
+            <div class="profile-actions-row">
+              <button type="button" class="btn-profile-logout" id="profileLogoutBtn" title="Cerrar sesión de Google">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+              </button>
+              <button type="button" class="btn-delete-account" id="deleteAccountBtn" title="Eliminar cuenta permanentemente">
+                <i class="fa-solid fa-user-slash"></i> Eliminar Cuenta
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmación para Eliminar Cuenta -->
+  <div class="modal-backdrop delete-account-modal-backdrop" id="deleteAccountConfirmModal" aria-hidden="true">
+    <div class="modal-dialog modal-danger-dialog">
+      <div class="delete-account-modal-content">
+        <div class="delete-warning-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="delete-modal-title">¿Eliminar tu cuenta definitivamente?</h3>
+        <p class="delete-modal-desc">
+          Esta acción <strong>eliminará tu correo electrónico, tu Gamertag y tus datos de Firebase</strong> de forma permanente e irreversible.
+        </p>
+        <div class="delete-account-actions">
+          <button type="button" class="btn-secondary" id="cancelDeleteAccountBtn">
+            Cancelar
+          </button>
+          <button type="button" class="btn-danger-confirm" id="confirmDeleteAccountBtn">
+            <i class="fa-solid fa-trash-can"></i> Sí, Eliminar mi Cuenta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="assertive"></div>
 
@@ -1367,7 +1492,8 @@
       signInWithPopup, 
       GoogleAuthProvider, 
       signOut, 
-      onAuthStateChanged 
+      onAuthStateChanged,
+      deleteUser
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
       getFirestore, 
@@ -1442,6 +1568,43 @@
         },
         async signOutUser() {
           return await signOut(auth);
+        },
+        async deleteCurrentUserAccount() {
+          const user = auth.currentUser;
+          if (!user) throw new Error("No hay una sesión activa para eliminar.");
+          const uid = user.uid;
+          // 1. Eliminar documento del usuario en Firestore
+          try {
+            const userDocRef = doc(db, "usuarios", uid);
+            await deleteDoc(userDocRef);
+          } catch (e) {
+            console.warn("Error eliminando documento de usuario en Firestore:", e);
+          }
+          // 2. Eliminar el usuario en Firebase Authentication
+          await deleteUser(user);
+        },
+        async saveUserFavorites(uid, favoritesArray) {
+          if (!uid) return;
+          try {
+            const userDocRef = doc(db, "usuarios", uid);
+            await setDoc(userDocRef, { favoritos: favoritesArray }, { merge: true });
+          } catch (e) {
+            console.warn("Error guardando favoritos en Firestore:", e);
+          }
+        },
+        async getUserFavorites(uid) {
+          if (!uid) return [];
+          try {
+            const userDocRef = doc(db, "usuarios", uid);
+            const snap = await getDoc(userDocRef);
+            if (snap.exists()) {
+              const data = snap.data();
+              return Array.isArray(data.favoritos) ? data.favoritos : [];
+            }
+          } catch (e) {
+            console.warn("Error recuperando favoritos de Firestore:", e);
+          }
+          return [];
         },
         onAuthStateChanged(callback) {
           return onAuthStateChanged(auth, callback);

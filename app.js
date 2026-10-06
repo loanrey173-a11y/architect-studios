@@ -840,6 +840,11 @@
 
     loadFavorites() {
       try {
+        if (this.currentUser && this.currentUser.email) {
+          const userKey = 'minecraft_favs_' + this.currentUser.email.toLowerCase().trim();
+          const userSaved = localStorage.getItem(userKey);
+          if (userSaved) return JSON.parse(userSaved);
+        }
         const saved = localStorage.getItem(STORAGE_KEYS.FAVORITES);
         return saved ? JSON.parse(saved) : [];
       } catch (e) {
@@ -850,6 +855,13 @@
     saveFavorites() {
       try {
         localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(this.userFavorites));
+        if (this.currentUser && this.currentUser.email) {
+          const userKey = 'minecraft_favs_' + this.currentUser.email.toLowerCase().trim();
+          localStorage.setItem(userKey, JSON.stringify(this.userFavorites));
+        }
+        if (this.currentUser && this.currentUser.uid && window.FirebaseCommentsBridge && typeof window.FirebaseCommentsBridge.saveUserFavorites === 'function') {
+          window.FirebaseCommentsBridge.saveUserFavorites(this.currentUser.uid, this.userFavorites);
+        }
       } catch (e) {
         // Ignore
       }
@@ -1032,7 +1044,21 @@
                 if (profile && profile.username) {
                   this.currentUser = profile;
                   this.pendingAuthUser = null;
+
+                  // Cargar y sincronizar favoritos del usuario desde Firestore y LocalStorage
+                  this.userFavorites = this.loadFavorites();
+                  if (typeof window.FirebaseCommentsBridge.getUserFavorites === 'function') {
+                    const remoteFavs = await window.FirebaseCommentsBridge.getUserFavorites(firebaseUser.uid);
+                    if (Array.isArray(remoteFavs) && remoteFavs.length > 0) {
+                      const merged = Array.from(new Set([...this.userFavorites, ...remoteFavs]));
+                      this.userFavorites = merged;
+                    }
+                  }
+                  this.saveFavorites();
+
                   this.updateAuthUI();
+                  this.renderProfileModal();
+                  this.render();
                   this.renderComments();
                 } else {
                   // User signed in with Google for first time: show Gamertag registration modal!
@@ -1047,7 +1073,10 @@
             } else {
               this.currentUser = null;
               this.pendingAuthUser = null;
+              this.userFavorites = this.loadFavorites();
               this.updateAuthUI();
+              this.renderProfileModal();
+              this.render();
               this.renderComments();
             }
           });
@@ -1208,6 +1237,27 @@
       this.closeTutorialsModalBtn = document.getElementById('closeTutorialsModalBtn');
       this.tutorialsModalOkBtn = document.getElementById('tutorialsModalOkBtn');
 
+      // User Profile & Favorites Modal Elements
+      this.drawerProfileBtn = document.getElementById('drawerProfileBtn');
+      this.profileModal = document.getElementById('profileModal');
+      this.closeProfileModalBtn = document.getElementById('closeProfileModalBtn');
+      this.profileGuestView = document.getElementById('profileGuestView');
+      this.profileGoogleLoginBtn = document.getElementById('profileGoogleLoginBtn');
+      this.profileUserView = document.getElementById('profileUserView');
+      this.profileUserAvatarImg = document.getElementById('profileUserAvatarImg');
+      this.profileUserAvatarFallback = document.getElementById('profileUserAvatarFallback');
+      this.profileGamertag = document.getElementById('profileGamertag');
+      this.profileRoleBadgeSlot = document.getElementById('profileRoleBadgeSlot');
+      this.profileUserEmail = document.getElementById('profileUserEmail');
+      this.profileFavCount = document.getElementById('profileFavCount');
+      this.profileFavsPill = document.getElementById('profileFavsPill');
+      this.profileFavoritesGrid = document.getElementById('profileFavoritesGrid');
+      this.profileLogoutBtn = document.getElementById('profileLogoutBtn');
+      this.deleteAccountBtn = document.getElementById('deleteAccountBtn');
+      this.deleteAccountConfirmModal = document.getElementById('deleteAccountConfirmModal');
+      this.cancelDeleteAccountBtn = document.getElementById('cancelDeleteAccountBtn');
+      this.confirmDeleteAccountBtn = document.getElementById('confirmDeleteAccountBtn');
+
       // Auth Decoy Modal
       this.logoGroup = document.querySelector('.logo-group');
       this.authModal = document.getElementById('authModal');
@@ -1366,6 +1416,73 @@
       }
 
 
+
+      // Profile Drawer Button & Modal Listeners
+      if (this.drawerProfileBtn) {
+        this.drawerProfileBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeDrawer();
+          this.openProfileModal();
+        });
+      }
+
+      if (this.closeProfileModalBtn) {
+        this.closeProfileModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeProfileModal();
+        });
+      }
+
+      if (this.profileGoogleLoginBtn) {
+        this.profileGoogleLoginBtn.addEventListener('click', () => {
+          this.handleGoogleSignIn();
+        });
+      }
+
+      if (this.profileLogoutBtn) {
+        this.profileLogoutBtn.addEventListener('click', () => {
+          this.handleGoogleSignOut();
+          this.renderProfileModal();
+        });
+      }
+
+      if (this.deleteAccountBtn) {
+        this.deleteAccountBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.openDeleteAccountModal();
+        });
+      }
+
+      if (this.cancelDeleteAccountBtn) {
+        this.cancelDeleteAccountBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeDeleteAccountModal();
+        });
+      }
+
+      if (this.confirmDeleteAccountBtn) {
+        this.confirmDeleteAccountBtn.addEventListener('click', () => {
+          this.handleDeleteAccount();
+        });
+      }
+
+      if (this.profileModal) {
+        this.profileModal.addEventListener('click', (e) => {
+          if (e.target === this.profileModal) {
+            this.sound.playPop();
+            this.closeProfileModal();
+          }
+        });
+      }
+
+      if (this.deleteAccountConfirmModal) {
+        this.deleteAccountConfirmModal.addEventListener('click', (e) => {
+          if (e.target === this.deleteAccountConfirmModal) {
+            this.sound.playPop();
+            this.closeDeleteAccountModal();
+          }
+        });
+      }
 
       // Tutorials Button & Modal Listeners
       if (this.drawerTutorialsBtn) {
@@ -1609,6 +1726,12 @@
         if (e.key === 'Escape') {
           if (this.submitIdeaModal && this.submitIdeaModal.classList.contains('open')) {
             this.closeSubmitIdeaModal();
+          }
+          if (this.profileModal && this.profileModal.classList.contains('open')) {
+            this.closeProfileModal();
+          }
+          if (this.deleteAccountConfirmModal && this.deleteAccountConfirmModal.classList.contains('open')) {
+            this.closeDeleteAccountModal();
           }
         }
       });
@@ -2435,6 +2558,9 @@
       this.saveFavorites();
       this.updateModalFavButton(houseId, isNowFav);
       this.render();
+      if (this.profileModal && this.profileModal.classList.contains('open')) {
+        this.renderProfileModal();
+      }
     }
 
     updateModalFavButton(houseId, isFav) {
@@ -3097,6 +3223,203 @@
         if (this.saveGamertagBtn) {
           this.saveGamertagBtn.disabled = false;
           this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar y Continuar';
+        }
+      }
+    }
+
+    /* ------------------------------------------------------------------------
+       User Profile & Favorites Modal Methods
+       ------------------------------------------------------------------------ */
+
+    openProfileModal() {
+      if (!this.profileModal) return;
+      this.renderProfileModal();
+      this.profileModal.classList.add('active');
+      this.profileModal.classList.add('open');
+      this.profileModal.setAttribute('aria-hidden', 'false');
+    }
+
+    closeProfileModal() {
+      if (this.profileModal) {
+        this.profileModal.classList.remove('active');
+        this.profileModal.classList.remove('open');
+        this.profileModal.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    renderProfileModal() {
+      if (!this.profileModal) return;
+
+      if (!this.currentUser) {
+        if (this.profileGuestView) this.profileGuestView.style.display = 'block';
+        if (this.profileUserView) this.profileUserView.style.display = 'none';
+        return;
+      }
+
+      if (this.profileGuestView) this.profileGuestView.style.display = 'none';
+      if (this.profileUserView) this.profileUserView.style.display = 'block';
+
+      // 1. User avatar & metadata
+      if (this.currentUser.photoURL && this.profileUserAvatarImg) {
+        this.profileUserAvatarImg.src = this.currentUser.photoURL;
+        this.profileUserAvatarImg.style.display = 'block';
+        if (this.profileUserAvatarFallback) this.profileUserAvatarFallback.style.display = 'none';
+      } else {
+        if (this.profileUserAvatarImg) this.profileUserAvatarImg.style.display = 'none';
+        if (this.profileUserAvatarFallback) this.profileUserAvatarFallback.style.display = 'grid';
+      }
+
+      if (this.profileGamertag) {
+        this.profileGamertag.textContent = this.currentUser.username || this.currentUser.displayName || 'Jugador';
+      }
+      if (this.profileUserEmail) {
+        this.profileUserEmail.textContent = this.currentUser.email || '';
+      }
+
+      // 2. Role Badge
+      const isDev = this.isDeveloperAccount(this.currentUser);
+      const spec = (this.currentUser.especialidad || this.currentUser.titulo || this.currentUser.role || 'Arquitecto').toString().toLowerCase();
+      const isEngineer = !isDev && (spec.includes('ingenier') || spec.includes('engineer'));
+
+      if (this.profileRoleBadgeSlot) {
+        if (isDev) {
+          this.profileRoleBadgeSlot.innerHTML = '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>';
+        } else if (isEngineer) {
+          this.profileRoleBadgeSlot.innerHTML = '<span class="engineer-role-pill"><i class="fa-solid fa-gear"></i> Ingeniero</span>';
+        } else {
+          this.profileRoleBadgeSlot.innerHTML = '<span class="architect-role-pill"><i class="fa-solid fa-compass-drafting"></i> Arquitecto</span>';
+        }
+      }
+
+      // 3. Render Favorites
+      const favHouses = this.houses.filter((h) => this.userFavorites.includes(h.id));
+      if (this.profileFavCount) {
+        this.profileFavCount.textContent = favHouses.length;
+      }
+      if (this.profileFavsPill) {
+        this.profileFavsPill.textContent = `${favHouses.length} ${favHouses.length === 1 ? 'casa' : 'casas'}`;
+      }
+
+      if (this.profileFavoritesGrid) {
+        if (favHouses.length === 0) {
+          this.profileFavoritesGrid.innerHTML = `
+            <div class="profile-favs-empty">
+              <i class="fa-regular fa-bookmark"></i>
+              <p>Aún no tienes casas guardadas en tus favoritos. Explora la galería y haz clic en "Guardar en Favoritos" dentro de cualquier casa para verla aquí.</p>
+            </div>
+          `;
+        } else {
+          this.profileFavoritesGrid.innerHTML = favHouses.map((house) => {
+            const categoryIcons = {
+              cerezo: '<i class="fa-solid fa-tree"></i> Cerezo',
+              playa: '<i class="fa-solid fa-umbrella-beach"></i> Playa',
+              moderna: '<i class="fa-solid fa-city"></i> Moderna'
+            };
+            const catBadge = categoryIcons[house.category] || `<i class="fa-solid fa-cube"></i> ${house.category}`;
+
+            return `
+              <div class="fav-card-item" data-house-id="${house.id}">
+                <div class="fav-card-thumb-wrap">
+                  <img src="${this.escapeHTML(house.image)}" alt="${this.escapeHTML(house.title)}" class="fav-card-thumb" onerror="window.handleImgFallback(this, '${house.id}')">
+                  <span class="fav-card-category-badge">${catBadge}</span>
+                </div>
+                <div class="fav-card-body">
+                  <h6 class="fav-card-title" title="${this.escapeHTML(house.title)}">${this.escapeHTML(house.title)}</h6>
+                  <div class="fav-card-actions">
+                    <button type="button" class="btn-fav-view" data-action="view-fav" data-house-id="${house.id}">
+                      <i class="fa-solid fa-eye"></i> Ver Diseño
+                    </button>
+                    <button type="button" class="btn-fav-remove" data-action="remove-fav" data-house-id="${house.id}" title="Quitar de favoritos">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Attach click listeners to favorite card buttons
+          const viewBtns = this.profileFavoritesGrid.querySelectorAll('[data-action="view-fav"]');
+          viewBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const hId = btn.getAttribute('data-house-id');
+              this.sound.playPop();
+              this.closeProfileModal();
+              this.openModal(hId);
+            });
+          });
+
+          const removeBtns = this.profileFavoritesGrid.querySelectorAll('[data-action="remove-fav"]');
+          removeBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const hId = btn.getAttribute('data-house-id');
+              this.toggleFavorite(hId);
+              this.renderProfileModal();
+            });
+          });
+        }
+      }
+    }
+
+    openDeleteAccountModal() {
+      if (this.deleteAccountConfirmModal) {
+        this.deleteAccountConfirmModal.classList.add('active');
+        this.deleteAccountConfirmModal.classList.add('open');
+        this.deleteAccountConfirmModal.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    closeDeleteAccountModal() {
+      if (this.deleteAccountConfirmModal) {
+        this.deleteAccountConfirmModal.classList.remove('active');
+        this.deleteAccountConfirmModal.classList.remove('open');
+        this.deleteAccountConfirmModal.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    async handleDeleteAccount() {
+      if (!this.confirmDeleteAccountBtn) return;
+      this.sound.playPop();
+
+      if (!window.FirebaseCommentsBridge || typeof window.FirebaseCommentsBridge.deleteCurrentUserAccount !== 'function') {
+        alert('Firebase no está disponible en este momento.');
+        return;
+      }
+
+      this.confirmDeleteAccountBtn.disabled = true;
+      this.confirmDeleteAccountBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Eliminando cuenta...';
+
+      try {
+        const emailDeleted = this.currentUser ? this.currentUser.email : '';
+        await window.FirebaseCommentsBridge.deleteCurrentUserAccount();
+
+        // Clear user session & favorites locally
+        this.currentUser = null;
+        this.pendingAuthUser = null;
+        this.userFavorites = [];
+        this.saveFavorites();
+
+        this.closeDeleteAccountModal();
+        this.closeProfileModal();
+        this.updateAuthUI();
+        this.render();
+        this.renderComments();
+
+        this.sound.playSuccess();
+        this.showToast(`Tu cuenta (${emailDeleted}) ha sido eliminada permanentemente de Firebase 🗑️`, 'info');
+
+      } catch (err) {
+        console.error('Error eliminando cuenta en Firebase:', err);
+        this.sound.playPop();
+        if (err.code === 'auth/requires-recent-login') {
+          alert('Por seguridad de Google, debes haber iniciado sesión recientemente para eliminar tu cuenta. Por favor vuelve a iniciar sesión e inténtalo de nuevo.');
+        } else {
+          alert('No se pudo eliminar la cuenta: ' + (err.message || err));
+        }
+      } finally {
+        if (this.confirmDeleteAccountBtn) {
+          this.confirmDeleteAccountBtn.disabled = false;
+          this.confirmDeleteAccountBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i> Sí, Eliminar mi Cuenta';
         }
       }
     }
