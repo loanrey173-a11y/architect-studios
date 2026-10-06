@@ -1381,7 +1381,7 @@
       }
 
       // Close drawer on link click inside drawer
-      const drawerLinks = document.querySelectorAll('.drawer-menu-list a, .ddev-insta-link');
+      const drawerLinks = document.querySelectorAll('.drawer-menu-list a');
       drawerLinks.forEach((link) => {
         link.addEventListener('click', () => {
           this.closeDrawer();
