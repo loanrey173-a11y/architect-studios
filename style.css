@@ -2194,20 +2194,6 @@ html.drawer-open {
   color: #e1306c;
 }
 
-.instagram-creator-badge:hover {
-  border-color: #ec4899;
-  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.28);
-}
-
-.creator-insta-box {
-  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-  box-shadow: 0 4px 12px rgba(220, 39, 67, 0.35);
-}
-
-.instagram-creator-badge:hover .insta-arrow {
-  color: #ec4899;
-}
-
 .footer-badges-group {
   display: flex;
   align-items: center;
