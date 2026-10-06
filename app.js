@@ -2163,10 +2163,7 @@
         } else if (this.currentCategory === 'favoritos') {
           if (!this.userFavorites.includes(house.id)) return false;
         } else if (this.currentCategory === 'mas_votadas') {
-          const maxLikes = Math.max(0, ...this.houses.map((h) => h.likes || 0));
-          if (maxLikes > 0) {
-            if ((house.likes || 0) <= 0) return false;
-          }
+          if ((house.likes || 0) <= 0) return false;
         }
 
         // Search match
