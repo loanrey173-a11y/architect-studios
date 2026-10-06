@@ -2272,31 +2272,6 @@
         ? `<span class="badge-photo-count"><i class="fa-solid fa-images"></i> ${house.gallery.length} fotos</span>`
         : '';
 
-      const creatorRole = house.creatorRole || 'Desarrollador';
-      const creatorDisplay = house.creatorDisplay || house.creator || '';
-      const isDeveloper = creatorRole === 'Desarrollador' || house.creator === 'loanrey17';
-      const crownIcon = isDeveloper
-        ? '<i class="fa-solid fa-crown creator-crown" style="color: var(--gold); font-size: 0.72rem; margin-right: 0.25rem;"></i>'
-        : '';
-
-      const igBannerHTML = house.instagram
-        ? `
-          <a href="${house.instagram.url}" target="_blank" rel="noopener noreferrer" class="card-ig-banner" data-action="instagram" title="Instagram de ${house.instagram.name}" aria-label="Abrir Instagram de ${house.instagram.name}">
-            <div class="card-ig-logo-wrap">
-              <img src="./instagram_logo.png" alt="Logo Instagram" class="card-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
-            </div>
-            <div class="card-ig-info">
-              <span class="card-ig-subtitle">${crownIcon}${creatorRole}</span>
-              <span class="card-ig-handle">${creatorDisplay} <span class="card-ig-at">@${house.instagram.name}</span></span>
-            </div>
-            <div class="card-ig-badge-action">
-              <span>Instagram</span>
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </div>
-          </a>
-        `
-        : '';
-
       // SVG placeholder to prevent early downloads and ensure zero layout shift (CLS)
       const placeholderSVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'%3E%3C/svg%3E";
 
@@ -2329,8 +2304,6 @@
             <div class="card-biome"><i class="fa-solid fa-location-dot"></i> ${house.biome}</div>
             <h3 class="card-title">${house.title}</h3>
             <p class="card-desc">${house.description}</p>
-
-            ${igBannerHTML}
 
             <div class="card-footer-row">
               <button class="btn-card-like ${isLiked ? 'liked has-likes' : ''}" data-action="like" data-id="${house.id}" title="${isLiked ? 'Quitar like' : 'Dar like (1 por usuario)'}">
