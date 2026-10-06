@@ -1369,6 +1369,15 @@
         this.drawerBackdrop.addEventListener('click', () => {
           this.closeDrawer();
         });
+        this.drawerBackdrop.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+        }, { passive: false });
+      }
+
+      if (this.sideDrawer) {
+        this.sideDrawer.addEventListener('touchmove', (e) => {
+          e.stopPropagation();
+        }, { passive: true });
       }
 
       // Close drawer on link click inside drawer
@@ -2104,8 +2113,11 @@
       }
       if (this.drawerBackdrop) {
         this.drawerBackdrop.classList.add('active');
+        this.drawerBackdrop.classList.add('open');
         this.drawerBackdrop.setAttribute('aria-hidden', 'false');
       }
+      document.body.classList.add('drawer-open');
+      document.documentElement.classList.add('drawer-open');
       document.body.style.overflow = 'hidden';
     }
 
@@ -2117,9 +2129,15 @@
       }
       if (this.drawerBackdrop) {
         this.drawerBackdrop.classList.remove('active');
+        this.drawerBackdrop.classList.remove('open');
         this.drawerBackdrop.setAttribute('aria-hidden', 'true');
       }
+      document.body.classList.remove('drawer-open');
+      document.documentElement.classList.remove('drawer-open');
       document.body.style.overflow = '';
+      if (typeof this.syncBodyModalLock === 'function') {
+        this.syncBodyModalLock();
+      }
     }
 
     /* ------------------------------------------------------------------------
