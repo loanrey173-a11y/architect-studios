@@ -908,7 +908,8 @@
               const text = data.text || data.texto || '';
               const houseRef = data.houseRef || 'General';
               const isDev = this.isDeveloperAccount({ author, email, role: data.role });
-              const role = isDev ? 'creator' : 'architect';
+              const spec = data.especialidad || data.titulo || (data.role === 'engineer' ? 'Ingeniero' : (isDev ? 'Desarrollador' : 'Arquitecto'));
+              const role = isDev ? 'creator' : (spec.toLowerCase().includes('ingenier') ? 'engineer' : 'architect');
               const likes = typeof data.likes === 'number' ? data.likes : 0;
               const likedByUser = this.userCommentLikes.includes(doc.id);
               const date = this.formatCommentDate(data.fecha || data.createdAtMs);
@@ -931,7 +932,8 @@
                 .map((r) => {
                   const rAuthor = r.author || r.autor || 'Anónimo';
                   const isRDev = this.isDeveloperAccount({ author: rAuthor, email: r.email, role: r.role });
-                  const rRole = isRDev ? 'creator' : 'architect';
+                  const rSpec = r.especialidad || r.titulo || (r.role === 'engineer' ? 'Ingeniero' : (isRDev ? 'Desarrollador' : 'Arquitecto'));
+                  const rRole = isRDev ? 'creator' : (rSpec.toLowerCase().includes('ingenier') ? 'engineer' : 'architect');
                   const rId = r.id || ('rep-' + Math.random().toString(36).substr(2, 9));
                   return {
                     id: rId,
@@ -942,6 +944,7 @@
                     text: r.text || r.texto || '',
                     replyTo: r.replyTo || null,
                     role: rRole,
+                    especialidad: rSpec,
                     likes: typeof r.likes === 'number' ? r.likes : 0,
                     likedByUser: this.userCommentLikes.includes(rId),
                     date: this.formatCommentDate(r.fecha || r.createdAtMs || r.timestamp),
@@ -958,6 +961,7 @@
                 text,
                 houseRef,
                 role,
+                especialidad: spec,
                 likes,
                 likedByUser,
                 date,
@@ -1136,6 +1140,7 @@
       this.commentUserGamertag = document.getElementById('commentUserGamertag');
       this.commentDevCrownPill = document.getElementById('commentDevCrownPill');
       this.commentArchitectPill = document.getElementById('commentArchitectPill');
+      this.commentEngineerPill = document.getElementById('commentEngineerPill');
       this.commentUserEmail = document.getElementById('commentUserEmail');
       this.commentSignOutBtn = document.getElementById('commentSignOutBtn');
       this.commentHouseRef = document.getElementById('commentHouseRef');
@@ -1743,6 +1748,18 @@
           }
         });
       }
+
+      // Gamertag specialty selection options
+      const specialtyCards = document.querySelectorAll('.specialty-option-card');
+      specialtyCards.forEach((card) => {
+        card.addEventListener('click', () => {
+          this.sound.playPop();
+          specialtyCards.forEach((c) => c.classList.remove('active'));
+          card.classList.add('active');
+          const radio = card.querySelector('input[type="radio"]');
+          if (radio) radio.checked = true;
+        });
+      });
 
       if (this.closeGamertagModalBtn) {
         this.closeGamertagModalBtn.addEventListener('click', () => {
@@ -2832,20 +2849,16 @@
     isDeveloperAccount(entity) {
       if (!entity) return false;
       const email = (entity.email || '').toString().toLowerCase().trim();
-      const name = (entity.username || entity.author || entity.autor || '').toString().toLowerCase().trim();
       const role = (entity.role || '').toString().toLowerCase().trim();
 
-      // Only loanrey173@gmail.com (and typo loanrey173@gamil.com) is Developer
+      // Únicamente loanrey173@gmail.com (o sesión de administrador con contraseña) es Desarrollador
       if (email === 'loanrey173@gmail.com' || email === 'loanrey173@gamil.com') {
         return true;
       }
-      if (this.adminRole === 'creator') {
+      if (this.adminRole === 'creator' && (!entity.email || entity.email === 'loanrey173@gmail.com' || entity.email === 'loanrey173@gamil.com')) {
         return true;
       }
-      if (role === 'creator' || role === 'developer' || role === 'desarrollador') {
-        return true;
-      }
-      if (name === 'loanrey17' || name === 'josue') {
+      if (role === 'creator' && (email === 'loanrey173@gmail.com' || email === 'loanrey173@gamil.com' || !entity.email)) {
         return true;
       }
       return false;
@@ -2881,11 +2894,17 @@
         }
 
         const isDev = this.isDeveloperAccount(this.currentUser);
+        const spec = (this.currentUser && (this.currentUser.especialidad || this.currentUser.titulo || this.currentUser.role || 'Arquitecto')).toString().toLowerCase();
+        const isEngineer = !isDev && (spec.includes('ingenier') || spec.includes('engineer'));
+
         if (this.commentDevCrownPill) {
           this.commentDevCrownPill.style.display = isDev ? 'inline-flex' : 'none';
         }
         if (this.commentArchitectPill) {
-          this.commentArchitectPill.style.display = isDev ? 'none' : 'inline-flex';
+          this.commentArchitectPill.style.display = (!isDev && !isEngineer) ? 'inline-flex' : 'none';
+        }
+        if (this.commentEngineerPill) {
+          this.commentEngineerPill.style.display = (!isDev && isEngineer) ? 'inline-flex' : 'none';
         }
       }
 
@@ -2957,9 +2976,18 @@
         this.gamertagFeedback.innerHTML = '';
       }
 
+      // Reset role selection cards
+      const specialtyCards = document.querySelectorAll('.specialty-option-card');
+      specialtyCards.forEach((c) => {
+        const isArch = c.getAttribute('data-specialty') === 'Arquitecto';
+        c.classList.toggle('active', isArch);
+        const r = c.querySelector('input[type="radio"]');
+        if (r) r.checked = isArch;
+      });
+
       if (this.saveGamertagBtn) {
         this.saveGamertagBtn.disabled = false;
-        this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Gamertag y Continuar';
+        this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar y Continuar';
       }
 
       this.gamertagModal.classList.add('active');
@@ -3040,13 +3068,16 @@
           return;
         }
 
-        // Guardar el perfil en la colección usuarios en Firestore
-        const profile = await window.FirebaseCommentsBridge.registerGamertag(this.pendingAuthUser, tag);
+        const selectedRadio = document.querySelector('input[name="userSpecialty"]:checked');
+        const specialty = selectedRadio ? selectedRadio.value : 'Arquitecto';
+
+        // Guardar el perfil en la colección usuarios en Firestore con su especialidad
+        const profile = await window.FirebaseCommentsBridge.registerGamertag(this.pendingAuthUser, tag, specialty);
         this.currentUser = profile;
         this.pendingAuthUser = null;
 
         this.sound.playSuccess();
-        this.showGamertagFeedback(`¡Gamertag "${tag}" registrado con éxito!`, 'success');
+        this.showGamertagFeedback(`¡${specialty} "${tag}" registrado con éxito!`, 'success');
 
         setTimeout(() => {
           if (this.gamertagModal) {
@@ -3056,7 +3087,7 @@
           }
           this.updateAuthUI();
           this.renderComments();
-          this.showToast(`¡Bienvenido, ${tag}! 🎮`, 'success');
+          this.showToast(`¡Bienvenido, ${tag} (${specialty})! 🎮`, 'success');
         }, 600);
 
       } catch (err) {
@@ -3065,7 +3096,7 @@
         this.showGamertagFeedback(err.message || 'Error al guardar el Gamertag en Firebase.', 'error');
         if (this.saveGamertagBtn) {
           this.saveGamertagBtn.disabled = false;
-          this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Gamertag y Continuar';
+          this.saveGamertagBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar y Continuar';
         }
       }
     }
@@ -3495,7 +3526,8 @@ ${mensaje}
       }
 
       const isDev = this.isDeveloperAccount({ author, email, role: this.adminRole });
-      const assignedRole = isDev ? 'creator' : 'architect';
+      const currentSpecialty = this.currentUser ? (this.currentUser.especialidad || this.currentUser.titulo || 'Arquitecto') : 'Arquitecto';
+      const assignedRole = isDev ? 'creator' : (currentSpecialty.toLowerCase().includes('ingenier') ? 'engineer' : 'architect');
 
       // Optimistically add comment to memory and UI so all comments stay present
       const tempId = 'comm-' + Date.now();
@@ -3511,6 +3543,7 @@ ${mensaje}
         likes: 0,
         likedByUser: false,
         role: assignedRole,
+        especialidad: isDev ? 'Desarrollador' : currentSpecialty,
         timestamp: Date.now(),
         replies: []
       };
@@ -3528,7 +3561,8 @@ ${mensaje}
             userPhoto,
             text,
             houseRef,
-            role: assignedRole
+            role: assignedRole,
+            especialidad: isDev ? 'Desarrollador' : currentSpecialty
           });
           if (docRef && docRef.id) {
             const found = this.comments.find((c) => c.id === tempId);
@@ -3597,6 +3631,8 @@ ${mensaje}
       this.commentsList.innerHTML = this.comments
         .map((comm) => {
           const isDev = this.isDeveloperAccount(comm);
+          const rawSpec = (comm.especialidad || comm.titulo || comm.role || '').toString().toLowerCase();
+          const isEngineer = !isDev && (rawSpec.includes('ingenier') || rawSpec.includes('engineer'));
           const isAdminUser = this.adminRole === 'creator' || (this.currentUser && this.isDeveloperAccount(this.currentUser));
           const isOwner = this.currentUser && this.currentUser.uid && comm.uid === this.currentUser.uid;
 
@@ -3611,6 +3647,9 @@ ${mensaje}
             cardClass += ' gold-verified-card';
             avatarClass += ' creator-golden-avatar';
             avatarContent = '<i class="fa-solid fa-crown"></i>';
+          } else if (isEngineer) {
+            avatarClass += ' engineer-avatar';
+            avatarContent = '<i class="fa-solid fa-gear"></i>';
           } else {
             avatarClass += ' architect-avatar';
             avatarContent = comm.author ? comm.author.charAt(0).toUpperCase() : '<i class="fa-solid fa-compass-drafting"></i>';
@@ -3619,6 +3658,8 @@ ${mensaje}
           if (isDev) {
             cardClass += ' gold-verified-card';
             roleBadge = '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>';
+          } else if (isEngineer) {
+            roleBadge = '<span class="engineer-role-pill"><i class="fa-solid fa-gear"></i> Ingeniero</span>';
           } else {
             roleBadge = '<span class="architect-role-pill"><i class="fa-solid fa-compass-drafting"></i> Arquitecto</span>';
           }
@@ -3648,21 +3689,30 @@ ${mensaje}
 
             const repliesItemsHTML = replies.map((reply) => {
               const isRepDev = this.isDeveloperAccount(reply);
+              const repRawSpec = (reply.especialidad || reply.titulo || reply.role || '').toString().toLowerCase();
+              const isRepEngineer = !isRepDev && (repRawSpec.includes('ingenier') || repRawSpec.includes('engineer'));
               const isRepOwner = this.currentUser && this.currentUser.uid && reply.uid === this.currentUser.uid;
-              let repAvatarClass = isRepDev ? 'reply-avatar creator-golden-avatar' : 'reply-avatar architect-avatar';
+              let repAvatarClass = isRepDev ? 'reply-avatar creator-golden-avatar' : (isRepEngineer ? 'reply-avatar engineer-avatar' : 'reply-avatar architect-avatar');
               let repAvatarContent = '';
 
               if (reply.userPhoto) {
                 repAvatarContent = `<img src="${this.escapeHTML(reply.userPhoto)}" alt="${this.escapeHTML(reply.author)}" class="reply-avatar-img" onerror="this.style.display='none'">`;
               } else if (isRepDev) {
                 repAvatarContent = '<i class="fa-solid fa-crown"></i>';
+              } else if (isRepEngineer) {
+                repAvatarContent = '<i class="fa-solid fa-gear"></i>';
               } else {
                 repAvatarContent = reply.author ? reply.author.charAt(0).toUpperCase() : 'A';
               }
 
-              const repRoleBadge = isRepDev 
-                ? '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>' 
-                : '<span class="architect-role-pill"><i class="fa-solid fa-compass-drafting"></i> Arquitecto</span>';
+              let repRoleBadge = '';
+              if (isRepDev) {
+                repRoleBadge = '<span class="creator-crown-pill"><i class="fa-solid fa-crown"></i> Desarrollador</span>';
+              } else if (isRepEngineer) {
+                repRoleBadge = '<span class="engineer-role-pill"><i class="fa-solid fa-gear"></i> Ingeniero</span>';
+              } else {
+                repRoleBadge = '<span class="architect-role-pill"><i class="fa-solid fa-compass-drafting"></i> Arquitecto</span>';
+              }
               const repToBadge = reply.replyTo ? `<span class="reply-to-tag">▶ @${this.escapeHTML(reply.replyTo)}</span>` : '';
               
               const repTrashBtn = (isAdminUser || isRepOwner)
@@ -3927,7 +3977,8 @@ ${mensaje}
       const email = this.currentUser.email || '';
       const userPhoto = this.currentUser.photoURL || '';
       const isDev = this.isDeveloperAccount({ author, email, role: this.adminRole });
-      const assignedRole = isDev ? 'creator' : 'architect';
+      const currentSpecialty = this.currentUser ? (this.currentUser.especialidad || this.currentUser.titulo || 'Arquitecto') : 'Arquitecto';
+      const assignedRole = isDev ? 'creator' : (currentSpecialty.toLowerCase().includes('ingenier') ? 'engineer' : 'architect');
 
       const replyId = 'rep-' + Date.now();
       const newReply = {
@@ -3939,6 +3990,7 @@ ${mensaje}
         text: text,
         replyTo: replyTo || null,
         role: assignedRole,
+        especialidad: isDev ? 'Desarrollador' : currentSpecialty,
         likes: 0,
         likedByUser: false,
         date: 'Hace unos momentos',

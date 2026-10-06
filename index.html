@@ -591,6 +591,7 @@
                     <span class="verified-gamertag-pill" title="Gamertag único verificado"><i class="fa-solid fa-circle-check"></i> Verificado</span>
                     <span id="commentDevCrownPill" class="creator-crown-pill" style="display: none;"><i class="fa-solid fa-crown"></i> Desarrollador</span>
                     <span id="commentArchitectPill" class="architect-role-pill" style="display: none;"><i class="fa-solid fa-compass-drafting"></i> Arquitecto</span>
+                    <span id="commentEngineerPill" class="engineer-role-pill" style="display: none;"><i class="fa-solid fa-gear"></i> Ingeniero</span>
                   </div>
                   <span class="user-email-text" id="commentUserEmail">email@gmail.com</span>
                 </div>
@@ -958,12 +959,46 @@
             <div id="gamertagFeedback" class="gamertag-feedback-box" style="display: none;"></div>
           </div>
 
+          <!-- Selección de Especialidad / Rol -->
+          <div class="form-group role-selection-group">
+            <label><i class="fa-solid fa-cubes-stacked"></i> Elige tu Rol / Especialización <span class="req">*</span></label>
+            <div class="specialty-selector-grid" id="specialtySelectorGrid">
+              <label class="specialty-option-card active" data-specialty="Arquitecto">
+                <input type="radio" name="userSpecialty" value="Arquitecto" checked>
+                <div class="specialty-card-inner">
+                  <div class="specialty-icon-box architect-icon">
+                    <i class="fa-solid fa-compass-drafting"></i>
+                  </div>
+                  <div class="specialty-info">
+                    <span class="specialty-title">Arquitecto 🏗️</span>
+                    <span class="specialty-desc">Diseños estéticos, mansiones, paletas y decoración.</span>
+                  </div>
+                  <div class="specialty-radio-dot"></div>
+                </div>
+              </label>
+
+              <label class="specialty-option-card" data-specialty="Ingeniero">
+                <input type="radio" name="userSpecialty" value="Ingeniero">
+                <div class="specialty-card-inner">
+                  <div class="specialty-icon-box engineer-icon">
+                    <i class="fa-solid fa-gear"></i>
+                  </div>
+                  <div class="specialty-info">
+                    <span class="specialty-title">Ingeniero ⚙️</span>
+                    <span class="specialty-desc">Mecanismos de redstone, granjas técnicas y funcionalidad.</span>
+                  </div>
+                  <div class="specialty-radio-dot"></div>
+                </div>
+              </label>
+            </div>
+          </div>
+
           <div class="gamertag-actions-row">
             <button type="button" class="btn-secondary" id="cancelGamertagBtn">
               Cancelar
             </button>
             <button type="submit" class="btn-emerald" id="saveGamertagBtn">
-              <i class="fa-solid fa-check"></i> Guardar Gamertag y Continuar
+              <i class="fa-solid fa-check"></i> Guardar y Continuar
             </button>
           </div>
         </form>
@@ -1440,7 +1475,7 @@
           return taken;
         },
 
-        async registerGamertag(user, gamertag) {
+        async registerGamertag(user, gamertag, specialty = "Arquitecto") {
           const cleanGamertag = (gamertag || "").trim();
           if (!cleanGamertag || cleanGamertag.length < 3 || cleanGamertag.length > 20) {
             throw new Error("El Gamertag debe tener entre 3 y 20 caracteres.");
@@ -1453,6 +1488,7 @@
           }
 
           const userDocRef = doc(db, "usuarios", user.uid);
+          const cleanSpecialty = (specialty === "Ingeniero" || specialty === "engineer") ? "Ingeniero" : "Arquitecto";
           const profileData = {
             uid: user.uid,
             email: user.email || "",
@@ -1460,6 +1496,9 @@
             username_lower: cleanGamertag.toLowerCase(),
             displayName: user.displayName || cleanGamertag,
             photoURL: user.photoURL || "",
+            especialidad: cleanSpecialty,
+            titulo: cleanSpecialty,
+            role: cleanSpecialty.toLowerCase(),
             createdAt: serverTimestamp(),
             createdAtMs: Date.now()
           };
@@ -1483,6 +1522,7 @@
             text: data.text || data.texto || "",
             houseRef: data.houseRef || "General",
             role: data.role || null,
+            especialidad: data.especialidad || data.specialty || (data.role === "engineer" ? "Ingeniero" : "Arquitecto"),
             likes: typeof data.likes === "number" ? data.likes : 0,
             replies: [],
             fecha: serverTimestamp(),
@@ -1501,6 +1541,7 @@
               text: replyData.text || "",
               replyTo: replyData.replyTo || null,
               role: replyData.role || null,
+              especialidad: replyData.especialidad || replyData.specialty || (replyData.role === "engineer" ? "Ingeniero" : "Arquitecto"),
               likes: typeof replyData.likes === "number" ? replyData.likes : 0,
               createdAtMs: Date.now()
             })
