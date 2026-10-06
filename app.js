@@ -3634,7 +3634,6 @@ ${mensaje}
           const rawSpec = (comm.especialidad || comm.titulo || comm.role || '').toString().toLowerCase();
           const isEngineer = !isDev && (rawSpec.includes('ingenier') || rawSpec.includes('engineer'));
           const isAdminUser = this.adminRole === 'creator' || (this.currentUser && this.isDeveloperAccount(this.currentUser));
-          const isOwner = this.currentUser && this.currentUser.uid && comm.uid === this.currentUser.uid;
 
           let cardClass = 'comment-card animate-slide-in';
           let avatarClass = 'comment-avatar';
@@ -3664,8 +3663,8 @@ ${mensaje}
             roleBadge = '<span class="architect-role-pill"><i class="fa-solid fa-compass-drafting"></i> Arquitecto</span>';
           }
 
-          // Trash button for Administrators or Comment Owner
-          const trashBtn = (isAdminUser || isOwner)
+          // Trash button EXCLUSIVELY for Developer (loanrey173@gmail.com)
+          const trashBtn = isAdminUser
             ? `<button class="btn-comment-trash" data-comment-action="delete" data-id="${comm.id}" title="Eliminar comentario" aria-label="Eliminar comentario">
                 <i class="fa-solid fa-trash-can"></i>
                </button>`
@@ -3691,7 +3690,6 @@ ${mensaje}
               const isRepDev = this.isDeveloperAccount(reply);
               const repRawSpec = (reply.especialidad || reply.titulo || reply.role || '').toString().toLowerCase();
               const isRepEngineer = !isRepDev && (repRawSpec.includes('ingenier') || repRawSpec.includes('engineer'));
-              const isRepOwner = this.currentUser && this.currentUser.uid && reply.uid === this.currentUser.uid;
               let repAvatarClass = isRepDev ? 'reply-avatar creator-golden-avatar' : (isRepEngineer ? 'reply-avatar engineer-avatar' : 'reply-avatar architect-avatar');
               let repAvatarContent = '';
 
@@ -3715,7 +3713,7 @@ ${mensaje}
               }
               const repToBadge = reply.replyTo ? `<span class="reply-to-tag">▶ @${this.escapeHTML(reply.replyTo)}</span>` : '';
               
-              const repTrashBtn = (isAdminUser || isRepOwner)
+              const repTrashBtn = isAdminUser
                 ? `<button class="btn-reply-trash" data-reply-action="delete" data-parent-id="${comm.id}" data-id="${reply.id}" title="Eliminar respuesta">
                     <i class="fa-solid fa-trash-can"></i>
                    </button>`
@@ -4060,7 +4058,8 @@ ${mensaje}
     }
 
     async deleteReply(parentId, replyId) {
-      if (this.adminRole !== 'creator') return;
+      const isDev = this.adminRole === 'creator' || (this.currentUser && this.isDeveloperAccount(this.currentUser));
+      if (!isDev) return;
 
       const comment = this.comments.find((c) => c.id === parentId);
       if (!comment || !Array.isArray(comment.replies)) return;
@@ -4085,7 +4084,8 @@ ${mensaje}
     }
 
     async deleteComment(commId) {
-      if (this.adminRole !== 'creator') {
+      const isDev = this.adminRole === 'creator' || (this.currentUser && this.isDeveloperAccount(this.currentUser));
+      if (!isDev) {
         return;
       }
 
