@@ -1949,6 +1949,9 @@ html.drawer-open {
   padding: 1.25rem 1.4rem;
   display: flex;
   gap: 1rem;
+  scroll-margin-top: 100px;
+  scroll-margin-bottom: 180px;
+  touch-action: pan-y !important;
   transition: all var(--tr-fast);
 }
 
@@ -4367,13 +4370,16 @@ body.modal-open {
 /* Inline Reply Input Box (TikTok Style) */
 .reply-input-box {
   margin-top: 0.75rem;
-  background: rgba(10, 14, 23, 0.85);
+  background: rgba(10, 14, 23, 0.95);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(16, 185, 129, 0.35);
+  border: 1px solid rgba(16, 185, 129, 0.4);
   border-radius: var(--radius-md);
-  padding: 0.65rem 0.85rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(16, 185, 129, 0.1);
-  animation: slideDownReply 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0.75rem 0.9rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.15);
+  animation: slideDownReply 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  scroll-margin-bottom: 220px;
+  scroll-margin-top: 120px;
+  touch-action: pan-y !important;
 }
 
 @keyframes slideDownReply {
@@ -4407,12 +4413,12 @@ body.modal-open {
   border: none;
   color: var(--text-dim);
   cursor: pointer;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   transition: all var(--tr-fast);
 }
 
@@ -4432,14 +4438,17 @@ body.modal-open {
   background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
+  padding: 0.6rem 0.8rem;
   color: var(--text-main);
   font-family: var(--font-body);
-  font-size: 0.86rem;
+  font-size: 0.9rem;
   outline: none;
   resize: none;
-  min-height: 38px;
-  max-height: 100px;
+  min-height: 40px;
+  max-height: 120px;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y !important;
   transition: border-color var(--tr-fast), box-shadow var(--tr-fast);
 }
 

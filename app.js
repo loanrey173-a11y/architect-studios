@@ -4195,12 +4195,18 @@ ${mensaje}
 
       this.attachCommentEventListeners();
 
-      // Auto-focus active reply textarea if open
+      // Auto-focus active reply textarea if open & smoothly scroll it into center view
       if (this.activeReplyParentId) {
-        const activeTextarea = this.commentsList.querySelector(`.reply-form[data-parent-id="${this.activeReplyParentId}"] .reply-textarea`);
-        if (activeTextarea) {
-          activeTextarea.focus();
-        }
+        setTimeout(() => {
+          const replyBox = this.commentsList ? this.commentsList.querySelector(`#replyBox-${this.activeReplyParentId}`) : null;
+          const activeTextarea = this.commentsList ? this.commentsList.querySelector(`.reply-form[data-parent-id="${this.activeReplyParentId}"] .reply-textarea`) : null;
+          if (replyBox) {
+            replyBox.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+          }
+          if (activeTextarea) {
+            activeTextarea.focus({ preventScroll: true });
+          }
+        }, 60);
       }
     }
 
@@ -4228,7 +4234,8 @@ ${mensaje}
       // Toggle replies button
       const toggleBtns = this.commentsList.querySelectorAll('[data-comment-action="toggle-replies"]');
       toggleBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           const commId = btn.getAttribute('data-id');
           this.sound.playPop();
           if (this.expandedThreads.has(commId)) {
@@ -4243,7 +4250,8 @@ ${mensaje}
       // "Responder" on main comment
       const replyBtns = this.commentsList.querySelectorAll('[data-comment-action="reply"]');
       replyBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           if (!this.currentUser || !this.currentUser.username) {
             this.sound.playPop();
             this.showToast('Inicia sesión con Google para responder', 'info');
@@ -4263,7 +4271,8 @@ ${mensaje}
       // "Responder" to sub-reply
       const subreplyBtns = this.commentsList.querySelectorAll('[data-comment-action="reply-to-user"]');
       subreplyBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           if (!this.currentUser || !this.currentUser.username) {
             this.sound.playPop();
             this.showToast('Inicia sesión con Google para responder', 'info');
@@ -4283,11 +4292,21 @@ ${mensaje}
       // Cancel reply
       const cancelBtns = this.commentsList.querySelectorAll('[data-comment-action="cancel-reply"]');
       cancelBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           this.sound.playPop();
           this.activeReplyParentId = null;
           this.activeReplyTargetAuthor = null;
           this.renderComments();
+        });
+      });
+
+      // Auto-expand textarea on typing in reply box
+      const replyTextareas = this.commentsList.querySelectorAll('.reply-textarea');
+      replyTextareas.forEach((ta) => {
+        ta.addEventListener('input', () => {
+          ta.style.height = 'auto';
+          ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
         });
       });
 
