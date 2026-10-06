@@ -820,17 +820,19 @@
     loadDeletedComments() {
       try {
         const saved = localStorage.getItem(STORAGE_KEYS.DELETED_COMMENTS);
-        return saved ? JSON.parse(saved) : [];
+        return saved ? JSON.parse(saved).map(String) : [];
       } catch (e) {
         return [];
       }
     }
 
     saveDeletedComment(commId) {
+      if (!commId) return;
       try {
+        const sId = String(commId);
         const deleted = this.loadDeletedComments();
-        if (!deleted.includes(commId)) {
-          deleted.push(commId);
+        if (!deleted.includes(sId)) {
+          deleted.push(sId);
           localStorage.setItem(STORAGE_KEYS.DELETED_COMMENTS, JSON.stringify(deleted));
         }
       } catch (e) {
@@ -916,6 +918,9 @@
             const loaded = [];
             snapshot.forEach((doc) => {
               const data = doc.data();
+              if (data.deleted === true || data.status === 'deleted' || data.isDeleted === true) {
+                return;
+              }
               const author = data.author || data.autor || 'Anónimo';
               const text = data.text || data.texto || '';
               const houseRef = data.houseRef || 'General';
@@ -982,20 +987,22 @@
               });
             });
 
-            const deletedIds = this.loadDeletedComments();
+            const deletedIds = (this.loadDeletedComments() || []).map(String);
             const commentMap = new Map();
 
             // A. Insert all Firestore comments (not marked as deleted)
             loaded.forEach((comm) => {
-              if (!deletedIds.includes(comm.id)) {
-                commentMap.set(comm.id, comm);
+              const sId = String(comm.id);
+              if (!deletedIds.includes(sId)) {
+                commentMap.set(sId, comm);
               }
             });
 
             // B. Preserve any local in-memory comments that haven't been deleted
             this.comments.forEach((comm) => {
-              if (!commentMap.has(comm.id) && !deletedIds.includes(comm.id)) {
-                commentMap.set(comm.id, comm);
+              const sId = String(comm.id);
+              if (!commentMap.has(sId) && !deletedIds.includes(sId)) {
+                commentMap.set(sId, comm);
               }
             });
 
@@ -4466,28 +4473,31 @@ ${mensaje}
         return;
       }
 
-      const commentIndex = this.comments.findIndex((c) => c.id === commId);
+      const strId = String(commId);
+      const commentIndex = this.comments.findIndex((c) => String(c.id) === strId);
       const authorName = commentIndex !== -1 ? (this.comments[commentIndex].author || 'Usuario') : 'Comentario';
 
-      // Persist as deleted so it never reappears
-      this.saveDeletedComment(commId);
+      // 1. Guardar en lista negra de eliminados para que no vuelva a cargarse
+      this.saveDeletedComment(strId);
 
+      // 2. Eliminar del array en memoria inmediatamente
       if (commentIndex !== -1) {
         this.comments.splice(commentIndex, 1);
-        this.saveComments();
-        this.renderComments();
+      } else {
+        this.comments = this.comments.filter((c) => String(c.id) !== strId);
       }
 
+      this.saveComments();
+      this.renderComments();
+      this.sound.playPop();
+
+      // 3. Eliminar de Firebase Firestore
       try {
-        if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !commId.startsWith('comm-')) {
-          await window.FirebaseCommentsBridge.deleteComment(commId);
+        if (window.FirebaseCommentsBridge && window.FirebaseCommentsBridge.isReady && !strId.startsWith('comm-')) {
+          await window.FirebaseCommentsBridge.deleteComment(strId);
         }
-        this.sound.playPop();
-        this.showToast(`Comentario de "${authorName}" eliminado 🗑️`, 'info');
       } catch (err) {
         console.error('Error eliminando comentario en Firebase:', err);
-        this.sound.playPop();
-        this.showToast(`Comentario de "${authorName}" eliminado localmente 🗑️`, 'info');
       }
     }
 

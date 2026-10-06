@@ -1713,7 +1713,23 @@
           });
         },
         async deleteComment(commentId) {
-          return await deleteDoc(doc(db, "comentarios", commentId));
+          if (!commentId) return;
+          const commentRef = doc(db, "comentarios", commentId);
+          try {
+            await deleteDoc(commentRef);
+          } catch (deleteErr) {
+            console.warn("deleteDoc falló, aplicando marcado de borrado lógico:", deleteErr);
+            try {
+              await setDoc(commentRef, {
+                deleted: true,
+                status: "deleted",
+                texto: "[Eliminado]",
+                text: "[Eliminado]"
+              }, { merge: true });
+            } catch (updateErr) {
+              console.warn("Error en fallback de borrado:", updateErr);
+            }
+          }
         },
         async toggleLike(commentId, delta) {
           const commentRef = doc(db, "comentarios", commentId);
