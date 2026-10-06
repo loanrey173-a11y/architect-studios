@@ -2918,6 +2918,21 @@
 
 
     /* ------------------------------------------------------------------------
+       Modal Body Scroll Lock Helper
+       ------------------------------------------------------------------------ */
+
+    syncBodyModalLock() {
+      const anyActive = document.querySelector('.modal-backdrop.active, .modal-backdrop.open');
+      if (anyActive) {
+        document.body.classList.add('modal-open');
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    /* ------------------------------------------------------------------------
        Tutorials Notice Modal Methods
        ------------------------------------------------------------------------ */
 
@@ -2926,6 +2941,7 @@
         this.tutorialsNoticeModal.classList.add('active');
         this.tutorialsNoticeModal.classList.add('open');
         this.tutorialsNoticeModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
       }
     }
 
@@ -2934,6 +2950,7 @@
         this.tutorialsNoticeModal.classList.remove('active');
         this.tutorialsNoticeModal.classList.remove('open');
         this.tutorialsNoticeModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
       }
     }
 
@@ -2954,6 +2971,7 @@
         this.authModal.classList.add('active');
         this.authModal.classList.add('open');
         this.authModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
         setTimeout(() => {
           if (this.authPasswordInput) this.authPasswordInput.focus();
         }, 150);
@@ -2965,6 +2983,7 @@
         this.authModal.classList.remove('active');
         this.authModal.classList.remove('open');
         this.authModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
       }
     }
 
@@ -3119,6 +3138,10 @@
       this.gamertagModal.classList.add('active');
       this.gamertagModal.classList.add('open');
       this.gamertagModal.setAttribute('aria-hidden', 'false');
+      this.gamertagModal.scrollTop = 0;
+      const diag = this.gamertagModal.querySelector('.modal-dialog');
+      if (diag) diag.scrollTop = 0;
+      this.syncBodyModalLock();
 
       setTimeout(() => {
         if (this.gamertagInput) this.gamertagInput.focus();
@@ -3130,6 +3153,7 @@
         this.gamertagModal.classList.remove('active');
         this.gamertagModal.classList.remove('open');
         this.gamertagModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
       }
       // If closing without completing Gamertag registration, sign out
       if (!this.currentUser && window.FirebaseCommentsBridge && typeof window.FirebaseCommentsBridge.signOutUser === 'function') {
@@ -3237,6 +3261,10 @@
       this.profileModal.classList.add('active');
       this.profileModal.classList.add('open');
       this.profileModal.setAttribute('aria-hidden', 'false');
+      this.profileModal.scrollTop = 0;
+      const diag = this.profileModal.querySelector('.modal-dialog');
+      if (diag) diag.scrollTop = 0;
+      this.syncBodyModalLock();
     }
 
     closeProfileModal() {
@@ -3244,6 +3272,7 @@
         this.profileModal.classList.remove('active');
         this.profileModal.classList.remove('open');
         this.profileModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
       }
     }
 
@@ -3366,6 +3395,7 @@
         this.deleteAccountConfirmModal.classList.add('active');
         this.deleteAccountConfirmModal.classList.add('open');
         this.deleteAccountConfirmModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
       }
     }
 
@@ -3374,6 +3404,7 @@
         this.deleteAccountConfirmModal.classList.remove('active');
         this.deleteAccountConfirmModal.classList.remove('open');
         this.deleteAccountConfirmModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
       }
     }
 
@@ -3554,6 +3585,7 @@
         this.submitIdeaModal.classList.add('active');
         this.submitIdeaModal.classList.add('open');
         this.submitIdeaModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
 
         setTimeout(() => {
           if (defaultTab === 'build' && this.ideaTitle) {
@@ -3570,6 +3602,7 @@
         this.submitIdeaModal.classList.remove('active');
         this.submitIdeaModal.classList.remove('open');
         this.submitIdeaModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
       }
       this.closeHowToInstagramModal();
     }
@@ -3579,6 +3612,7 @@
         this.howToInstagramModal.classList.add('active');
         this.howToInstagramModal.classList.add('open');
         this.howToInstagramModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
       }
     }
 
@@ -3587,6 +3621,7 @@
         this.howToInstagramModal.classList.remove('active');
         this.howToInstagramModal.classList.remove('open');
         this.howToInstagramModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
       }
     }
 
