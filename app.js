@@ -2163,7 +2163,7 @@
         } else if (this.currentCategory === 'favoritos') {
           if (!this.userFavorites.includes(house.id)) return false;
         } else if (this.currentCategory === 'mas_votadas') {
-          if ((house.likes || 0) <= 0) return false;
+          if ((house.likes || 0) < 20) return false;
         }
 
         // Search match
@@ -2234,8 +2234,8 @@
           const title = this.emptyState.querySelector('.empty-title');
           const text = this.emptyState.querySelector('.empty-text');
           if (this.currentCategory === 'mas_votadas') {
-            if (title) title.textContent = 'Aún no hay votos registrados';
-            if (text) text.textContent = '¡Sé el primero en dar corazón ❤️ a una de las construcciones para que aparezca aquí!';
+            if (title) title.textContent = 'Aún no hay construcciones con 20+ votos';
+            if (text) text.textContent = 'Se requiere un mínimo de 20 corazones ❤️ para aparecer en Más Votadas. ¡Apoya tus diseños favoritos con un like!';
           } else if (this.currentCategory === 'favoritos') {
             if (title) title.textContent = 'No tienes casas favoritas guardadas';
             if (text) text.textContent = 'Haz clic en el icono de marcador ⭐ en cualquier tarjeta para guardarla.';
@@ -2468,7 +2468,7 @@
 
     updateCounters() {
       const totalAll = this.houses.length;
-      const totalVotadas = this.houses.filter((h) => (h.likes || 0) > 0).length;
+      const totalVotadas = this.houses.filter((h) => (h.likes || 0) >= 20).length;
       const totalCerezo = this.houses.filter((h) => h.category === 'cerezo' || h.tags.includes('cerezo') || h.tags.includes('sakura')).length;
       const totalPlaya = this.houses.filter((h) => h.category === 'playa' || h.tags.includes('playa')).length;
       const totalModerna = this.houses.filter((h) => h.category === 'moderna' || h.tags.includes('moderna')).length;
@@ -2490,7 +2490,7 @@
         this.filterSummaryBar.style.display = 'flex';
         let text = `Mostrando ${filteredCount} construcción${filteredCount === 1 ? '' : 'es'}`;
         if (this.currentCategory === 'mas_votadas') {
-          text = `🔥 Mostrando ${filteredCount} construcción${filteredCount === 1 ? '' : 'es'} más votada${filteredCount === 1 ? '' : 's'}`;
+          text = `🔥 Mostrando ${filteredCount} construcción${filteredCount === 1 ? '' : 'es'} destacada${filteredCount === 1 ? '' : 's'} (20+ votos)`;
         } else if (this.currentCategory !== 'all') {
           text += ` en categoría "${this.currentCategory}"`;
         }
