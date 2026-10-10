@@ -1111,6 +1111,10 @@
       this.current360Index = 0;
       this.panorama360Engine = null;
 
+      // Comments Filter & Sort state
+      this.currentCommentHouseFilter = 'all';
+      this.currentCommentSort = 'newest';
+
       // Zoom & stage state
       this.zoomLevel = 1.0;
       this.gridActive = false;
@@ -1566,6 +1570,16 @@
       this.charCounter = document.getElementById('charCounter');
       this.commentsList = document.getElementById('commentsList');
       this.commentsCount = document.getElementById('commentsCount');
+
+      // Comments Filter & Sort Elements
+      this.commentsFilterBar = document.getElementById('commentsFilterBar');
+      this.commentFilterHouseSelect = document.getElementById('commentFilterHouseSelect');
+      this.commentSortSelect = document.getElementById('commentSortSelect');
+      this.commentHouseChips = document.getElementById('commentHouseChips');
+      this.commentFilterStatus = document.getElementById('commentFilterStatus');
+      this.commentFilterStatusName = document.getElementById('commentFilterStatusName');
+      this.commentFilterStatusCount = document.getElementById('commentFilterStatusCount');
+      this.clearCommentFilterBtn = document.getElementById('clearCommentFilterBtn');
 
       // Gamertag Modal Elements
       this.gamertagModal = document.getElementById('gamertagModal');
@@ -2278,6 +2292,39 @@
       if (this.commentSignOutBtn) {
         this.commentSignOutBtn.addEventListener('click', () => {
           this.handleGoogleSignOut();
+        });
+      }
+
+      // Comments Filter by House & Sort Listeners
+      if (this.commentFilterHouseSelect) {
+        this.commentFilterHouseSelect.addEventListener('change', (e) => {
+          this.sound.playPop();
+          this.setCommentHouseFilter(e.target.value);
+        });
+      }
+
+      if (this.commentSortSelect) {
+        this.commentSortSelect.addEventListener('change', (e) => {
+          this.sound.playPop();
+          this.currentCommentSort = e.target.value;
+          this.renderComments();
+        });
+      }
+
+      if (this.commentHouseChips) {
+        this.commentHouseChips.addEventListener('click', (e) => {
+          const btn = e.target.closest('.cchip-btn');
+          if (!btn) return;
+          this.sound.playPop();
+          const house = btn.getAttribute('data-house') || 'all';
+          this.setCommentHouseFilter(house);
+        });
+      }
+
+      if (this.clearCommentFilterBtn) {
+        this.clearCommentFilterBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.setCommentHouseFilter('all');
         });
       }
 
@@ -4703,6 +4750,14 @@ ${mensaje}
       }
     }
 
+    setCommentHouseFilter(houseVal) {
+      this.currentCommentHouseFilter = houseVal || 'all';
+      if (this.commentFilterHouseSelect) {
+        this.commentFilterHouseSelect.value = this.currentCommentHouseFilter;
+      }
+      this.renderComments();
+    }
+
     renderComments() {
       if (!this.commentsList) return;
 
@@ -4730,17 +4785,116 @@ ${mensaje}
         this.commentsCount.textContent = totalCount;
       }
 
-      if (this.comments.length === 0) {
+      // Dynamic count calculation for chips
+      const counts = {
+        all: 0,
+        general: 0,
+        sakura: 0,
+        chimenea: 0,
+        imperial: 0,
+        selva: 0,
+        costera: 0,
+        muelle: 0
+      };
+
+      this.comments.forEach((c) => {
+        const h = (c.houseRef || 'General').trim();
+        const repCount = Array.isArray(c.replies) ? c.replies.length : 0;
+        const totalThis = 1 + repCount;
+        counts.all += totalThis;
+
+        if (h === 'General') counts.general += totalThis;
+        else if (h === 'Mansión Moderna Sakura') counts.sakura += totalThis;
+        else if (h === 'Residencia de Cerezo con Chimenea') counts.chimenea += totalThis;
+        else if (h === 'Villa Imperial Cherry') counts.imperial += totalThis;
+        else if (h === 'Mansión Monumental de la Selva') counts.selva += totalThis;
+        else if (h === 'Villa Costera Moderna') counts.costera += totalThis;
+        else if (h === 'Mansión de Playa con Muelle') counts.muelle += totalThis;
+        else counts.general += totalThis;
+      });
+
+      // Update chip badge counts
+      const elCountAll = document.getElementById('cchipCountAll');
+      const elCountGen = document.getElementById('cchipCountGeneral');
+      const elCountSakura = document.getElementById('cchipCount-sakura');
+      const elCountChimenea = document.getElementById('cchipCount-chimenea');
+      const elCountImperial = document.getElementById('cchipCount-imperial');
+      const elCountSelva = document.getElementById('cchipCount-selva');
+      const elCountCostera = document.getElementById('cchipCount-costera');
+      const elCountMuelle = document.getElementById('cchipCount-muelle');
+
+      if (elCountAll) elCountAll.textContent = counts.all;
+      if (elCountGen) elCountGen.textContent = counts.general;
+      if (elCountSakura) elCountSakura.textContent = counts.sakura;
+      if (elCountChimenea) elCountChimenea.textContent = counts.chimenea;
+      if (elCountImperial) elCountImperial.textContent = counts.imperial;
+      if (elCountSelva) elCountSelva.textContent = counts.selva;
+      if (elCountCostera) elCountCostera.textContent = counts.costera;
+      if (elCountMuelle) elCountMuelle.textContent = counts.muelle;
+
+      // Update chips active state
+      if (this.commentHouseChips) {
+        const chipBtns = this.commentHouseChips.querySelectorAll('.cchip-btn');
+        chipBtns.forEach((btn) => {
+          const house = btn.getAttribute('data-house') || 'all';
+          btn.classList.toggle('active', house === this.currentCommentHouseFilter);
+        });
+      }
+
+      // Sync dropdown values
+      if (this.commentFilterHouseSelect) {
+        this.commentFilterHouseSelect.value = this.currentCommentHouseFilter;
+      }
+      if (this.commentSortSelect) {
+        this.commentSortSelect.value = this.currentCommentSort;
+      }
+
+      // 1. Filter comments by selected house
+      let filteredComments = [...this.comments];
+      if (this.currentCommentHouseFilter && this.currentCommentHouseFilter !== 'all') {
+        filteredComments = filteredComments.filter((c) => {
+          const h = (c.houseRef || 'General').trim();
+          return h.toLowerCase() === this.currentCommentHouseFilter.toLowerCase();
+        });
+      }
+
+      // 2. Sort filtered comments
+      if (this.currentCommentSort === 'likes') {
+        filteredComments.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      } else if (this.currentCommentSort === 'replies') {
+        filteredComments.sort((a, b) => ((b.replies && b.replies.length) || 0) - ((a.replies && a.replies.length) || 0));
+      } else {
+        // newest
+        filteredComments.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+      }
+
+      // 3. Update Filter Status Bar
+      if (this.commentFilterStatus) {
+        if (this.currentCommentHouseFilter !== 'all') {
+          this.commentFilterStatus.style.display = 'flex';
+          if (this.commentFilterStatusName) {
+            this.commentFilterStatusName.textContent = this.currentCommentHouseFilter;
+          }
+          if (this.commentFilterStatusCount) {
+            this.commentFilterStatusCount.textContent = filteredComments.length;
+          }
+        } else {
+          this.commentFilterStatus.style.display = 'none';
+        }
+      }
+
+      if (filteredComments.length === 0) {
+        const isFiltered = this.currentCommentHouseFilter !== 'all';
         this.commentsList.innerHTML = `
           <div class="empty-comments-box">
             <i class="fa-regular fa-comment-dots"></i>
-            <p>Sé el primero en dejar un comentario con tu Gamertag.</p>
+            <p>${isFiltered ? `No hay comentarios todavía para <strong>${this.escapeHTML(this.currentCommentHouseFilter)}</strong>. ¡Sé el primero en dejar tu opinión!` : 'Sé el primero en dejar un comentario con tu Gamertag.'}</p>
           </div>
         `;
         return;
       }
 
-      this.commentsList.innerHTML = this.comments
+      this.commentsList.innerHTML = filteredComments
         .map((comm) => {
           const isDev = this.isDeveloperAccount(comm);
           const rawSpec = (comm.especialidad || comm.titulo || comm.role || '').toString().toLowerCase();

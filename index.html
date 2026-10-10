@@ -630,6 +630,80 @@
             </div>
           </form>
 
+        <!-- Comments Filter Dashboard -->
+        <div class="comments-filter-bar" id="commentsFilterBar">
+          <div class="comments-filter-header-row">
+            <div class="comments-filter-label">
+              <i class="fa-solid fa-filter"></i>
+              <span>Filtrar comentarios por casa:</span>
+            </div>
+            
+            <div class="comments-filter-controls">
+              <!-- Dropdown Selector of All Houses -->
+              <div class="select-wrapper comment-house-filter-wrapper">
+                <i class="fa-solid fa-cube select-icon"></i>
+                <select id="commentFilterHouseSelect" aria-label="Filtrar comentarios por casa">
+                  <option value="all">🏠 Todas las Casas & General</option>
+                  <option value="General">💬 Opinión General</option>
+                  <option value="Mansión Moderna Sakura">🌸 Mansión Moderna Sakura</option>
+                  <option value="Residencia de Cerezo con Chimenea">🔥 Residencia de Cerezo con Chimenea</option>
+                  <option value="Villa Imperial Cherry">🏯 Villa Imperial Cherry</option>
+                  <option value="Mansión Monumental de la Selva">🌴 Mansión Monumental de la Selva</option>
+                  <option value="Villa Costera Moderna">🏖️ Villa Costera Moderna</option>
+                  <option value="Mansión de Playa con Muelle">🌊 Mansión de Playa con Muelle</option>
+                </select>
+              </div>
+
+              <!-- Sort comments -->
+              <div class="select-wrapper comment-sort-wrapper">
+                <i class="fa-solid fa-arrow-down-short-wide select-icon"></i>
+                <select id="commentSortSelect" aria-label="Ordenar comentarios">
+                  <option value="newest">Más Recientes</option>
+                  <option value="likes">Más Me Gusta ❤️</option>
+                  <option value="replies">Más Respuestas 💬</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick House Filter Chips Strip -->
+          <div class="comments-house-chips" id="commentHouseChips">
+            <button class="cchip-btn active" data-house="all" title="Ver comentarios de todas las construcciones">
+              <i class="fa-solid fa-layer-group"></i> <span>Todas las Casas</span> <span class="cchip-count" id="cchipCountAll">0</span>
+            </button>
+            <button class="cchip-btn" data-house="General" title="Comentarios generales">
+              <i class="fa-solid fa-comment-dots"></i> <span>General</span> <span class="cchip-count" id="cchipCountGeneral">0</span>
+            </button>
+            <button class="cchip-btn" data-house="Mansión Moderna Sakura" title="Mansión Moderna Sakura">
+              <span>🌸</span> <span>M. Sakura</span> <span class="cchip-count" id="cchipCount-sakura">0</span>
+            </button>
+            <button class="cchip-btn" data-house="Residencia de Cerezo con Chimenea" title="Residencia de Cerezo con Chimenea">
+              <span>🔥</span> <span>R. Cerezo</span> <span class="cchip-count" id="cchipCount-chimenea">0</span>
+            </button>
+            <button class="cchip-btn" data-house="Villa Imperial Cherry" title="Villa Imperial Cherry">
+              <span>🏯</span> <span>V. Imperial</span> <span class="cchip-count" id="cchipCount-imperial">0</span>
+            </button>
+            <button class="cchip-btn" data-house="Mansión Monumental de la Selva" title="Mansión Monumental de la Selva">
+              <span>🌴</span> <span>M. Selva</span> <span class="cchip-count" id="cchipCount-selva">0</span>
+            </button>
+            <button class="cchip-btn" data-house="Villa Costera Moderna" title="Villa Costera Moderna">
+              <span>🏖️</span> <span>V. Costera</span> <span class="cchip-count" id="cchipCount-costera">0</span>
+            </button>
+            <button class="cchip-btn" data-house="Mansión de Playa con Muelle" title="Mansión de Playa con Muelle">
+              <span>🌊</span> <span>M. Playa</span> <span class="cchip-count" id="cchipCount-muelle">0</span>
+            </button>
+          </div>
+
+          <!-- Active Filter Status Indicator -->
+          <div class="comment-filter-status" id="commentFilterStatus" style="display: none;">
+            <div class="filter-status-info">
+              <i class="fa-solid fa-filter-circle-xmark"></i>
+              <span>Mostrando comentarios de: <strong id="commentFilterStatusName">Todas</strong> (<span id="commentFilterStatusCount">0</span>)</span>
+            </div>
+            <button type="button" class="btn-clear-comment-filter" id="clearCommentFilterBtn" title="Restablecer filtro a todas las casas">
+              <i class="fa-solid fa-xmark"></i> <span>Ver todas</span>
+            </button>
+          </div>
         </div>
 
         <!-- Comments Live Feed -->
