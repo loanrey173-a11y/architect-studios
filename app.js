@@ -75,7 +75,7 @@
   };
 
   const STORAGE_KEYS = {
-    HOUSES: 'mc_architect_houses_v21',
+    HOUSES: 'mc_architect_houses_v22',
     COMMENTS: 'mc_comments_v15',
     DELETED_COMMENTS: 'mc_deleted_comments_v15',
     USER_COMMENT_LIKES: 'mc_user_comm_likes_v15',
@@ -96,12 +96,12 @@
       difficultyLevel: 3,
       time: '~3.0 Horas',
       biome: 'Arboleda de Cerezos',
-      creator: 'loanrey17',
-      creatorDisplay: 'loanrey17',
-      creatorRole: 'Desarrollador',
+      creator: 'dann_yaz1',
+      creatorDisplay: 'dann_yaz1',
+      creatorRole: 'Instagram',
       instagram: {
-        name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17/'
+        name: 'dann_yaz1',
+        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
       },
       image: './casa_danna_1_fachada.jpg',
       gallery: [
@@ -134,12 +134,12 @@
       difficultyLevel: 2,
       time: '~2.0 Horas',
       biome: 'Bosque de Cerezos / Colinas',
-      creator: 'loanrey17',
-      creatorDisplay: 'loanrey17',
-      creatorRole: 'Desarrollador',
+      creator: 'dann_yaz1',
+      creatorDisplay: 'dann_yaz1',
+      creatorRole: 'Instagram',
       instagram: {
-        name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17/'
+        name: 'dann_yaz1',
+        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
       },
       image: './casa_danna_2_fachada.jpg',
       gallery: [
@@ -171,12 +171,12 @@
       difficultyLevel: 3,
       time: '~3.5 Horas',
       biome: 'Montaña de Cerezos',
-      creator: 'loanrey17',
-      creatorDisplay: 'loanrey17',
-      creatorRole: 'Desarrollador',
+      creator: 'dann_yaz1',
+      creatorDisplay: 'dann_yaz1',
+      creatorRole: 'Instagram',
       instagram: {
-        name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17/'
+        name: 'dann_yaz1',
+        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
       },
       image: './casa_danna_3_exterior.jpg',
       gallery: [
@@ -208,12 +208,12 @@
       difficultyLevel: 3,
       time: '~4.0 Horas',
       biome: 'Selva / Jungla Tropical',
-      creator: 'loanrey17',
-      creatorDisplay: 'loanrey17',
-      creatorRole: 'Desarrollador',
+      creator: 'dann_yaz1',
+      creatorDisplay: 'dann_yaz1',
+      creatorRole: 'Instagram',
       instagram: {
-        name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17/'
+        name: 'dann_yaz1',
+        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
       },
       image: './casa_danna_4_fachada.jpg',
       gallery: [
@@ -2651,12 +2651,16 @@
       // Update floating IG badge directly on detail modal image stage
       const stageIgBadge = document.getElementById('modalStageFloatingIgBadge');
       if (stageIgBadge) {
-        const igUrl = house.instagram?.url || 'https://www.instagram.com/loanrey17/';
-        const igName = house.instagram?.name || 'loanrey17';
-        stageIgBadge.href = igUrl;
-        stageIgBadge.title = `Instagram @${igName}`;
-        stageIgBadge.innerHTML = `<i class="fa-brands fa-instagram"></i> <span>@${igName}</span>`;
-        stageIgBadge.style.display = 'inline-flex';
+        if (house.instagram) {
+          const igUrl = house.instagram.url;
+          const igName = house.instagram.name;
+          stageIgBadge.href = igUrl;
+          stageIgBadge.title = `Instagram @${igName}`;
+          stageIgBadge.innerHTML = `<i class="fa-brands fa-instagram"></i> <span>@${igName}</span>`;
+          stageIgBadge.style.display = 'inline-flex';
+        } else {
+          stageIgBadge.style.display = 'none';
+        }
       }
 
       // Populate Creator Name & Instagram
