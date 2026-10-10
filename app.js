@@ -75,7 +75,7 @@
   };
 
   const STORAGE_KEYS = {
-    HOUSES: 'mc_architect_houses_v23',
+    HOUSES: 'mc_architect_houses_v24',
     COMMENTS: 'mc_comments_v15',
     DELETED_COMMENTS: 'mc_deleted_comments_v15',
     USER_COMMENT_LIKES: 'mc_user_comm_likes_v15',
@@ -2272,10 +2272,13 @@
         ? `<span class="badge-photo-count"><i class="fa-solid fa-images"></i> ${house.gallery.length} fotos</span>`
         : '';
 
-      const creatorRole = house.creatorRole || 'Desarrollador';
-      const creatorDisplay = house.creatorDisplay || house.creator || 'loanrey17';
-      const igHandle = house.instagram?.name || 'loanrey17';
-      const igUrl = house.instagram?.url || 'https://www.instagram.com/loanrey17/';
+      const isDev = (house.creator === 'loanrey17') || (house.creatorDisplay && house.creatorDisplay.toLowerCase() === 'loanrey17') || (house.instagram && house.instagram.name && house.instagram.name.toLowerCase() === 'loanrey17');
+      const creatorRole = isDev ? 'Desarrollador' : (house.creatorRole && house.creatorRole !== 'Desarrollador' ? house.creatorRole : 'Instagram');
+      const creatorDisplay = house.creatorDisplay || house.creator || (isDev ? 'loanrey17' : 'Arquitecto');
+      const igHandle = house.instagram?.name || (isDev ? 'loanrey17' : '');
+      const igUrl = house.instagram?.url || (isDev ? 'https://www.instagram.com/loanrey17/' : `https://www.instagram.com/${igHandle}/`);
+
+      const devCrown = isDev ? '<i class="fa-solid fa-crown creator-crown" style="color: var(--gold); font-size: 0.72rem; margin-right: 0.25rem;"></i>' : '';
 
       // SVG placeholder to prevent early downloads and ensure zero layout shift (CLS)
       const placeholderSVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'%3E%3C/svg%3E";
@@ -2322,7 +2325,6 @@
                 <img src="./instagram_logo.png" alt="Logo Instagram" class="card-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
               </div>
               <div class="card-ig-info">
-                <span class="card-ig-subtitle"><i class="fa-solid fa-crown creator-crown" style="color: var(--gold); font-size: 0.72rem; margin-right: 0.25rem;"></i>${creatorRole}</span>
                 <span class="card-ig-handle">${creatorDisplay} <span class="card-ig-at">@${igHandle}</span></span>
               </div>
               <div class="card-ig-badge-action">
@@ -2668,9 +2670,9 @@
       if (detailCreatorBanner) {
         if (house.creator || house.creatorDisplay) {
           detailCreatorBanner.style.display = 'flex';
-          const creatorRole = house.creatorRole || 'Desarrollador';
-          const creatorDisplay = house.creatorDisplay || house.creator;
-          const isDev = creatorRole === 'Desarrollador' || house.creator === 'loanrey17';
+          const isDev = (house.creator === 'loanrey17') || (house.creatorDisplay && house.creatorDisplay.toLowerCase() === 'loanrey17') || (house.instagram && house.instagram.name && house.instagram.name.toLowerCase() === 'loanrey17');
+          const creatorRole = isDev ? 'Desarrollador' : (house.creatorRole && house.creatorRole !== 'Desarrollador' ? house.creatorRole : 'Instagram');
+          const creatorDisplay = house.creatorDisplay || house.creator || (isDev ? 'loanrey17' : 'Arquitecto');
 
           if (this.detailCreatorName) {
             this.detailCreatorName.textContent = creatorDisplay;
@@ -2691,7 +2693,7 @@
                     <img src="./instagram_logo.png" alt="Instagram ${house.instagram.name}" class="detail-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
                   </div>
                   <div class="detail-ig-info-col">
-                    <span class="detail-ig-role">${devCrown}${isDev ? 'Desarrollador Oficial' : (creatorRole || 'Instagram')}</span>
+                    <span class="detail-ig-role ${isDev ? 'is-dev' : ''}">${devCrown}${isDev ? 'Desarrollador Oficial' : (creatorRole || 'Instagram')}</span>
                     <span class="detail-ig-username">${creatorDisplay} <span class="detail-ig-handle-pill">@${house.instagram.name}</span></span>
                   </div>
                   <div class="detail-ig-follow-btn">

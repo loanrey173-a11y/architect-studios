@@ -4765,15 +4765,7 @@ body.modal-open {
 }
 
 .card-ig-subtitle {
-  font-size: 0.62rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  line-height: 1.1;
+  display: none !important;
 }
 
 .card-ig-handle {
@@ -4919,6 +4911,12 @@ body.modal-open {
   letter-spacing: 0.08em;
   color: #e1306c;
   font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+}
+
+.detail-ig-role.is-dev {
+  color: var(--gold);
 }
 
 .detail-ig-username {

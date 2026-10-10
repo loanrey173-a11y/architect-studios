@@ -23,7 +23,7 @@
   <!-- Preload Minecraft Textures -->
   <link rel="preload" as="image" href="images/minecraft_block.png">
   <link rel="preload" as="image" href="./wood_border.png">
-  <link rel="stylesheet" href="./style.css?v=100">
+  <link rel="stylesheet" href="./style.css?v=20261010_1219">
 
   <!-- Critical Preloader CSS (Instant 0ms render for weak connections / slow network) -->
   <style>
@@ -1784,11 +1784,11 @@
     }
   </script>
 
-  <!-- Limpieza de almacenamiento local previo de comentarios -->
+  <!-- Limpieza de almacenamiento local previo y sincronización inmediata -->
   <script>
     try {
       Object.keys(localStorage).forEach(function(key) {
-        if (key.indexOf('mc_comments_') === 0 || key.indexOf('mc_deleted_comments_') === 0 || key.indexOf('mc_user_comm_likes_') === 0) {
+        if (key.indexOf('mc_comments_') === 0 || key.indexOf('mc_deleted_comments_') === 0 || key.indexOf('mc_user_comm_likes_') === 0 || (key.indexOf('mc_architect_houses_') === 0 && key !== 'mc_architect_houses_v24')) {
           localStorage.removeItem(key);
         }
       });
@@ -1796,6 +1796,6 @@
   </script>
 
   <!-- JavaScript Application -->
-  <script src="./app.js?v=98"></script>
+  <script src="./app.js?v=20261010_1219"></script>
 </body>
 </html>
