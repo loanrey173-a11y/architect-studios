@@ -3406,6 +3406,92 @@ body.modal-open {
   gap: 0.45rem;
 }
 
+.btn-card-360 {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.16) 0%, rgba(59, 130, 246, 0.2) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.45);
+  color: #38bdf8;
+  font-family: var(--font-main);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  transition: all var(--tr-fast);
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.15);
+  user-select: none;
+}
+
+.btn-card-360:hover {
+  background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%);
+  border-color: #38bdf8;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
+}
+
+.btn-card-360 i {
+  font-size: 0.92rem;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-card-360:hover i {
+  transform: rotate(180deg) scale(1.15);
+}
+
+.card-img-360-chip {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 4;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #38bdf8;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  font-family: var(--font-main);
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all var(--tr-bounce);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.card-img-360-chip:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #7dd3fc;
+  transform: scale(1.08) translateY(-1px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
+}
+
+.card-img-360-chip i {
+  transition: transform 0.5s ease;
+}
+
+.card-img-360-chip:hover i {
+  transform: rotate(180deg);
+}
+
+.tool-btn.highlight-360 {
+  background: rgba(6, 182, 212, 0.18);
+  border-color: rgba(6, 182, 212, 0.5);
+  color: #38bdf8;
+}
+
+.tool-btn.highlight-360:hover {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
 .btn-card-details {
   background: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.3);
@@ -7547,6 +7633,455 @@ html, body {
 .btn-danger-confirm:hover {
   background: #b91c1c;
 }
+
+/* ==========================================================================
+   360° Interactive Panoramic & Orbit Tour Modal
+   ========================================================================== */
+
+.modal-360-backdrop {
+  z-index: 99990;
+  background: rgba(5, 8, 14, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.modal-360-dialog {
+  width: 95vw;
+  max-width: 1200px;
+  height: 88vh;
+  max-height: 850px;
+  background: #0f172a;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(6, 182, 212, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  animation: modalPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-360-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.4rem;
+  background: rgba(15, 23, 42, 0.96);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 10;
+  gap: 1rem;
+}
+
+.modal-360-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.modal-360-badge {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(59, 130, 246, 0.3) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  color: #38bdf8;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+.modal-360-title {
+  font-family: var(--font-main);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.modal-360-biome {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.modal-360-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.m360-head-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--tr-fast);
+}
+
+.m360-head-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.m360-head-btn.close:hover {
+  background: #dc2626;
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+.modal-360-body {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #090d16;
+}
+
+.m360-viewport {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+}
+
+.m360-viewport.is-dragging {
+  cursor: grabbing !important;
+}
+
+.m360-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.m360-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.m360-lighting-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  transition: background 0.5s ease;
+}
+
+/* Atmospheric shader filters */
+.m360-lighting-overlay.filter-rtx {
+  background: radial-gradient(circle at center, rgba(255, 235, 170, 0.08) 0%, rgba(10, 15, 28, 0.25) 100%);
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.6);
+}
+
+.m360-lighting-overlay.filter-day {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.m360-lighting-overlay.filter-sunset {
+  background: radial-gradient(circle at bottom, rgba(249, 115, 22, 0.25) 0%, rgba(147, 51, 234, 0.2) 60%, rgba(15, 23, 42, 0.6) 100%);
+  mix-blend-mode: screen;
+}
+
+.m360-lighting-overlay.filter-night {
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, rgba(2, 6, 23, 0.7) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* HUD Compass */
+.m360-hud-compass {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 5;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.compass-dial {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(56, 189, 248, 0.6);
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.compass-pt {
+  position: absolute;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #94a3b8;
+  line-height: 1;
+}
+
+.compass-pt.n { top: 1px; color: #ef4444; }
+.compass-pt.s { bottom: 1px; }
+.compass-pt.e { right: 2px; }
+.compass-pt.w { left: 2px; }
+
+.compass-needle {
+  width: 2px;
+  height: 16px;
+  background: linear-gradient(to bottom, #ef4444 50%, #38bdf8 50%);
+  border-radius: 2px;
+  transform-origin: center center;
+  transition: transform 0.1s linear;
+}
+
+.compass-angle-text {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #38bdf8;
+  min-width: 36px;
+}
+
+/* Drag Hint */
+.m360-drag-hint {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #f1f5f9;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+  animation: hintPulse 3s infinite ease-in-out;
+  transition: opacity 0.5s ease;
+}
+
+.m360-drag-hint.hidden {
+  opacity: 0;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.85; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 1; transform: translateX(-50%) translateY(-3px); }
+}
+
+.m360-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.4;
+}
+
+.m360-reticle span:first-child {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 14px;
+  height: 2px;
+  background: #ffffff;
+}
+
+.m360-reticle span:last-child {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  width: 2px;
+  height: 14px;
+  background: #ffffff;
+}
+
+/* Bottom Controls Bar */
+.m360-controls-bar {
+  position: relative;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.96);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.75rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.m360-ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.m360-zoom-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.m360-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  font-family: var(--font-main);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all var(--tr-fast);
+  user-select: none;
+}
+
+.m360-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.m360-btn.active {
+  background: rgba(6, 182, 212, 0.22);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
+}
+
+.m360-btn.icon-only {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+.m360-zoom-group .m360-btn {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.m360-zoom-group .m360-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.m360-angles-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  max-width: 480px;
+  padding: 0.2rem 0;
+  scrollbar-width: none;
+}
+
+.m360-angles-selector::-webkit-scrollbar {
+  display: none;
+}
+
+.m360-angle-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-family: var(--font-main);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all var(--tr-fast);
+}
+
+.m360-angle-chip:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f1f5f9;
+}
+
+.m360-angle-chip.active {
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);
+}
+
+@media (max-width: 768px) {
+  .modal-360-dialog {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+    border: none;
+  }
+  .modal-360-backdrop {
+    padding: 0;
+  }
+  .modal-360-header {
+    padding: 0.75rem 1rem;
+  }
+  .modal-360-title {
+    font-size: 1rem;
+  }
+  .m360-controls-bar {
+    padding: 0.6rem 0.85rem;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  .m360-angles-selector {
+    max-width: 100%;
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
 
 
 

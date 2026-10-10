@@ -514,6 +514,383 @@
   }
 
   /* ==========================================================================
+     3.5 PANORAMA 360° INTERACTIVE ENGINE
+     ========================================================================== */
+
+  class Panorama360Engine {
+    constructor(canvas, particleCanvas, options = {}) {
+      this.canvas = canvas;
+      this.ctx = canvas ? canvas.getContext('2d') : null;
+      this.particleCanvas = particleCanvas;
+      this.pCtx = particleCanvas ? particleCanvas.getContext('2d') : null;
+      this.options = options;
+
+      this.image = null;
+      this.loaded = false;
+      this.yaw = 0; // 0 to 360
+      this.pitch = 0; // -80 to 80
+      this.fov = 75; // 35 to 105
+      this.targetYaw = 0;
+      this.targetPitch = 0;
+
+      this.isDragging = false;
+      this.startX = 0;
+      this.startY = 0;
+      this.lastX = 0;
+      this.lastY = 0;
+      this.velX = 0;
+      this.velY = 0;
+
+      this.autoSpin = true;
+      this.autoSpinSpeed = 0.22;
+
+      this.shaderMode = 'rtx'; // 'rtx', 'day', 'sunset', 'night'
+      this.biome = 'cerezo';
+
+      this.particles = [];
+      this.maxParticles = 50;
+
+      this.animationFrameId = null;
+      this.onAngleChange = options.onAngleChange || null;
+
+      this.initEvents();
+      this.resize();
+    }
+
+    initEvents() {
+      if (!this.canvas) return;
+      const v = this.canvas.parentElement;
+      if (!v) return;
+
+      const onMouseDown = (e) => {
+        if (e.button !== 0) return;
+        this.isDragging = true;
+        this.startX = e.clientX;
+        this.startY = e.clientY;
+        this.lastX = e.clientX;
+        this.lastY = e.clientY;
+        this.velX = 0;
+        this.velY = 0;
+        v.classList.add('is-dragging');
+        if (this.options.onInteract) this.options.onInteract();
+      };
+
+      const onMouseMove = (e) => {
+        if (!this.isDragging) return;
+        const dx = e.clientX - this.lastX;
+        const dy = e.clientY - this.lastY;
+        this.lastX = e.clientX;
+        this.lastY = e.clientY;
+
+        const sensitivity = (this.fov / 75) * 0.22;
+        this.yaw -= dx * sensitivity;
+        this.pitch += dy * sensitivity;
+        this.pitch = Math.max(-80, Math.min(80, this.pitch));
+
+        this.velX = -dx * sensitivity;
+        this.velY = dy * sensitivity;
+      };
+
+      const onMouseUp = () => {
+        if (!this.isDragging) return;
+        this.isDragging = false;
+        v.classList.remove('is-dragging');
+      };
+
+      v.addEventListener('mousedown', onMouseDown);
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+
+      // Touch events (with pinch-to-zoom)
+      let initialPinchDistance = 0;
+      let initialFov = 75;
+
+      v.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          this.isDragging = true;
+          this.startX = e.touches[0].clientX;
+          this.startY = e.touches[0].clientY;
+          this.lastX = e.touches[0].clientX;
+          this.lastY = e.touches[0].clientY;
+          this.velX = 0;
+          this.velY = 0;
+          v.classList.add('is-dragging');
+          if (this.options.onInteract) this.options.onInteract();
+        } else if (e.touches.length === 2) {
+          this.isDragging = false;
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          initialPinchDistance = Math.hypot(dx, dy);
+          initialFov = this.fov;
+        }
+      }, { passive: true });
+
+      v.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && this.isDragging) {
+          const dx = e.touches[0].clientX - this.lastX;
+          const dy = e.touches[0].clientY - this.lastY;
+          this.lastX = e.touches[0].clientX;
+          this.lastY = e.touches[0].clientY;
+
+          const sensitivity = (this.fov / 75) * 0.25;
+          this.yaw -= dx * sensitivity;
+          this.pitch += dy * sensitivity;
+          this.pitch = Math.max(-80, Math.min(80, this.pitch));
+
+          this.velX = -dx * sensitivity;
+          this.velY = dy * sensitivity;
+        } else if (e.touches.length === 2 && initialPinchDistance > 0) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const currentDistance = Math.hypot(dx, dy);
+          const ratio = initialPinchDistance / Math.max(10, currentDistance);
+          this.fov = Math.max(35, Math.min(105, initialFov * ratio));
+        }
+      }, { passive: true });
+
+      v.addEventListener('touchend', () => {
+        this.isDragging = false;
+        initialPinchDistance = 0;
+        v.classList.remove('is-dragging');
+      });
+
+      // Mouse Wheel Zoom
+      v.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = Math.sign(e.deltaY) * 4;
+        this.fov = Math.max(35, Math.min(105, this.fov + delta));
+        if (this.options.onInteract) this.options.onInteract();
+      }, { passive: false });
+
+      // Window resize
+      window.addEventListener('resize', () => this.resize(), { passive: true });
+    }
+
+    resize() {
+      if (!this.canvas) return;
+      const v = this.canvas.parentElement;
+      if (!v) return;
+      const rect = v.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      const w = Math.floor(rect.width * dpr);
+      const h = Math.floor(rect.height * dpr);
+
+      if (w > 0 && h > 0) {
+        this.canvas.width = w;
+        this.canvas.height = h;
+        if (this.particleCanvas) {
+          this.particleCanvas.width = w;
+          this.particleCanvas.height = h;
+        }
+      }
+    }
+
+    loadImage(url, biome = 'cerezo') {
+      this.loaded = false;
+      this.biome = (biome || 'cerezo').toLowerCase();
+      this.initParticles();
+
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        this.image = img;
+        this.loaded = true;
+      };
+      img.onerror = () => {
+        this.image = img;
+        this.loaded = true;
+      };
+      img.src = url;
+    }
+
+    initParticles() {
+      this.particles = [];
+      const w = this.canvas ? this.canvas.width : 800;
+      const h = this.canvas ? this.canvas.height : 600;
+      for (let i = 0; i < this.maxParticles; i++) {
+        this.particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          size: Math.random() * 8 + 4,
+          speedX: (Math.random() - 0.3) * 1.5,
+          speedY: Math.random() * 1.2 + 0.6,
+          rot: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 2,
+          opacity: Math.random() * 0.7 + 0.3
+        });
+      }
+    }
+
+    start() {
+      if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+      const loop = () => {
+        this.update();
+        this.render();
+        this.animationFrameId = requestAnimationFrame(loop);
+      };
+      loop();
+    }
+
+    stop() {
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+    }
+
+    update() {
+      if (this.autoSpin && !this.isDragging) {
+        this.yaw += this.autoSpinSpeed;
+      }
+
+      if (!this.isDragging) {
+        this.yaw += this.velX;
+        this.pitch += this.velY;
+        this.pitch = Math.max(-80, Math.min(80, this.pitch));
+        this.velX *= 0.92;
+        this.velY *= 0.92;
+        if (Math.abs(this.velX) < 0.001) this.velX = 0;
+        if (Math.abs(this.velY) < 0.001) this.velY = 0;
+      }
+
+      this.yaw = ((this.yaw % 360) + 360) % 360;
+
+      if (this.onAngleChange) {
+        this.onAngleChange(this.yaw, this.pitch, this.fov);
+      }
+    }
+
+    render() {
+      const ctx = this.ctx;
+      if (!ctx || !this.canvas) return;
+      const w = this.canvas.width;
+      const h = this.canvas.height;
+      if (!w || !h) return;
+
+      ctx.clearRect(0, 0, w, h);
+
+      if (!this.loaded || !this.image) {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 22px Outfit, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Cargando Vista 360°...', w / 2, h / 2);
+        return;
+      }
+
+      const img = this.image;
+      const fovRad = (this.fov * Math.PI) / 180;
+      const slices = 52;
+      const sliceWidth = w / slices;
+      const imgWidth = img.naturalWidth || img.width || 1200;
+      const imgHeight = img.naturalHeight || img.height || 800;
+
+      const pitchOffset = (this.pitch / 80) * (h * 0.45);
+      const curveStrength = Math.tan(fovRad / 2) * 0.28;
+
+      for (let i = 0; i < slices; i++) {
+        const screenX = i * sliceWidth;
+        const normX = (i / slices - 0.5) * 2;
+
+        const angle = (normX * (this.fov / 2)) * (Math.PI / 180);
+        const sliceYaw = (((this.yaw + (angle * 180 / Math.PI)) % 360) + 360) % 360;
+
+        const u = sliceYaw / 360;
+        const sx = u * imgWidth;
+        const sw = (sliceWidth / w) * (imgWidth / (360 / this.fov));
+
+        const depth = Math.cos(angle);
+        const sliceH = (h / depth) * (75 / this.fov);
+        const curveY = (normX * normX) * curveStrength * h * 0.15;
+        const sy_offset = pitchOffset + curveY;
+        const screenY = (h - sliceH) / 2 + sy_offset;
+
+        if (sx + sw <= imgWidth) {
+          ctx.drawImage(img, sx, 0, Math.max(1, sw), imgHeight, screenX, screenY, sliceWidth + 1.2, sliceH);
+        } else {
+          const part1 = imgWidth - sx;
+          const part2 = sw - part1;
+          const screenW1 = (part1 / sw) * sliceWidth;
+          const screenW2 = sliceWidth - screenW1;
+          ctx.drawImage(img, sx, 0, part1, imgHeight, screenX, screenY, screenW1 + 0.6, sliceH);
+          ctx.drawImage(img, 0, 0, part2, imgHeight, screenX + screenW1, screenY, screenW2 + 0.6, sliceH);
+        }
+      }
+
+      // Vignette effect
+      const grad = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.3, w / 2, h / 2, Math.max(w, h) * 0.72);
+      grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      grad.addColorStop(1, 'rgba(4, 7, 13, 0.58)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      this.renderParticles();
+    }
+
+    renderParticles() {
+      const pCtx = this.pCtx;
+      if (!pCtx || !this.particleCanvas) return;
+      const w = this.particleCanvas.width;
+      const h = this.particleCanvas.height;
+      if (!w || !h) return;
+
+      pCtx.clearRect(0, 0, w, h);
+
+      const isCerezo = this.biome.includes('cerezo') || this.biome.includes('sakura');
+      const isPlaya = this.biome.includes('playa') || this.biome.includes('costa');
+      const isJungla = this.biome.includes('jungla') || this.biome.includes('selva');
+
+      this.particles.forEach((p) => {
+        p.x += p.speedX + (this.autoSpin ? (this.autoSpinSpeed * 0.8) : 0);
+        p.y += p.speedY;
+        p.rot += p.rotSpeed;
+
+        if (p.y > h + 20) {
+          p.y = -20;
+          p.x = Math.random() * w;
+        }
+        if (p.x > w + 20) p.x = -20;
+        if (p.x < -20) p.x = w + 20;
+
+        pCtx.save();
+        pCtx.translate(p.x, p.y);
+        pCtx.rotate((p.rot * Math.PI) / 180);
+        pCtx.globalAlpha = p.opacity;
+
+        if (isCerezo) {
+          pCtx.fillStyle = '#fda4af';
+          pCtx.beginPath();
+          pCtx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
+          pCtx.fill();
+        } else if (isPlaya) {
+          pCtx.fillStyle = '#fde047';
+          pCtx.shadowColor = '#facc15';
+          pCtx.shadowBlur = 6;
+          pCtx.beginPath();
+          pCtx.arc(0, 0, p.size * 0.4, 0, Math.PI * 2);
+          pCtx.fill();
+        } else if (isJungla) {
+          pCtx.fillStyle = '#34d399';
+          pCtx.shadowColor = '#10b981';
+          pCtx.shadowBlur = 8;
+          pCtx.beginPath();
+          pCtx.arc(0, 0, p.size * 0.45, 0, Math.PI * 2);
+          pCtx.fill();
+        } else {
+          pCtx.fillStyle = '#38bdf8';
+          pCtx.beginPath();
+          pCtx.arc(0, 0, p.size * 0.35, 0, Math.PI * 2);
+          pCtx.fill();
+        }
+
+        pCtx.restore();
+      });
+    }
+  }
+
+  /* ==========================================================================
      PROFANITY & LEETSPEAK FILTER ENGINE
      ========================================================================== */
 
@@ -728,6 +1105,11 @@
       this.currentView = 'grid';
       this.activeModalHouse = null;
       this.currentModalImgIndex = 0;
+
+      // 360 Panorama state
+      this.active360House = null;
+      this.current360Index = 0;
+      this.panorama360Engine = null;
 
       // Zoom & stage state
       this.zoomLevel = 1.0;
@@ -1233,6 +1615,29 @@
       this.detailFavText = document.getElementById('detailFavText');
       this.detailShareBtn = document.getElementById('detailShareBtn');
       this.detailCreatorName = document.getElementById('detailCreatorName');
+
+      // 360 Panorama Modal Elements
+      this.modal360View = document.getElementById('modal360View');
+      this.closeModal360Btn = document.getElementById('closeModal360Btn');
+      this.modal360FullscreenBtn = document.getElementById('modal360FullscreenBtn');
+      this.modal360Title = document.getElementById('modal360Title');
+      this.modal360BiomeBadge = document.getElementById('modal360BiomeBadge');
+      this.m360Viewport = document.getElementById('m360Viewport');
+      this.m360Canvas = document.getElementById('m360Canvas');
+      this.m360ParticleCanvas = document.getElementById('m360ParticleCanvas');
+      this.m360LightingOverlay = document.getElementById('m360LightingOverlay');
+      this.m360CompassDial = document.getElementById('m360CompassDial');
+      this.m360AngleText = document.getElementById('m360AngleText');
+      this.m360DragHint = document.getElementById('m360DragHint');
+      this.m360AutoSpinBtn = document.getElementById('m360AutoSpinBtn');
+      this.m360ZoomOutBtn = document.getElementById('m360ZoomOutBtn');
+      this.m360ZoomResetBtn = document.getElementById('m360ZoomResetBtn');
+      this.m360ZoomInBtn = document.getElementById('m360ZoomInBtn');
+      this.m360AnglesSelector = document.getElementById('m360AnglesSelector');
+      this.m360ShaderBtn = document.getElementById('m360ShaderBtn');
+      this.m360ShaderLabel = document.getElementById('m360ShaderLabel');
+      this.m360CaptureBtn = document.getElementById('m360CaptureBtn');
+      this.modalOpen360Btn = document.getElementById('modalOpen360Btn');
 
       // Footer Stats
       this.totalLikesCount = document.getElementById('totalLikesCount');
@@ -1938,6 +2343,10 @@
 
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+          if (this.modal360View && this.modal360View.classList.contains('active')) {
+            this.close360Modal();
+            return;
+          }
           if (this.stageImageContainer && this.stageImageContainer.classList.contains('is-fullscreen')) {
             this.toggleFullscreenImage();
             return;
@@ -1948,6 +2357,28 @@
           this.closeTutorialsModal();
           this.closeSubmitIdeaModal();
           this.closeHowToInstagramModal();
+        } else if (this.active360House && this.panorama360Engine && this.modal360View && this.modal360View.classList.contains('active')) {
+          if (e.key === ' ' || e.code === 'Space') {
+            e.preventDefault();
+            this.toggle360AutoSpin();
+          } else if (e.key === 'ArrowLeft') {
+            this.panorama360Engine.yaw -= 6;
+          } else if (e.key === 'ArrowRight') {
+            this.panorama360Engine.yaw += 6;
+          } else if (e.key === 'ArrowUp') {
+            this.panorama360Engine.pitch = Math.min(80, this.panorama360Engine.pitch + 4);
+          } else if (e.key === 'ArrowDown') {
+            this.panorama360Engine.pitch = Math.max(-80, this.panorama360Engine.pitch - 4);
+          } else if (e.key === '+' || e.key === '=') {
+            this.panorama360Engine.fov = Math.max(35, this.panorama360Engine.fov - 5);
+          } else if (e.key === '-' || e.key === '_') {
+            this.panorama360Engine.fov = Math.min(105, this.panorama360Engine.fov + 5);
+          } else if (e.key === 'r' || e.key === 'R') {
+            this.panorama360Engine.fov = 75;
+            this.panorama360Engine.pitch = 0;
+          } else if (e.key === 'f' || e.key === 'F') {
+            this.toggle360Fullscreen();
+          }
         } else if (this.activeModalHouse && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) {
           this.prevModalImage();
         } else if (this.activeModalHouse && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) {
@@ -2045,6 +2476,83 @@
           this.sound.playSuccess();
           const imgUrl = this.getCurrentModalImage() || this.activeModalHouse.image;
           this.downloadImage(imgUrl, `${this.activeModalHouse.id}_foto${this.currentModalImgIndex + 1}_HD.jpg`);
+        });
+      }
+
+      // Open 360 Viewer from Detail Modal Toolbar
+      if (this.modalOpen360Btn) {
+        this.modalOpen360Btn.addEventListener('click', () => {
+          if (this.activeModalHouse) {
+            this.open360Modal(this.activeModalHouse.id, this.currentModalImgIndex);
+          }
+        });
+      }
+
+      // 360 Modal Controls
+      if (this.closeModal360Btn) {
+        this.closeModal360Btn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.close360Modal();
+        });
+      }
+
+      if (this.modal360View) {
+        this.modal360View.addEventListener('click', (e) => {
+          if (e.target === this.modal360View) {
+            this.close360Modal();
+          }
+        });
+      }
+
+      if (this.modal360FullscreenBtn) {
+        this.modal360FullscreenBtn.addEventListener('click', () => {
+          this.toggle360Fullscreen();
+        });
+      }
+
+      if (this.m360AutoSpinBtn) {
+        this.m360AutoSpinBtn.addEventListener('click', () => {
+          this.toggle360AutoSpin();
+        });
+      }
+
+      if (this.m360ZoomInBtn) {
+        this.m360ZoomInBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          if (this.panorama360Engine) {
+            this.panorama360Engine.fov = Math.max(35, this.panorama360Engine.fov - 8);
+          }
+        });
+      }
+
+      if (this.m360ZoomOutBtn) {
+        this.m360ZoomOutBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          if (this.panorama360Engine) {
+            this.panorama360Engine.fov = Math.min(105, this.panorama360Engine.fov + 8);
+          }
+        });
+      }
+
+      if (this.m360ZoomResetBtn) {
+        this.m360ZoomResetBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          if (this.panorama360Engine) {
+            this.panorama360Engine.fov = 75;
+            this.panorama360Engine.pitch = 0;
+          }
+        });
+      }
+
+      if (this.m360ShaderBtn) {
+        this.m360ShaderBtn.addEventListener('click', () => {
+          this.cycle360Shader();
+        });
+      }
+
+      if (this.m360CaptureBtn) {
+        this.m360CaptureBtn.addEventListener('click', () => {
+          this.capture360Snapshot();
         });
       }
 
@@ -2312,6 +2820,11 @@
               <div class="card-img-ig-icon"><i class="fa-brands fa-instagram"></i></div>
               <span class="card-img-ig-name">@${igHandle}</span>
             </a>
+
+            <!-- Floating 360° Quick Access Chip on Image -->
+            <button class="card-img-360-chip" data-action="view-360" data-id="${house.id}" title="Ver en 360°" aria-label="Ver construcción en 360 grados">
+              <i class="fa-solid fa-arrows-spin"></i> <span>360°</span>
+            </button>
           </div>
 
           <div class="card-body">
@@ -2340,6 +2853,9 @@
               </button>
 
               <div class="card-action-btns">
+                <button class="btn-card-360" data-action="view-360" data-id="${house.id}" title="Ver en 360°" aria-label="Ver construcción en 360 grados">
+                  <i class="fa-solid fa-arrows-spin"></i> <span>Ver en 360°</span>
+                </button>
                 <button class="btn-card-details" data-action="details" data-id="${house.id}">
                   <i class="fa-solid fa-eye"></i> Ver Ficha
                 </button>
@@ -2382,6 +2898,16 @@
         igBtns.forEach((btn) => {
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
+          });
+        });
+
+        // 360 View Button & Chip
+        const btns360 = card.querySelectorAll('[data-action="view-360"]');
+        btns360.forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playPop();
+            this.open360Modal(houseId);
           });
         });
 
@@ -2872,6 +3398,224 @@
       }
       this.activeModalHouse = null;
       document.body.style.overflow = '';
+    }
+
+    /* ------------------------------------------------------------------------
+       360° VR & Panoramic Tour Controller Logic
+       ------------------------------------------------------------------------ */
+
+    open360Modal(houseId, initialIndex = 0) {
+      const house = this.houses.find((h) => h.id === houseId) || this.activeModalHouse;
+      if (!house) return;
+
+      this.active360House = house;
+      this.current360Index = initialIndex;
+
+      if (this.modal360Title) {
+        this.modal360Title.textContent = `${house.title} - Vista 360°`;
+      }
+      if (this.modal360BiomeBadge) {
+        this.modal360BiomeBadge.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${house.biome}`;
+      }
+
+      const gallery = house.gallery && house.gallery.length > 0
+        ? house.gallery
+        : [{ url: house.image, caption: house.title }];
+
+      // Render angle chips in bottom toolbar
+      if (this.m360AnglesSelector) {
+        this.m360AnglesSelector.innerHTML = gallery.map((item, idx) => {
+          const cap = typeof item === 'string' ? `Ángulo ${idx + 1}` : (item.caption || `Vista ${idx + 1}`);
+          const isActive = idx === initialIndex;
+          return `
+            <button class="m360-angle-chip ${isActive ? 'active' : ''}" data-angle-idx="${idx}" title="${cap}">
+              <i class="fa-solid fa-camera"></i> <span>${cap}</span>
+            </button>
+          `;
+        }).join('');
+
+        const chips = this.m360AnglesSelector.querySelectorAll('.m360-angle-chip');
+        chips.forEach((chip) => {
+          chip.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playPop();
+            const idx = parseInt(chip.getAttribute('data-angle-idx') || '0', 10);
+            this.set360Angle(idx);
+          });
+        });
+      }
+
+      // Initialize Panorama360Engine if not yet created
+      if (!this.panorama360Engine && this.m360Canvas && this.m360ParticleCanvas) {
+        this.panorama360Engine = new Panorama360Engine(this.m360Canvas, this.m360ParticleCanvas, {
+          onAngleChange: (yaw, pitch, fov) => {
+            if (this.m360CompassDial) {
+              const needle = this.m360CompassDial.querySelector('.compass-needle');
+              if (needle) needle.style.transform = `rotate(${-yaw}deg)`;
+            }
+            if (this.m360AngleText) {
+              const cardinal = this.getCardinalDirection(yaw);
+              this.m360AngleText.textContent = `${Math.round(yaw)}° ${cardinal}`;
+            }
+          },
+          onInteract: () => {
+            if (this.m360DragHint) {
+              this.m360DragHint.classList.add('hidden');
+            }
+          }
+        });
+      }
+
+      const targetItem = gallery[initialIndex] || gallery[0];
+      const targetUrl = typeof targetItem === 'string' ? targetItem : targetItem.url;
+
+      if (this.modal360View) {
+        this.modal360View.classList.add('active');
+        this.modal360View.classList.add('open');
+        this.modal360View.setAttribute('aria-hidden', 'false');
+      }
+      document.body.style.overflow = 'hidden';
+
+      if (this.m360DragHint) {
+        this.m360DragHint.classList.remove('hidden');
+      }
+
+      // Resize and start engine
+      setTimeout(() => {
+        if (this.panorama360Engine) {
+          this.panorama360Engine.resize();
+          this.panorama360Engine.loadImage(targetUrl, house.biome || house.category);
+          this.panorama360Engine.start();
+        }
+      }, 50);
+
+      this.sound.playSuccess();
+      this.showToast(`Modo 360° activado: ${house.title} 🌐`, 'info');
+    }
+
+    getCardinalDirection(yaw) {
+      const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'];
+      const index = Math.round((((yaw % 360) + 360) % 360) / 45) % 8;
+      return dirs[index];
+    }
+
+    set360Angle(index) {
+      if (!this.active360House) return;
+      const gallery = this.active360House.gallery && this.active360House.gallery.length > 0
+        ? this.active360House.gallery
+        : [{ url: this.active360House.image, caption: this.active360House.title }];
+      if (index < 0 || index >= gallery.length) return;
+
+      this.current360Index = index;
+      const item = gallery[index];
+      const url = typeof item === 'string' ? item : item.url;
+
+      if (this.panorama360Engine) {
+        this.panorama360Engine.loadImage(url, this.active360House.biome || this.active360House.category);
+      }
+
+      if (this.m360AnglesSelector) {
+        const chips = this.m360AnglesSelector.querySelectorAll('.m360-angle-chip');
+        chips.forEach((c, idx) => {
+          c.classList.toggle('active', idx === index);
+        });
+      }
+    }
+
+    close360Modal() {
+      if (this.modal360View) {
+        this.modal360View.classList.remove('active');
+        this.modal360View.classList.remove('open');
+        this.modal360View.setAttribute('aria-hidden', 'true');
+      }
+      if (this.panorama360Engine) {
+        this.panorama360Engine.stop();
+      }
+      if (!this.activeModalHouse) {
+        document.body.style.overflow = '';
+      }
+      this.active360House = null;
+    }
+
+    toggle360AutoSpin() {
+      if (!this.panorama360Engine) return;
+      this.sound.playPop();
+      this.panorama360Engine.autoSpin = !this.panorama360Engine.autoSpin;
+      if (this.m360AutoSpinBtn) {
+        this.m360AutoSpinBtn.classList.toggle('active', this.panorama360Engine.autoSpin);
+      }
+      this.showToast(this.panorama360Engine.autoSpin ? 'Auto-giro 360° reanudado 🔄' : 'Auto-giro 360° pausado ⏸️', 'info');
+    }
+
+    cycle360Shader() {
+      if (!this.panorama360Engine || !this.m360LightingOverlay) return;
+      this.sound.playPop();
+
+      const shaders = [
+        { id: 'rtx', name: 'Shaders RTX', cls: 'filter-rtx' },
+        { id: 'day', name: 'Luz de Día', cls: 'filter-day' },
+        { id: 'sunset', name: 'Atardecer', cls: 'filter-sunset' },
+        { id: 'night', name: 'Noche Mágica', cls: 'filter-night' }
+      ];
+
+      const currentIdx = shaders.findIndex((s) => s.id === this.panorama360Engine.shaderMode);
+      const nextIdx = (currentIdx + 1) % shaders.length;
+      const nextShader = shaders[nextIdx];
+
+      this.panorama360Engine.shaderMode = nextShader.id;
+
+      this.m360LightingOverlay.className = `m360-lighting-overlay ${nextShader.cls}`;
+      if (this.m360ShaderLabel) {
+        this.m360ShaderLabel.textContent = nextShader.name;
+      }
+      this.showToast(`Filtro visual: ${nextShader.name} ✨`, 'info');
+    }
+
+    capture360Snapshot() {
+      if (!this.m360Canvas || !this.panorama360Engine) return;
+      this.sound.playSuccess();
+
+      const composite = document.createElement('canvas');
+      composite.width = this.m360Canvas.width;
+      composite.height = this.m360Canvas.height;
+      const cCtx = composite.getContext('2d');
+
+      cCtx.drawImage(this.m360Canvas, 0, 0);
+
+      if (this.m360ParticleCanvas) {
+        cCtx.drawImage(this.m360ParticleCanvas, 0, 0);
+      }
+
+      const houseTitle = this.active360House ? this.active360House.title : 'Minecraft 360';
+      cCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      cCtx.fillRect(20, composite.height - 60, 380, 44);
+      cCtx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
+      cCtx.lineWidth = 2;
+      cCtx.strokeRect(20, composite.height - 60, 380, 44);
+
+      cCtx.fillStyle = '#38bdf8';
+      cCtx.font = 'bold 18px Outfit, sans-serif';
+      cCtx.textAlign = 'left';
+      cCtx.fillText(`🌐 ${houseTitle} • Vista 360°`, 35, composite.height - 32);
+
+      const link = document.createElement('a');
+      link.href = composite.toDataURL('image/jpeg', 0.95);
+      link.download = `360_${(this.active360House?.id || 'minecraft')}_yaw${Math.round(this.panorama360Engine.yaw)}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      this.showToast('¡Foto 360° capturada y descargada! 📸', 'success');
+    }
+
+    toggle360Fullscreen() {
+      if (!this.modal360View) return;
+      this.sound.playPop();
+      if (!document.fullscreenElement) {
+        this.modal360View.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
     }
 
     toggleFullscreenImage() {
