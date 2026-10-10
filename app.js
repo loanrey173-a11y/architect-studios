@@ -75,7 +75,7 @@
   };
 
   const STORAGE_KEYS = {
-    HOUSES: 'mc_architect_houses_v22',
+    HOUSES: 'mc_architect_houses_v23',
     COMMENTS: 'mc_comments_v15',
     DELETED_COMMENTS: 'mc_deleted_comments_v15',
     USER_COMMENT_LIKES: 'mc_user_comm_likes_v15',
@@ -96,12 +96,12 @@
       difficultyLevel: 3,
       time: '~3.0 Horas',
       biome: 'Arboleda de Cerezos',
-      creator: 'dann_yaz1',
-      creatorDisplay: 'dann_yaz1',
+      creator: 'yazmingonzalez318',
+      creatorDisplay: 'yazmingonzalez318',
       creatorRole: 'Instagram',
       instagram: {
-        name: 'dann_yaz1',
-        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
+        name: 'yazmingonzalez318',
+        url: 'https://www.instagram.com/yazmingonzalez318/'
       },
       image: './casa_danna_1_fachada.jpg',
       gallery: [
@@ -134,12 +134,12 @@
       difficultyLevel: 2,
       time: '~2.0 Horas',
       biome: 'Bosque de Cerezos / Colinas',
-      creator: 'dann_yaz1',
-      creatorDisplay: 'dann_yaz1',
+      creator: 'yazmingonzalez318',
+      creatorDisplay: 'yazmingonzalez318',
       creatorRole: 'Instagram',
       instagram: {
-        name: 'dann_yaz1',
-        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
+        name: 'yazmingonzalez318',
+        url: 'https://www.instagram.com/yazmingonzalez318/'
       },
       image: './casa_danna_2_fachada.jpg',
       gallery: [
@@ -171,12 +171,12 @@
       difficultyLevel: 3,
       time: '~3.5 Horas',
       biome: 'Montaña de Cerezos',
-      creator: 'dann_yaz1',
-      creatorDisplay: 'dann_yaz1',
+      creator: 'yazmingonzalez318',
+      creatorDisplay: 'yazmingonzalez318',
       creatorRole: 'Instagram',
       instagram: {
-        name: 'dann_yaz1',
-        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
+        name: 'yazmingonzalez318',
+        url: 'https://www.instagram.com/yazmingonzalez318/'
       },
       image: './casa_danna_3_exterior.jpg',
       gallery: [
@@ -208,12 +208,12 @@
       difficultyLevel: 3,
       time: '~4.0 Horas',
       biome: 'Selva / Jungla Tropical',
-      creator: 'dann_yaz1',
-      creatorDisplay: 'dann_yaz1',
+      creator: 'yazmingonzalez318',
+      creatorDisplay: 'yazmingonzalez318',
       creatorRole: 'Instagram',
       instagram: {
-        name: 'dann_yaz1',
-        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
+        name: 'yazmingonzalez318',
+        url: 'https://www.instagram.com/yazmingonzalez318/'
       },
       image: './casa_danna_4_fachada.jpg',
       gallery: [
