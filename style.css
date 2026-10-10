@@ -9549,6 +9549,152 @@ html, body {
   box-shadow: 0 8px 25px rgba(2, 132, 199, 0.6);
 }
 
+/* ==========================================================================
+   Headphones & Volume Recommendation Modal
+   ========================================================================== */
+
+.headphones-tip-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 1700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.headphones-tip-backdrop.open,
+.headphones-tip-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-headphones-tip-dialog {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-2xl);
+  max-width: 440px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.25);
+  transform: scale(0.92) translateY(20px);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  padding: 2.2rem 1.8rem;
+  text-align: center;
+}
+
+.headphones-tip-backdrop.open .modal-headphones-tip-dialog,
+.headphones-tip-backdrop.active .modal-headphones-tip-dialog {
+  transform: scale(1) translateY(0);
+}
+
+.headphones-tip-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.headphones-icon-wrap {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 95, 70, 0.4));
+  border: 2px solid rgba(16, 185, 129, 0.5);
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
+  animation: headphonesPulseGlow 2.5s infinite ease-in-out;
+}
+
+@keyframes headphonesPulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 12px 40px rgba(16, 185, 129, 0.6);
+  }
+}
+
+.headphones-icon-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, transparent 70%);
+  filter: blur(8px);
+  z-index: -1;
+}
+
+.headphones-main-icon {
+  font-size: 2.2rem;
+  color: var(--emerald);
+  filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.5));
+}
+
+.headphones-soundwave-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 1.25rem;
+}
+
+.headphones-tip-title {
+  font-family: var(--font-main);
+  font-size: 1.28rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.headphones-tip-msg {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.headphones-tip-actions {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.btn-headphones-ok {
+  width: 100%;
+  padding: 0.85rem 1.6rem;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, var(--emerald) 0%, #047857 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  transition: all var(--tr-bounce);
+  letter-spacing: 0.03em;
+}
+
+.btn-headphones-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(16, 185, 129, 0.65);
+}
+
+
 
 
 

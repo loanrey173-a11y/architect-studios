@@ -1746,7 +1746,7 @@
         <div class="welcome-music-actions">
           <button type="button" class="btn-music-accept" id="acceptWelcomeMusicBtn">
             <i class="fa-solid fa-play"></i>
-            <span>Sí, reproducir música</span>
+            <span>Sí, continuar con música</span>
           </button>
           <button type="button" class="btn-music-decline" id="declineWelcomeMusicBtn">
             <i class="fa-solid fa-volume-xmark"></i>
@@ -1763,6 +1763,33 @@
           <p class="wm-credits-p">Este sitio web es un proyecto no comercial creado por fans para la comunidad de Minecraft.</p>
           <p class="wm-credits-p"><strong>Música:</strong> La música de fondo utilizada en esta página es propiedad intelectual de Mojang Studios / Microsoft y sus respectivos compositores (C418 / Lena Raine).</p>
           <p class="wm-credits-p"><strong>Propiedad Intelectual:</strong> Minecraft es una marca registrada de Mojang Synergies AB. Este sitio no está afiliado, respaldado ni administrado por Mojang Studios ni Microsoft.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Recomendación de Audífonos y Volumen -->
+  <div class="modal-backdrop headphones-tip-backdrop" id="headphonesTipModal" aria-hidden="true">
+    <div class="modal-dialog modal-headphones-tip-dialog">
+      <button class="modal-close-btn" id="closeHeadphonesTipBtn" aria-label="Cerrar recomendación">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="headphones-tip-content">
+        <div class="headphones-icon-wrap">
+          <div class="headphones-icon-glow"></div>
+          <i class="fa-solid fa-headphones headphones-main-icon"></i>
+          <span class="headphones-soundwave-badge">🔊</span>
+        </div>
+
+        <h3 class="headphones-tip-title">Sube el volumen o ponte audífonos para una mejor experiencia</h3>
+        <p class="headphones-tip-msg">Disfruta de una atmósfera inmersiva con la banda sonora ambiental de Minecraft mientras exploras las casas.</p>
+
+        <div class="headphones-tip-actions">
+          <button type="button" class="btn-headphones-ok" id="headphonesTipOkBtn">
+            <i class="fa-solid fa-check"></i>
+            <span>OK</span>
+          </button>
         </div>
       </div>
     </div>

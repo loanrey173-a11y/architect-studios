@@ -1766,6 +1766,11 @@
       this.acceptWelcomeMusicBtn = document.getElementById('acceptWelcomeMusicBtn');
       this.declineWelcomeMusicBtn = document.getElementById('declineWelcomeMusicBtn');
 
+      // Headphones & Volume Tip Modal
+      this.headphonesTipModal = document.getElementById('headphonesTipModal');
+      this.closeHeadphonesTipBtn = document.getElementById('closeHeadphonesTipBtn');
+      this.headphonesTipOkBtn = document.getElementById('headphonesTipOkBtn');
+
       // Support Project Modal & Working Notice
       this.openSupportProjectBtn = document.getElementById('openSupportProjectBtn');
       this.supportProjectModal = document.getElementById('supportProjectModal');
@@ -2446,6 +2451,7 @@
           this.closeSubmitIdeaModal();
           this.closeHowToInstagramModal();
           this.closeWelcomeMusicModal();
+          this.closeHeadphonesTipModal();
           this.closeSupportProjectModal();
           this.closeSupportWorkingModal();
         } else if (this.active360House && this.panorama360Engine && this.modal360View && this.modal360View.classList.contains('active')) {
@@ -2734,6 +2740,33 @@
           this.sound.playSuccess();
           this.playBackgroundMusic();
           this.closeWelcomeMusicModal();
+          setTimeout(() => {
+            this.openHeadphonesTipModal();
+          }, 180);
+        });
+      }
+
+      // Headphones & Volume Tip Modal Actions
+      if (this.headphonesTipOkBtn) {
+        this.headphonesTipOkBtn.addEventListener('click', () => {
+          this.sound.playSuccess();
+          this.closeHeadphonesTipModal();
+        });
+      }
+
+      if (this.closeHeadphonesTipBtn) {
+        this.closeHeadphonesTipBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeHeadphonesTipModal();
+        });
+      }
+
+      if (this.headphonesTipModal) {
+        this.headphonesTipModal.addEventListener('click', (e) => {
+          if (e.target === this.headphonesTipModal) {
+            this.sound.playPop();
+            this.closeHeadphonesTipModal();
+          }
         });
       }
 
@@ -3904,6 +3937,7 @@
     initBackgroundMusic() {
       if (!this.bgMusicAudio) return;
       this.bgMusicAudio.volume = 0.45;
+      this.bgMusicAudio.loop = true;
 
       this.bgMusicAudio.addEventListener('play', () => {
         this.updateMusicUI(true);
@@ -3914,7 +3948,9 @@
       });
 
       this.bgMusicAudio.addEventListener('ended', () => {
-        this.updateMusicUI(false);
+        // Enforce infinite looping
+        this.bgMusicAudio.currentTime = 0;
+        this.playBackgroundMusic();
       });
     }
 
@@ -3982,6 +4018,22 @@
       if (this.welcomeMusicModal) {
         this.welcomeMusicModal.classList.remove('active', 'open');
         this.welcomeMusicModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
+      }
+    }
+
+    openHeadphonesTipModal() {
+      if (this.headphonesTipModal) {
+        this.headphonesTipModal.classList.add('active', 'open');
+        this.headphonesTipModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
+      }
+    }
+
+    closeHeadphonesTipModal() {
+      if (this.headphonesTipModal) {
+        this.headphonesTipModal.classList.remove('active', 'open');
+        this.headphonesTipModal.setAttribute('aria-hidden', 'true');
         this.syncBodyModalLock();
       }
     }
