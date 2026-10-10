@@ -427,6 +427,18 @@
           </button>
         </li>
         <li>
+          <button type="button" class="drawer-item-btn highlight-item" id="drawerGoogleFormBtn" title="Abrir Formulario de Google">
+            <div class="drawer-icon-box item-google-form">
+              <i class="fa-solid fa-square-poll-vertical"></i>
+            </div>
+            <div class="drawer-item-text">
+              <span class="drawer-item-title">Encuesta / Formulario</span>
+              <span class="drawer-item-desc">Formulario de Google de la comunidad</span>
+            </div>
+            <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+          </button>
+        </li>
+        <li>
           <button type="button" class="drawer-item-btn" id="drawerCopyrightBtn" title="Ver Aviso de Copyright y Créditos de Música">
             <div class="drawer-icon-box item-copyright">
               <i class="fa-solid fa-scale-balanced"></i>
@@ -451,6 +463,28 @@
           </a>
         </li>
       </ul>
+
+      <!-- Google Form Embedded Section in Drawer -->
+      <div class="drawer-form-section">
+        <div class="drawer-form-header">
+          <i class="fa-solid fa-square-poll-vertical" style="color: var(--emerald);"></i>
+          <span>Formulario de la Comunidad</span>
+        </div>
+        <div class="drawer-form-card">
+          <iframe 
+            src="https://docs.google.com/forms/d/e/1FAIpQLScV372Fez3Mw6rENWE0LjxEm1KqJ_i1z0GL7RAXjfRzjPfkUw/viewform?embedded=true" 
+            width="100%" 
+            height="420" 
+            frameborder="0" 
+            marginheight="0" 
+            marginwidth="0"
+            class="drawer-form-iframe"
+            title="Formulario de Google de la Comunidad"
+            loading="lazy">
+            Cargando…
+          </iframe>
+        </div>
+      </div>
     </nav>
   </aside>
 
@@ -1859,6 +1893,40 @@
             <span>Entendido</span>
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Formulario de Google Forms en Vista Ampliada -->
+  <div class="modal-backdrop google-form-modal-backdrop" id="googleFormModal" aria-hidden="true">
+    <div class="modal-dialog modal-google-form-dialog">
+      <div class="modal-gform-header">
+        <div class="modal-gform-title-group">
+          <div class="modal-gform-icon">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+          </div>
+          <div>
+            <h3 class="modal-gform-title">Formulario de la Comunidad</h3>
+            <span class="modal-gform-subtitle">Completa la encuesta oficial de Minecraft Architect Studio</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeGoogleFormModalBtn" aria-label="Cerrar formulario">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-gform-body">
+        <iframe 
+          src="https://docs.google.com/forms/d/e/1FAIpQLScV372Fez3Mw6rENWE0LjxEm1KqJ_i1z0GL7RAXjfRzjPfkUw/viewform?embedded=true" 
+          width="100%" 
+          height="520" 
+          frameborder="0" 
+          marginheight="0" 
+          marginwidth="0"
+          class="full-google-form-iframe"
+          title="Formulario de Google"
+          loading="lazy">
+          Cargando…
+        </iframe>
       </div>
     </div>
   </div>

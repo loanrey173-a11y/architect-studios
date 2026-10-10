@@ -9694,6 +9694,172 @@ html, body {
   box-shadow: 0 10px 28px rgba(16, 185, 129, 0.65);
 }
 
+/* ==========================================================================
+   Google Forms Integration (Side Drawer & Fullscreen Modal)
+   ========================================================================== */
+
+.drawer-icon-box.item-google-form {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(59, 130, 246, 0.25));
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.drawer-form-section {
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.drawer-form-header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  padding: 0 0.25rem;
+}
+
+.drawer-form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  position: relative;
+  transition: border-color var(--tr-fast);
+}
+
+.drawer-form-card:hover {
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.drawer-form-iframe {
+  width: 100%;
+  height: 420px;
+  display: block;
+  border: none;
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+}
+
+/* Google Form Modal */
+.google-form-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 1750;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.google-form-modal-backdrop.open,
+.google-form-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-google-form-dialog {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-2xl);
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(16, 185, 129, 0.25);
+  transform: scale(0.93) translateY(20px);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.google-form-modal-backdrop.open .modal-google-form-dialog,
+.google-form-modal-backdrop.active .modal-google-form-dialog {
+  transform: scale(1) translateY(0);
+}
+
+.modal-gform-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.6rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-tertiary);
+}
+
+.modal-gform-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.modal-gform-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 95, 70, 0.35));
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--emerald);
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.modal-gform-title {
+  font-family: var(--font-main);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.modal-gform-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 0.15rem;
+}
+
+.modal-gform-body {
+  padding: 0.75rem;
+  overflow-y: auto;
+  background: #f8fafc;
+  display: flex;
+  justify-content: center;
+}
+
+.full-google-form-iframe {
+  width: 100%;
+  height: 520px;
+  border: none;
+  background: #ffffff;
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 640px) {
+  .modal-google-form-dialog {
+    max-height: 94vh;
+  }
+  .full-google-form-iframe {
+    height: 480px;
+  }
+}
+
+
 
 
 
