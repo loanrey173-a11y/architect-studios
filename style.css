@@ -4599,6 +4599,110 @@ body.modal-open {
   overflow: hidden;
 }
 
+/* Floating Instagram Badge on Card Images */
+.card-img-ig-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.65rem;
+  background: rgba(15, 15, 15, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(225, 48, 108, 0.55);
+  border-radius: var(--radius-full);
+  color: #ffffff;
+  font-family: var(--font-main);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card-img-ig-badge:hover {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border-color: #ffffff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 16px rgba(225, 48, 108, 0.5);
+  color: #ffffff;
+}
+
+.card-img-ig-badge:active {
+  transform: scale(0.96);
+}
+
+.card-img-ig-icon {
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  color: #e1306c;
+  transition: color 0.2s ease;
+}
+
+.card-img-ig-badge:hover .card-img-ig-icon {
+  color: #ffffff;
+}
+
+.card-img-ig-name {
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+/* Floating Instagram Badge directly on the Image Stage in Detail Modal */
+.stage-floating-ig-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.85rem;
+  background: rgba(13, 13, 13, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(225, 48, 108, 0.55);
+  border-radius: var(--radius-full);
+  color: #ffffff;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.stage-floating-ig-badge:hover {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border-color: #ffffff;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(225, 48, 108, 0.6);
+  color: #ffffff;
+}
+
+.stage-floating-ig-badge:active {
+  transform: scale(0.96);
+}
+
+.stage-floating-ig-badge i {
+  font-size: 0.95rem;
+  color: #e1306c;
+  transition: color 0.2s ease;
+}
+
+.stage-floating-ig-badge:hover i {
+  color: #ffffff;
+}
+
 /* Dedicated Instagram Banner below description text (Sleek, Compact & Proportional) */
 .card-ig-banner {
   display: flex;

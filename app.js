@@ -75,7 +75,7 @@
   };
 
   const STORAGE_KEYS = {
-    HOUSES: 'mc_architect_houses_v20',
+    HOUSES: 'mc_architect_houses_v21',
     COMMENTS: 'mc_comments_v15',
     DELETED_COMMENTS: 'mc_deleted_comments_v15',
     USER_COMMENT_LIKES: 'mc_user_comm_likes_v15',
@@ -96,12 +96,12 @@
       difficultyLevel: 3,
       time: '~3.0 Horas',
       biome: 'Arboleda de Cerezos',
-      creator: 'dann_yaz1',
-      creatorDisplay: 'dann_yaz1',
-      creatorRole: 'Instagram',
+      creator: 'loanrey17',
+      creatorDisplay: 'loanrey17',
+      creatorRole: 'Desarrollador',
       instagram: {
-        name: 'dann_yaz1',
-        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
+        name: 'loanrey17',
+        url: 'https://www.instagram.com/loanrey17/'
       },
       image: './casa_danna_1_fachada.jpg',
       gallery: [
@@ -134,12 +134,12 @@
       difficultyLevel: 2,
       time: '~2.0 Horas',
       biome: 'Bosque de Cerezos / Colinas',
-      creator: 'dann_yaz1',
-      creatorDisplay: 'dann_yaz1',
-      creatorRole: 'Instagram',
+      creator: 'loanrey17',
+      creatorDisplay: 'loanrey17',
+      creatorRole: 'Desarrollador',
       instagram: {
-        name: 'dann_yaz1',
-        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
+        name: 'loanrey17',
+        url: 'https://www.instagram.com/loanrey17/'
       },
       image: './casa_danna_2_fachada.jpg',
       gallery: [
@@ -171,12 +171,12 @@
       difficultyLevel: 3,
       time: '~3.5 Horas',
       biome: 'Montaña de Cerezos',
-      creator: 'dann_yaz1',
-      creatorDisplay: 'dann_yaz1',
-      creatorRole: 'Instagram',
+      creator: 'loanrey17',
+      creatorDisplay: 'loanrey17',
+      creatorRole: 'Desarrollador',
       instagram: {
-        name: 'dann_yaz1',
-        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
+        name: 'loanrey17',
+        url: 'https://www.instagram.com/loanrey17/'
       },
       image: './casa_danna_3_exterior.jpg',
       gallery: [
@@ -208,12 +208,12 @@
       difficultyLevel: 3,
       time: '~4.0 Horas',
       biome: 'Selva / Jungla Tropical',
-      creator: 'dann_yaz1',
-      creatorDisplay: 'dann_yaz1',
-      creatorRole: 'Instagram',
+      creator: 'loanrey17',
+      creatorDisplay: 'loanrey17',
+      creatorRole: 'Desarrollador',
       instagram: {
-        name: 'dann_yaz1',
-        url: 'https://www.instagram.com/dann_yaz1/?hl=es'
+        name: 'loanrey17',
+        url: 'https://www.instagram.com/loanrey17/'
       },
       image: './casa_danna_4_fachada.jpg',
       gallery: [
@@ -250,7 +250,7 @@
       creatorRole: 'Desarrollador',
       instagram: {
         name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17'
+        url: 'https://www.instagram.com/loanrey17/'
       },
       image: './casa_de_playa_1.jpg',
       gallery: [
@@ -285,7 +285,7 @@
       creatorRole: 'Desarrollador',
       instagram: {
         name: 'loanrey17',
-        url: 'https://www.instagram.com/loanrey17'
+        url: 'https://www.instagram.com/loanrey17/'
       },
       image: './casa_de_playa_2.jpg',
       gallery: [
@@ -2272,6 +2272,11 @@
         ? `<span class="badge-photo-count"><i class="fa-solid fa-images"></i> ${house.gallery.length} fotos</span>`
         : '';
 
+      const creatorRole = house.creatorRole || 'Desarrollador';
+      const creatorDisplay = house.creatorDisplay || house.creator || 'loanrey17';
+      const igHandle = house.instagram?.name || 'loanrey17';
+      const igUrl = house.instagram?.url || 'https://www.instagram.com/loanrey17/';
+
       // SVG placeholder to prevent early downloads and ensure zero layout shift (CLS)
       const placeholderSVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'%3E%3C/svg%3E";
 
@@ -2298,12 +2303,33 @@
                 <span class="badge-diff ${diffBadgeClass}">${house.difficulty}</span>
               </div>
             </div>
+
+            <!-- Direct Instagram Badge on Image -->
+            <a href="${igUrl}" target="_blank" rel="noopener noreferrer" class="card-img-ig-badge" data-action="instagram" title="Instagram: @${igHandle}" aria-label="Instagram de @${igHandle}">
+              <div class="card-img-ig-icon"><i class="fa-brands fa-instagram"></i></div>
+              <span class="card-img-ig-name">@${igHandle}</span>
+            </a>
           </div>
 
           <div class="card-body">
             <div class="card-biome"><i class="fa-solid fa-location-dot"></i> ${house.biome}</div>
             <h3 class="card-title">${house.title}</h3>
             <p class="card-desc">${house.description}</p>
+
+            <!-- Instagram Creator Banner -->
+            <a href="${igUrl}" target="_blank" rel="noopener noreferrer" class="card-ig-banner" data-action="instagram" title="Instagram de @${igHandle}" aria-label="Abrir Instagram de @${igHandle}">
+              <div class="card-ig-logo-wrap">
+                <img src="./instagram_logo.png" alt="Logo Instagram" class="card-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
+              </div>
+              <div class="card-ig-info">
+                <span class="card-ig-subtitle"><i class="fa-solid fa-crown creator-crown" style="color: var(--gold); font-size: 0.72rem; margin-right: 0.25rem;"></i>${creatorRole}</span>
+                <span class="card-ig-handle">${creatorDisplay} <span class="card-ig-at">@${igHandle}</span></span>
+              </div>
+              <div class="card-ig-badge-action">
+                <span>Instagram</span>
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </div>
+            </a>
 
             <div class="card-footer-row">
               <button class="btn-card-like ${isLiked ? 'liked has-likes' : ''}" data-action="like" data-id="${house.id}" title="${isLiked ? 'Quitar like' : 'Dar like (1 por usuario)'}">
@@ -2349,13 +2375,13 @@
           }
         });
 
-        // Instagram button
-        const igBtn = card.querySelector('[data-action="instagram"]');
-        if (igBtn) {
-          igBtn.addEventListener('click', (e) => {
+        // Instagram buttons / links click inside card
+        const igBtns = card.querySelectorAll('[data-action="instagram"]');
+        igBtns.forEach((btn) => {
+          btn.addEventListener('click', (e) => {
             e.stopPropagation();
           });
-        }
+        });
 
         // Like button
         const likeBtn = card.querySelector('[data-action="like"]');
@@ -2621,6 +2647,17 @@
 
       const isFav = this.userFavorites.includes(house.id);
       this.updateModalFavButton(house.id, isFav);
+
+      // Update floating IG badge directly on detail modal image stage
+      const stageIgBadge = document.getElementById('modalStageFloatingIgBadge');
+      if (stageIgBadge) {
+        const igUrl = house.instagram?.url || 'https://www.instagram.com/loanrey17/';
+        const igName = house.instagram?.name || 'loanrey17';
+        stageIgBadge.href = igUrl;
+        stageIgBadge.title = `Instagram @${igName}`;
+        stageIgBadge.innerHTML = `<i class="fa-brands fa-instagram"></i> <span>@${igName}</span>`;
+        stageIgBadge.style.display = 'inline-flex';
+      }
 
       // Populate Creator Name & Instagram
       const detailCreatorBanner = document.getElementById('detailCreatorBanner');
