@@ -1649,6 +1649,12 @@
       this.closeTutorialsModalBtn = document.getElementById('closeTutorialsModalBtn');
       this.tutorialsModalOkBtn = document.getElementById('tutorialsModalOkBtn');
 
+      // 360 Notice Modal (Estamos trabajando en ello)
+      this.notice360Modal = document.getElementById('notice360Modal');
+      this.closeNotice360ModalBtn = document.getElementById('closeNotice360ModalBtn');
+      this.notice360OkBtn = document.getElementById('notice360OkBtn');
+      this.notice360Title = document.getElementById('notice360Title');
+
       // User Profile & Favorites Modal Elements
       this.drawerProfileBtn = document.getElementById('drawerProfileBtn');
       this.profileModal = document.getElementById('profileModal');
@@ -2343,6 +2349,10 @@
 
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+          if (this.notice360Modal && this.notice360Modal.classList.contains('active')) {
+            this.closeNotice360Modal();
+            return;
+          }
           if (this.modal360View && this.modal360View.classList.contains('active')) {
             this.close360Modal();
             return;
@@ -2484,6 +2494,29 @@
         this.modalOpen360Btn.addEventListener('click', () => {
           if (this.activeModalHouse) {
             this.open360Modal(this.activeModalHouse.id, this.currentModalImgIndex);
+          }
+        });
+      }
+
+      // 360 Notice Modal Listeners (Estamos trabajando en ello)
+      if (this.closeNotice360ModalBtn) {
+        this.closeNotice360ModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeNotice360Modal();
+        });
+      }
+
+      if (this.notice360OkBtn) {
+        this.notice360OkBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeNotice360Modal();
+        });
+      }
+
+      if (this.notice360Modal) {
+        this.notice360Modal.addEventListener('click', (e) => {
+          if (e.target === this.notice360Modal) {
+            this.closeNotice360Modal();
           }
         });
       }
@@ -3406,91 +3439,30 @@
 
     open360Modal(houseId, initialIndex = 0) {
       const house = this.houses.find((h) => h.id === houseId) || this.activeModalHouse;
-      if (!house) return;
+      const title = house ? house.title : 'Vista en 360°';
 
-      this.active360House = house;
-      this.current360Index = initialIndex;
-
-      if (this.modal360Title) {
-        this.modal360Title.textContent = `${house.title} - Vista 360°`;
-      }
-      if (this.modal360BiomeBadge) {
-        this.modal360BiomeBadge.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${house.biome}`;
+      if (this.notice360Title) {
+        this.notice360Title.textContent = `${title} (360°)`;
       }
 
-      const gallery = house.gallery && house.gallery.length > 0
-        ? house.gallery
-        : [{ url: house.image, caption: house.title }];
-
-      // Render angle chips in bottom toolbar
-      if (this.m360AnglesSelector) {
-        this.m360AnglesSelector.innerHTML = gallery.map((item, idx) => {
-          const cap = typeof item === 'string' ? `Ángulo ${idx + 1}` : (item.caption || `Vista ${idx + 1}`);
-          const isActive = idx === initialIndex;
-          return `
-            <button class="m360-angle-chip ${isActive ? 'active' : ''}" data-angle-idx="${idx}" title="${cap}">
-              <i class="fa-solid fa-camera"></i> <span>${cap}</span>
-            </button>
-          `;
-        }).join('');
-
-        const chips = this.m360AnglesSelector.querySelectorAll('.m360-angle-chip');
-        chips.forEach((chip) => {
-          chip.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.sound.playPop();
-            const idx = parseInt(chip.getAttribute('data-angle-idx') || '0', 10);
-            this.set360Angle(idx);
-          });
-        });
+      if (this.notice360Modal) {
+        this.notice360Modal.classList.add('active');
+        this.notice360Modal.classList.add('open');
+        this.notice360Modal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
       }
 
-      // Initialize Panorama360Engine if not yet created
-      if (!this.panorama360Engine && this.m360Canvas && this.m360ParticleCanvas) {
-        this.panorama360Engine = new Panorama360Engine(this.m360Canvas, this.m360ParticleCanvas, {
-          onAngleChange: (yaw, pitch, fov) => {
-            if (this.m360CompassDial) {
-              const needle = this.m360CompassDial.querySelector('.compass-needle');
-              if (needle) needle.style.transform = `rotate(${-yaw}deg)`;
-            }
-            if (this.m360AngleText) {
-              const cardinal = this.getCardinalDirection(yaw);
-              this.m360AngleText.textContent = `${Math.round(yaw)}° ${cardinal}`;
-            }
-          },
-          onInteract: () => {
-            if (this.m360DragHint) {
-              this.m360DragHint.classList.add('hidden');
-            }
-          }
-        });
+      this.sound.playPop();
+      this.showToast('Estamos trabajando en ello 🚧', 'info');
+    }
+
+    closeNotice360Modal() {
+      if (this.notice360Modal) {
+        this.notice360Modal.classList.remove('active');
+        this.notice360Modal.classList.remove('open');
+        this.notice360Modal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
       }
-
-      const targetItem = gallery[initialIndex] || gallery[0];
-      const targetUrl = typeof targetItem === 'string' ? targetItem : targetItem.url;
-
-      if (this.modal360View) {
-        this.modal360View.classList.add('active');
-        this.modal360View.classList.add('open');
-        this.modal360View.setAttribute('aria-hidden', 'false');
-      }
-      document.body.style.overflow = 'hidden';
-
-      if (this.m360DragHint) {
-        this.m360DragHint.classList.remove('hidden');
-      }
-
-      // Resize and start engine
-      setTimeout(() => {
-        if (this.panorama360Engine) {
-          this.panorama360Engine.resize();
-          this.panorama360Engine.loadImage(targetUrl, house.biome || house.category);
-          this.panorama360Engine.start();
-        }
-      }, 50);
-
-      this.sound.playSuccess();
-      this.showToast(`Modo 360° activado: ${house.title} 🌐`, 'info');
     }
 
     getCardinalDirection(yaw) {
