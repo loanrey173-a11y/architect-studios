@@ -8901,6 +8901,655 @@ html, body {
   }
 }
 
+/* ==========================================================================
+   Header Music Player & Equalizer Animations
+   ========================================================================== */
+
+.music-toggle-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--tr-smooth);
+}
+
+.music-toggle-btn.playing {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 182, 212, 0.25) 100%) !important;
+  border-color: var(--emerald) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px var(--emerald-glow) !important;
+}
+
+.music-eq-bars {
+  display: none;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  width: 14px;
+}
+
+.music-toggle-btn.playing .music-eq-bars {
+  display: inline-flex;
+}
+
+.music-toggle-btn.playing .music-static-icon {
+  display: none;
+}
+
+.music-eq-bars span {
+  width: 3px;
+  background: var(--emerald);
+  border-radius: 1px;
+  animation: soundBarsBounce 1s infinite ease-in-out alternate;
+}
+
+.music-eq-bars span:nth-child(1) {
+  height: 40%;
+  animation-delay: 0s;
+}
+
+.music-eq-bars span:nth-child(2) {
+  height: 100%;
+  animation-delay: 0.2s;
+}
+
+.music-eq-bars span:nth-child(3) {
+  height: 60%;
+  animation-delay: 0.4s;
+}
+
+@keyframes soundBarsBounce {
+  0% {
+    height: 25%;
+  }
+  50% {
+    height: 100%;
+  }
+  100% {
+    height: 40%;
+  }
+}
+
+/* Drawer Copyright icon */
+.drawer-icon-box.item-copyright {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(16, 185, 129, 0.15));
+  color: var(--gold);
+}
+
+/* ==========================================================================
+   Footer Support Project & Full Copyright Card
+   ========================================================================== */
+
+.footer-support-project-wrap {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.btn-footer-support-project {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1.25rem;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.22) 100%);
+  border: 1.5px solid rgba(245, 158, 11, 0.45);
+  border-radius: var(--radius-lg);
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--tr-bounce);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.18);
+  user-select: none;
+}
+
+.btn-footer-support-project:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.35) 100%);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.35);
+}
+
+.support-coffee-icon {
+  font-size: 1.55rem;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+  animation: coffeeSteam 2.5s infinite ease-in-out;
+}
+
+@keyframes coffeeSteam {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(4deg);
+  }
+}
+
+.support-btn-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.support-btn-title {
+  font-family: var(--font-main);
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.support-btn-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.support-heart-icon {
+  color: #f87171;
+  font-size: 1.15rem;
+  transition: transform var(--tr-bounce);
+}
+
+.btn-footer-support-project:hover .support-heart-icon {
+  transform: scale(1.25);
+  color: #ef4444;
+}
+
+/* Full Footer Copyright & Credits Card */
+.footer-copyright-card {
+  margin-top: 1.15rem;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.fcopyright-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gold);
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+
+.fcopyright-header h4 {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--gold);
+  margin: 0;
+}
+
+.fcopyright-text {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.fcopyright-text strong {
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   Welcome Music Experience Modal
+   ========================================================================== */
+
+.modal-welcome-music-dialog {
+  max-width: 480px;
+  width: 92vw;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: var(--radius-xl);
+  padding: 2.2rem 1.8rem 1.8rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.2);
+  text-align: center;
+  position: relative;
+}
+
+.welcome-music-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+/* Jukebox Disc Visual */
+.music-disc-icon-wrap {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin-top: 0.2rem;
+}
+
+.music-disc-outer {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1e293b 0%, #090d16 100%);
+  border: 3px solid #334155;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+  display: grid;
+  place-items: center;
+  position: relative;
+  animation: rotateVinylDisc 8s infinite linear;
+}
+
+.music-disc-grooves {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.music-disc-center {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--emerald), #059669);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 0.75rem;
+  box-shadow: 0 0 10px var(--emerald-glow);
+}
+
+.music-disc-glow {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, transparent 70%);
+  filter: blur(8px);
+  z-index: -1;
+  animation: preloaderAuraPulse 2.5s infinite ease-in-out;
+}
+
+.music-note-sparkle {
+  position: absolute;
+  font-size: 1.15rem;
+  pointer-events: none;
+  animation: floatMusicNotes 2.5s infinite ease-in-out;
+}
+
+.music-note-sparkle.note-1 {
+  top: -6px;
+  right: -6px;
+  animation-delay: 0s;
+}
+
+.music-note-sparkle.note-2 {
+  bottom: 0px;
+  left: -8px;
+  animation-delay: 0.8s;
+}
+
+.music-note-sparkle.note-3 {
+  top: 10px;
+  left: -10px;
+  animation-delay: 1.4s;
+}
+
+@keyframes rotateVinylDisc {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes floatMusicNotes {
+  0%, 100% {
+    transform: translateY(0) scale(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-8px) scale(1.15);
+    opacity: 1;
+  }
+}
+
+.welcome-music-title {
+  font-family: var(--font-main);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.welcome-music-sub {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.welcome-music-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.btn-music-accept {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-main);
+  font-size: 0.96rem;
+  font-weight: 800;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, var(--emerald) 0%, #059669 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 18px var(--emerald-glow);
+  transition: all var(--tr-bounce);
+}
+
+.btn-music-accept:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+}
+
+.btn-music-decline {
+  width: 100%;
+  padding: 0.65rem 1.2rem;
+  font-family: var(--font-main);
+  font-size: 0.86rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  transition: all var(--tr-fast);
+}
+
+.btn-music-decline:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+  border-color: var(--text-muted);
+}
+
+/* Modal Copyright Box */
+.welcome-music-credits-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.wm-credits-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--gold);
+  margin-bottom: 0.15rem;
+}
+
+.wm-credits-p {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.wm-credits-p strong {
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   Support Project Modal (Donación / Café)
+   ========================================================================== */
+
+.modal-support-project-dialog {
+  max-width: 460px;
+  width: 92vw;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: var(--radius-xl);
+  padding: 2.2rem 1.8rem 1.8rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.2);
+  text-align: center;
+  position: relative;
+}
+
+.support-project-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.support-coffee-big-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.2));
+  border: 2px solid rgba(245, 158, 11, 0.45);
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.coffee-emoji-big {
+  font-size: 2.2rem;
+  animation: coffeeSteam 2.5s infinite ease-in-out;
+}
+
+.coffee-icon-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 70%);
+  filter: blur(8px);
+  z-index: -1;
+}
+
+.support-project-modal-title {
+  font-family: var(--font-main);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.support-project-message-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  text-align: left;
+}
+
+.support-project-main-text {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.support-project-sub-text {
+  font-size: 0.8rem;
+  color: var(--gold);
+  font-style: italic;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.support-project-actions {
+  width: 100%;
+}
+
+.btn-support-ok {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, var(--gold) 0%, #d97706 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.4);
+  transition: all var(--tr-bounce);
+}
+
+.btn-support-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+}
+
+/* ==========================================================================
+   Working On It Notice Modal
+   ========================================================================== */
+
+.modal-support-working-dialog {
+  max-width: 440px;
+  width: 92vw;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-xl);
+  padding: 2.2rem 1.8rem 1.8rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(56, 189, 248, 0.2);
+  text-align: center;
+  position: relative;
+}
+
+.support-working-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.support-working-icon-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.2));
+  border: 2px solid rgba(56, 189, 248, 0.45);
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.3);
+}
+
+.working-main-icon {
+  font-size: 1.85rem;
+  color: #38bdf8;
+}
+
+.working-sparkle-icon {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 1.15rem;
+}
+
+.support-working-title {
+  font-family: var(--font-main);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.support-working-message-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  text-align: left;
+}
+
+.support-working-text {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.support-working-text strong {
+  color: #38bdf8;
+}
+
+.support-working-subtext {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.support-working-subtext strong {
+  color: var(--emerald);
+}
+
+.support-working-actions {
+  width: 100%;
+}
+
+.btn-support-working-ok {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 800;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.4);
+  transition: all var(--tr-bounce);
+}
+
+.btn-support-working-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(2, 132, 199, 0.6);
+}
+
+
 
 
 

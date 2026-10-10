@@ -344,6 +344,15 @@
       </div>
 
       <div class="header-actions">
+        <!-- Background Music Player Button -->
+        <button id="bgMusicToggleBtn" class="action-btn music-toggle-btn" title="Música ambiental de Minecraft (C418 / Lena Raine)" aria-label="Música de fondo">
+          <div class="music-eq-bars" id="musicEqBars">
+            <span></span><span></span><span></span>
+          </div>
+          <i class="fa-solid fa-music music-static-icon" id="musicStaticIcon"></i>
+          <span class="btn-text" id="musicBtnText">Música</span>
+        </button>
+
         <!-- Sound FX Button -->
         <button id="soundFxBtn" class="action-btn" title="Activar/Desactivar efectos de sonido" aria-label="Efectos de sonido">
           <i class="fa-solid fa-volume-high"></i>
@@ -363,6 +372,12 @@
       </div>
     </div>
   </header>
+
+  <!-- Audio de Fondo (Minecraft OST) -->
+  <audio id="bgMusicAudio" loop preload="auto">
+    <source src="./audio_minecraft.mp3" type="audio/mpeg">
+    <source src="./audio%20minecraft2.mp3" type="audio/mpeg">
+  </audio>
 
   <!-- Side Drawer Navigation -->
   <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
@@ -407,6 +422,18 @@
             <div class="drawer-item-text">
               <span class="drawer-item-title">Tutoriales</span>
               <span class="drawer-item-desc">Aprende técnicas y pasos de construcción</span>
+            </div>
+            <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-item-btn" id="drawerCopyrightBtn" title="Ver Aviso de Copyright y Créditos de Música">
+            <div class="drawer-icon-box item-copyright">
+              <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <div class="drawer-item-text">
+              <span class="drawer-item-title">Aviso de Copyright & Música</span>
+              <span class="drawer-item-desc">Créditos de Mojang Studios, C418 & Lena Raine</span>
             </div>
             <i class="fa-solid fa-chevron-right drawer-chevron"></i>
           </button>
@@ -754,10 +781,28 @@
           </a>
         </div>
 
-        <!-- Descargo de Responsabilidad Legal -->
-        <p class="footer-legal-disclaimer">
-          v1.0.0 | Minecraft Architect Studio no está afiliado, asociado ni respaldado por Mojang Studios ni Microsoft.
-        </p>
+        <!-- Sección Apoya al Proyecto -->
+        <div class="footer-support-project-wrap">
+          <button type="button" class="btn-footer-support-project" id="openSupportProjectBtn" title="Apoyar el mantenimiento del sitio web">
+            <span class="support-coffee-icon">☕</span>
+            <div class="support-btn-text">
+              <span class="support-btn-title">Apoya al proyecto</span>
+              <span class="support-btn-sub">Ayúdanos a mantener el servidor y tours 360°</span>
+            </div>
+            <i class="fa-solid fa-heart support-heart-icon"></i>
+          </button>
+        </div>
+
+        <!-- Descargo de Responsabilidad y Aviso de Copyright y Créditos -->
+        <div class="footer-copyright-card">
+          <div class="fcopyright-header">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <h4>Aviso de Copyright y Créditos:</h4>
+          </div>
+          <p class="fcopyright-text">Este sitio web es un proyecto no comercial creado por fans para la comunidad de Minecraft.</p>
+          <p class="fcopyright-text"><strong>Música:</strong> La música de fondo utilizada en esta página es propiedad intelectual de Mojang Studios / Microsoft y sus respectivos compositores (C418 / Lena Raine).</p>
+          <p class="fcopyright-text"><strong>Propiedad Intelectual:</strong> Minecraft es una marca registrada de Mojang Synergies AB. Este sitio no está afiliado, respaldado ni administrado por Mojang Studios ni Microsoft.</p>
+        </div>
       </div>
 
       <div class="footer-stats">
@@ -1667,6 +1712,124 @@
           </button>
           <button type="button" class="btn-danger-confirm" id="confirmDeleteAccountBtn">
             <i class="fa-solid fa-trash-can"></i> Sí, Eliminar mi Cuenta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Welcome Music & Experience Prompt -->
+  <div class="modal-backdrop welcome-music-backdrop" id="welcomeMusicModal" aria-hidden="true">
+    <div class="modal-dialog modal-welcome-music-dialog">
+      <button class="modal-close-btn" id="closeWelcomeMusicBtn" aria-label="Cerrar aviso de música">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="welcome-music-content">
+        <!-- Jukebox Disc Animated Icon -->
+        <div class="music-disc-icon-wrap">
+          <div class="music-disc-glow"></div>
+          <div class="music-disc-outer">
+            <div class="music-disc-grooves"></div>
+            <div class="music-disc-center">
+              <i class="fa-solid fa-music"></i>
+            </div>
+          </div>
+          <span class="music-note-sparkle note-1">🎵</span>
+          <span class="music-note-sparkle note-2">✨</span>
+          <span class="music-note-sparkle note-3">🎶</span>
+        </div>
+
+        <h3 class="welcome-music-title">¿Deseas escuchar música mientras disfrutas de la experiencia?</h3>
+        <p class="welcome-music-sub">Disfruta de la atmósfera y banda sonora ambiental de Minecraft mientras exploras los planos y construcciones.</p>
+
+        <div class="welcome-music-actions">
+          <button type="button" class="btn-music-accept" id="acceptWelcomeMusicBtn">
+            <i class="fa-solid fa-play"></i>
+            <span>Sí, reproducir música</span>
+          </button>
+          <button type="button" class="btn-music-decline" id="declineWelcomeMusicBtn">
+            <i class="fa-solid fa-volume-xmark"></i>
+            <span>Continuar sin música</span>
+          </button>
+        </div>
+
+        <!-- Aviso de Copyright y Créditos -->
+        <div class="welcome-music-credits-box">
+          <div class="wm-credits-header">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <strong>Aviso de Copyright y Créditos:</strong>
+          </div>
+          <p class="wm-credits-p">Este sitio web es un proyecto no comercial creado por fans para la comunidad de Minecraft.</p>
+          <p class="wm-credits-p"><strong>Música:</strong> La música de fondo utilizada en esta página es propiedad intelectual de Mojang Studios / Microsoft y sus respectivos compositores (C418 / Lena Raine).</p>
+          <p class="wm-credits-p"><strong>Propiedad Intelectual:</strong> Minecraft es una marca registrada de Mojang Synergies AB. Este sitio no está afiliado, respaldado ni administrado por Mojang Studios ni Microsoft.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Apoya al Proyecto Modal -->
+  <div class="modal-backdrop support-project-modal-backdrop" id="supportProjectModal" aria-hidden="true">
+    <div class="modal-dialog modal-support-project-dialog">
+      <button class="modal-close-btn" id="closeSupportProjectModalBtn" aria-label="Cerrar modal de apoyo">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="support-project-modal-content">
+        <div class="support-coffee-big-icon-wrap">
+          <span class="coffee-emoji-big">☕</span>
+          <div class="coffee-icon-glow"></div>
+        </div>
+
+        <h3 class="support-project-modal-title">☕ ¿Te gusta el proyecto?</h3>
+
+        <div class="support-project-message-card">
+          <p class="support-project-main-text">
+            Mantener el servidor web y subir nuevos tours 360° de casas toma tiempo y recursos. Si quieres apoyar para mantener la página activa, ¡puedes invitarnos un café!
+          </p>
+          <p class="support-project-sub-text">
+            (Todas las donaciones son voluntarias y ayudan directamente al mantenimiento de la web)
+          </p>
+        </div>
+
+        <div class="support-project-actions">
+          <button type="button" class="btn-support-ok" id="supportProjectOkBtn">
+            <span>OK</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Estamos Trabajando en Ello (Aviso de Tarjetas / Pagos) -->
+  <div class="modal-backdrop support-working-modal-backdrop" id="supportWorkingOnItModal" aria-hidden="true">
+    <div class="modal-dialog modal-support-working-dialog">
+      <button class="modal-close-btn" id="closeSupportWorkingModalBtn" aria-label="Cerrar aviso">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="support-working-modal-content">
+        <div class="support-working-icon-wrap">
+          <i class="fa-solid fa-person-digging working-main-icon"></i>
+          <span class="working-sparkle-icon">🚧</span>
+        </div>
+
+        <h3 class="support-working-title">Estamos trabajando en ello</h3>
+
+        <div class="support-working-message-box">
+          <p class="support-working-text">
+            Por el momento <strong>todavía no contamos con pasarela de tarjetas ni pagos activos</strong>.
+          </p>
+          <p class="support-working-subtext">
+            ¡Muchas gracias por tu generosidad y por querer apoyar a <strong>Minecraft Architect Studio</strong>! Próximamente habilitaremos opciones de donación.
+          </p>
+        </div>
+
+        <div class="support-working-actions">
+          <button type="button" class="btn-support-working-ok" id="supportWorkingOkBtn">
+            <i class="fa-solid fa-check"></i>
+            <span>Entendido</span>
           </button>
         </div>
       </div>

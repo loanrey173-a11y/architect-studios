@@ -1122,6 +1122,7 @@
 
       this.cacheDOMElements();
       this.initTheme();
+      this.initBackgroundMusic();
       this.initEventListeners();
       this.updateCommentAuthorUI();
       this.render();
@@ -1136,7 +1137,16 @@
 
       // Preloader dismiss trigger once DOM and initial app state is rendered
       if (typeof window.hidePagePreloader === 'function') {
-        setTimeout(() => window.hidePagePreloader(), 250);
+        setTimeout(() => {
+          window.hidePagePreloader();
+          setTimeout(() => {
+            this.openWelcomeMusicModal();
+          }, 450);
+        }, 250);
+      } else {
+        setTimeout(() => {
+          this.openWelcomeMusicModal();
+        }, 500);
       }
     }
 
@@ -1743,6 +1753,27 @@
       this.copyFeedbackMessageBtn = document.getElementById('copyFeedbackMessageBtn');
       this.feedbackMessagePreviewText = document.getElementById('feedbackMessagePreviewText');
       this.finishFeedbackBtn = document.getElementById('finishFeedbackBtn');
+
+      // Background Music & Audio Controller
+      this.bgMusicAudio = document.getElementById('bgMusicAudio');
+      this.bgMusicToggleBtn = document.getElementById('bgMusicToggleBtn');
+      this.musicBtnText = document.getElementById('musicBtnText');
+      this.drawerCopyrightBtn = document.getElementById('drawerCopyrightBtn');
+
+      // Welcome Music & Copyright Modal
+      this.welcomeMusicModal = document.getElementById('welcomeMusicModal');
+      this.closeWelcomeMusicBtn = document.getElementById('closeWelcomeMusicBtn');
+      this.acceptWelcomeMusicBtn = document.getElementById('acceptWelcomeMusicBtn');
+      this.declineWelcomeMusicBtn = document.getElementById('declineWelcomeMusicBtn');
+
+      // Support Project Modal & Working Notice
+      this.openSupportProjectBtn = document.getElementById('openSupportProjectBtn');
+      this.supportProjectModal = document.getElementById('supportProjectModal');
+      this.closeSupportProjectModalBtn = document.getElementById('closeSupportProjectModalBtn');
+      this.supportProjectOkBtn = document.getElementById('supportProjectOkBtn');
+      this.supportWorkingOnItModal = document.getElementById('supportWorkingOnItModal');
+      this.closeSupportWorkingModalBtn = document.getElementById('closeSupportWorkingModalBtn');
+      this.supportWorkingOkBtn = document.getElementById('supportWorkingOkBtn');
 
       // Toast Container
       this.toastContainer = document.getElementById('toastContainer');
@@ -2414,6 +2445,9 @@
           this.closeTutorialsModal();
           this.closeSubmitIdeaModal();
           this.closeHowToInstagramModal();
+          this.closeWelcomeMusicModal();
+          this.closeSupportProjectModal();
+          this.closeSupportWorkingModal();
         } else if (this.active360House && this.panorama360Engine && this.modal360View && this.modal360View.classList.contains('active')) {
           if (e.key === ' ' || e.code === 'Space') {
             e.preventDefault();
@@ -2683,6 +2717,114 @@
           if (!this.activeModalHouse) return;
           this.sound.playPop();
           this.shareHouse(this.activeModalHouse);
+        });
+      }
+
+      // Background Music Header Toggle
+      if (this.bgMusicToggleBtn) {
+        this.bgMusicToggleBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.toggleBackgroundMusic();
+        });
+      }
+
+      // Welcome Music Modal Actions
+      if (this.acceptWelcomeMusicBtn) {
+        this.acceptWelcomeMusicBtn.addEventListener('click', () => {
+          this.sound.playSuccess();
+          this.playBackgroundMusic();
+          this.closeWelcomeMusicModal();
+        });
+      }
+
+      if (this.declineWelcomeMusicBtn) {
+        this.declineWelcomeMusicBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.pauseBackgroundMusic();
+          this.closeWelcomeMusicModal();
+        });
+      }
+
+      if (this.closeWelcomeMusicBtn) {
+        this.closeWelcomeMusicBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeWelcomeMusicModal();
+        });
+      }
+
+      if (this.welcomeMusicModal) {
+        this.welcomeMusicModal.addEventListener('click', (e) => {
+          if (e.target === this.welcomeMusicModal) {
+            this.sound.playPop();
+            this.closeWelcomeMusicModal();
+          }
+        });
+      }
+
+      // Drawer Copyright Button
+      if (this.drawerCopyrightBtn) {
+        this.drawerCopyrightBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeDrawer();
+          this.openWelcomeMusicModal();
+        });
+      }
+
+      // Support Project Modal & Flow
+      if (this.openSupportProjectBtn) {
+        this.openSupportProjectBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.openSupportProjectModal();
+        });
+      }
+
+      if (this.closeSupportProjectModalBtn) {
+        this.closeSupportProjectModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeSupportProjectModal();
+        });
+      }
+
+      if (this.supportProjectModal) {
+        this.supportProjectModal.addEventListener('click', (e) => {
+          if (e.target === this.supportProjectModal) {
+            this.sound.playPop();
+            this.closeSupportProjectModal();
+          }
+        });
+      }
+
+      if (this.supportProjectOkBtn) {
+        this.supportProjectOkBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeSupportProjectModal();
+          setTimeout(() => {
+            this.openSupportWorkingModal();
+          }, 180);
+        });
+      }
+
+      // Support Working On It Modal Handlers
+      if (this.closeSupportWorkingModalBtn) {
+        this.closeSupportWorkingModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeSupportWorkingModal();
+        });
+      }
+
+      if (this.supportWorkingOkBtn) {
+        this.supportWorkingOkBtn.addEventListener('click', () => {
+          this.sound.playSuccess();
+          this.closeSupportWorkingModal();
+        });
+      }
+
+      if (this.supportWorkingOnItModal) {
+        this.supportWorkingOnItModal.addEventListener('click', (e) => {
+          if (e.target === this.supportWorkingOnItModal) {
+            this.sound.playPop();
+            this.closeSupportWorkingModal();
+          }
         });
       }
     }
@@ -3751,6 +3893,131 @@
         this.tutorialsNoticeModal.classList.remove('active');
         this.tutorialsNoticeModal.classList.remove('open');
         this.tutorialsNoticeModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
+      }
+    }
+
+    /* ------------------------------------------------------------------------
+       Background Music Engine & Welcome Prompt
+       ------------------------------------------------------------------------ */
+
+    initBackgroundMusic() {
+      if (!this.bgMusicAudio) return;
+      this.bgMusicAudio.volume = 0.45;
+
+      this.bgMusicAudio.addEventListener('play', () => {
+        this.updateMusicUI(true);
+      });
+
+      this.bgMusicAudio.addEventListener('pause', () => {
+        this.updateMusicUI(false);
+      });
+
+      this.bgMusicAudio.addEventListener('ended', () => {
+        this.updateMusicUI(false);
+      });
+    }
+
+    playBackgroundMusic() {
+      if (!this.bgMusicAudio) return;
+      try {
+        const playPromise = this.bgMusicAudio.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              this.updateMusicUI(true);
+            })
+            .catch((err) => {
+              console.warn('Autoplay prevented or audio could not be played:', err);
+              this.updateMusicUI(false);
+            });
+        }
+      } catch (err) {
+        console.warn('Audio play error:', err);
+      }
+    }
+
+    pauseBackgroundMusic() {
+      if (!this.bgMusicAudio) return;
+      try {
+        this.bgMusicAudio.pause();
+        this.updateMusicUI(false);
+      } catch (err) {
+        // Ignore
+      }
+    }
+
+    toggleBackgroundMusic() {
+      if (!this.bgMusicAudio) return;
+      if (this.bgMusicAudio.paused) {
+        this.playBackgroundMusic();
+      } else {
+        this.pauseBackgroundMusic();
+      }
+    }
+
+    updateMusicUI(isPlaying) {
+      if (this.bgMusicToggleBtn) {
+        this.bgMusicToggleBtn.classList.toggle('playing', isPlaying);
+        this.bgMusicToggleBtn.setAttribute('title', isPlaying ? 'Pausar música de fondo' : 'Reproducir música de fondo');
+        const icon = this.bgMusicToggleBtn.querySelector('.music-icon');
+        if (icon) {
+          icon.className = isPlaying ? 'fa-solid fa-compact-disc fa-spin music-icon' : 'fa-solid fa-music music-icon';
+        }
+      }
+      if (this.musicBtnText) {
+        this.musicBtnText.textContent = isPlaying ? 'Música activa' : 'Música';
+      }
+    }
+
+    openWelcomeMusicModal() {
+      if (this.welcomeMusicModal) {
+        this.welcomeMusicModal.classList.add('active', 'open');
+        this.welcomeMusicModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
+      }
+    }
+
+    closeWelcomeMusicModal() {
+      if (this.welcomeMusicModal) {
+        this.welcomeMusicModal.classList.remove('active', 'open');
+        this.welcomeMusicModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
+      }
+    }
+
+    /* ------------------------------------------------------------------------
+       Support Project & Working On It Modal Handlers
+       ------------------------------------------------------------------------ */
+
+    openSupportProjectModal() {
+      if (this.supportProjectModal) {
+        this.supportProjectModal.classList.add('active', 'open');
+        this.supportProjectModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
+      }
+    }
+
+    closeSupportProjectModal() {
+      if (this.supportProjectModal) {
+        this.supportProjectModal.classList.remove('active', 'open');
+        this.supportProjectModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
+      }
+    }
+
+    openSupportWorkingModal() {
+      if (this.supportWorkingOnItModal) {
+        this.supportWorkingOnItModal.classList.add('active', 'open');
+        this.supportWorkingOnItModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
+      }
+    }
+
+    closeSupportWorkingModal() {
+      if (this.supportWorkingOnItModal) {
+        this.supportWorkingOnItModal.classList.remove('active', 'open');
+        this.supportWorkingOnItModal.setAttribute('aria-hidden', 'true');
         this.syncBodyModalLock();
       }
     }
