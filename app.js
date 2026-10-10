@@ -1780,11 +1780,6 @@
       this.closeSupportWorkingModalBtn = document.getElementById('closeSupportWorkingModalBtn');
       this.supportWorkingOkBtn = document.getElementById('supportWorkingOkBtn');
 
-      // Google Form Elements
-      this.drawerGoogleFormBtn = document.getElementById('drawerGoogleFormBtn');
-      this.googleFormModal = document.getElementById('googleFormModal');
-      this.closeGoogleFormModalBtn = document.getElementById('closeGoogleFormModalBtn');
-
       // Toast Container
       this.toastContainer = document.getElementById('toastContainer');
     }
@@ -2457,7 +2452,6 @@
           this.closeHowToInstagramModal();
           this.closeWelcomeMusicModal();
           this.closeHeadphonesTipModal();
-          this.closeGoogleFormModal();
           this.closeSupportProjectModal();
           this.closeSupportWorkingModal();
         } else if (this.active360House && this.panorama360Engine && this.modal360View && this.modal360View.classList.contains('active')) {
@@ -2806,31 +2800,6 @@
           this.sound.playPop();
           this.closeDrawer();
           this.openWelcomeMusicModal();
-        });
-      }
-
-      // Drawer Google Form Button & Modal Actions
-      if (this.drawerGoogleFormBtn) {
-        this.drawerGoogleFormBtn.addEventListener('click', () => {
-          this.sound.playPop();
-          this.closeDrawer();
-          this.openGoogleFormModal();
-        });
-      }
-
-      if (this.closeGoogleFormModalBtn) {
-        this.closeGoogleFormModalBtn.addEventListener('click', () => {
-          this.sound.playPop();
-          this.closeGoogleFormModal();
-        });
-      }
-
-      if (this.googleFormModal) {
-        this.googleFormModal.addEventListener('click', (e) => {
-          if (e.target === this.googleFormModal) {
-            this.sound.playPop();
-            this.closeGoogleFormModal();
-          }
         });
       }
 
@@ -4101,26 +4070,6 @@
       if (this.supportWorkingOnItModal) {
         this.supportWorkingOnItModal.classList.remove('active', 'open');
         this.supportWorkingOnItModal.setAttribute('aria-hidden', 'true');
-        this.syncBodyModalLock();
-      }
-    }
-
-    /* ------------------------------------------------------------------------
-       Google Form Modal Handlers
-       ------------------------------------------------------------------------ */
-
-    openGoogleFormModal() {
-      if (this.googleFormModal) {
-        this.googleFormModal.classList.add('active', 'open');
-        this.googleFormModal.setAttribute('aria-hidden', 'false');
-        this.syncBodyModalLock();
-      }
-    }
-
-    closeGoogleFormModal() {
-      if (this.googleFormModal) {
-        this.googleFormModal.classList.remove('active', 'open');
-        this.googleFormModal.setAttribute('aria-hidden', 'true');
         this.syncBodyModalLock();
       }
     }
