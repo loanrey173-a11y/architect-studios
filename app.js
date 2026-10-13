@@ -89,7 +89,7 @@
   };
 
   const MINECRAFT_PLAYLIST = [
-    // CARPETA: NOSTÁLGICAS (10 Canciones de C418)
+    // NOSTÁLGICAS (10 Canciones de C418)
     {
       id: 'sweden',
       num: '01',
@@ -200,7 +200,7 @@
       src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/MAIL.mp3',
       tag: 'Disco Relajante'
     },
-    // CARPETA: POPULARES (4 Canciones)
+    // POPULARES (4 Canciones)
     {
       id: 'otherside',
       num: '01',
@@ -2145,6 +2145,11 @@
       this.musicJukeboxDisc = document.getElementById('musicJukeboxDisc');
       this.trackListNostalgicas = document.getElementById('trackListNostalgicas');
       this.trackListPopulares = document.getElementById('trackListPopulares');
+      this.musicAutoplayToggleBtn = document.getElementById('musicAutoplayToggleBtn');
+      this.musicAutoplayBtnLabel = document.getElementById('musicAutoplayBtnLabel');
+      this.musicAutoplayIcon = document.getElementById('musicAutoplayIcon');
+      this.musicAutoplayLed = document.getElementById('musicAutoplayLed');
+      this.musicAutoplayPill = document.getElementById('musicAutoplayPill');
     }
 
     /* ------------------------------------------------------------------------
@@ -4480,8 +4485,13 @@
       });
 
       this.bgMusicAudio.addEventListener('ended', () => {
-        // Reproducción continua automática: al terminar pasa a la siguiente
-        this.playNextTrack();
+        // Reproducción continua automática: pasa a la siguiente si está activada
+        if (this.isAutoplayEnabled) {
+          this.playNextTrack();
+        } else {
+          this.updateMusicUI(false);
+          this.showToast('⏹️ Fin de la canción. Reproducción automática pausada.');
+        }
       });
 
       // Inicializa el reproductor tocadiscos
@@ -4490,8 +4500,11 @@
 
     initMinecraftMusicPlayer() {
       this.currentTrackIndex = 0;
+      const savedAutoplay = localStorage.getItem('MINECRAFT_AUTOPLAY_NEXT');
+      this.isAutoplayEnabled = savedAutoplay === null ? true : savedAutoplay === 'true';
       this.renderMusicPlaylist();
       this.updateNowPlayingCard();
+      this.updateAutoplayUI();
 
       // Barra de progreso y tiempo
       if (this.bgMusicAudio) {
@@ -4550,6 +4563,13 @@
         this.musicNextBtn.addEventListener('click', () => {
           this.sound.playPop();
           this.playNextTrack();
+        });
+      }
+
+      // Botón para Evitar / Alternar Reproducción Automática
+      if (this.musicAutoplayToggleBtn) {
+        this.musicAutoplayToggleBtn.addEventListener('click', () => {
+          this.toggleAutoplayMode();
         });
       }
 
@@ -4679,7 +4699,7 @@
       if (this.nowPlayingSong) this.nowPlayingSong.textContent = track.title;
       if (this.nowPlayingArtist) this.nowPlayingArtist.textContent = `${track.artist} • ${track.album}`;
       if (this.nowPlayingFolder) {
-        this.nowPlayingFolder.innerHTML = `<i class="fa-solid fa-folder"></i> CARPETA: ${track.folder}`;
+        this.nowPlayingFolder.innerHTML = `<i class="fa-solid fa-folder"></i> ${track.folder}`;
       }
     }
 
@@ -4719,6 +4739,51 @@
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
       return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    toggleAutoplayMode() {
+      this.isAutoplayEnabled = !this.isAutoplayEnabled;
+      localStorage.setItem('MINECRAFT_AUTOPLAY_NEXT', this.isAutoplayEnabled ? 'true' : 'false');
+      this.sound.playPop();
+      this.updateAutoplayUI();
+      if (this.isAutoplayEnabled) {
+        this.showToast('🔁 Reproducción continua activada');
+      } else {
+        this.showToast('🛑 Reproducción automática evitada (se pausará al terminar)');
+      }
+    }
+
+    updateAutoplayUI() {
+      if (!this.musicAutoplayToggleBtn) return;
+      if (this.isAutoplayEnabled) {
+        this.musicAutoplayToggleBtn.classList.remove('is-disabled');
+        this.musicAutoplayToggleBtn.classList.add('is-active');
+        this.musicAutoplayToggleBtn.setAttribute('title', 'Clic para evitar la reproducción automática');
+        this.musicAutoplayToggleBtn.setAttribute('aria-pressed', 'true');
+        if (this.musicAutoplayBtnLabel) {
+          this.musicAutoplayBtnLabel.innerHTML = 'Reproducción Automática: <strong>Activada</strong>';
+        }
+        if (this.musicAutoplayPill) {
+          this.musicAutoplayPill.textContent = 'Clic para Evitar';
+        }
+        if (this.musicAutoplayIcon) {
+          this.musicAutoplayIcon.className = 'fa-solid fa-repeat';
+        }
+      } else {
+        this.musicAutoplayToggleBtn.classList.remove('is-active');
+        this.musicAutoplayToggleBtn.classList.add('is-disabled');
+        this.musicAutoplayToggleBtn.setAttribute('title', 'Clic para activar reproducción continua');
+        this.musicAutoplayToggleBtn.setAttribute('aria-pressed', 'false');
+        if (this.musicAutoplayBtnLabel) {
+          this.musicAutoplayBtnLabel.innerHTML = 'Reproducción Automática: <strong>Evitada (Pausar al terminar)</strong>';
+        }
+        if (this.musicAutoplayPill) {
+          this.musicAutoplayPill.textContent = 'Clic para Activar';
+        }
+        if (this.musicAutoplayIcon) {
+          this.musicAutoplayIcon.className = 'fa-solid fa-ban';
+        }
+      }
     }
 
     playBackgroundMusic() {

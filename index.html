@@ -432,24 +432,12 @@
           </button>
         </li>
         <li>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLScDH3cl7iMBY_r9jZf9dwSQvHPwh4tPh8cu6k8QihjycsKmHA/viewform" target="_blank" rel="noopener noreferrer" class="drawer-item-btn highlight-item" id="drawerGoogleFormBtn" title="Abrir Formulario de Google en nueva pestaña">
-            <div class="drawer-icon-box item-google-form">
-              <i class="fa-solid fa-square-poll-vertical"></i>
-            </div>
-            <div class="drawer-item-text">
-              <span class="drawer-item-title">Encuesta / Formulario</span>
-              <span class="drawer-item-desc">Abrir formulario oficial de Google</span>
-            </div>
-            <i class="fa-solid fa-arrow-up-right-from-square drawer-chevron"></i>
-          </a>
-        </li>
-        <li>
           <button type="button" class="drawer-item-btn highlight-item" id="drawerMusicBtn" title="Abrir Tocadiscos y Canciones de Minecraft">
             <div class="drawer-icon-box item-music">
               <i class="fa-solid fa-compact-disc"></i>
             </div>
             <div class="drawer-item-text">
-              <span class="drawer-item-title">Música de Minecraft</span>
+              <span class="drawer-item-title">Música</span>
               <span class="drawer-item-desc">Canciones Nostálgicas y Populares (C418 & Lena Raine)</span>
             </div>
             <i class="fa-solid fa-chevron-right drawer-chevron"></i>
@@ -461,11 +449,23 @@
               <i class="fa-solid fa-scale-balanced"></i>
             </div>
             <div class="drawer-item-text">
-              <span class="drawer-item-title">Aviso de Copyright & Música</span>
+              <span class="drawer-item-title">Aviso de Copy</span>
               <span class="drawer-item-desc">Créditos de Mojang Studios, C418 & Lena Raine</span>
             </div>
             <i class="fa-solid fa-chevron-right drawer-chevron"></i>
           </button>
+        </li>
+        <li>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLScDH3cl7iMBY_r9jZf9dwSQvHPwh4tPh8cu6k8QihjycsKmHA/viewform" target="_blank" rel="noopener noreferrer" class="drawer-item-btn highlight-item" id="drawerGoogleFormBtn" title="Abrir Formulario de Google en nueva pestaña">
+            <div class="drawer-icon-box item-google-form">
+              <i class="fa-solid fa-square-poll-vertical"></i>
+            </div>
+            <div class="drawer-item-text">
+              <span class="drawer-item-title">Encuesta</span>
+              <span class="drawer-item-desc">Abrir formulario oficial de Google</span>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square drawer-chevron"></i>
+          </a>
         </li>
         <li>
           <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="drawer-item-btn" id="drawerSendBuildBtn" title="Enviar tu construcción a @loanrey17 en Instagram">
@@ -1956,7 +1956,7 @@
           <div class="mc-music-title-wrap">
             <div class="mc-music-tag"><i class="fa-solid fa-music"></i> MINECRAFT SOUNDTRACK</div>
             <h3 class="mc-music-title">Tocadiscos de Minecraft</h3>
-            <p class="mc-music-sub">Música dividida por carpetas con reproducción continua automática</p>
+            <p class="mc-music-sub">Música original de Minecraft</p>
           </div>
         </div>
 
@@ -1967,7 +1967,7 @@
               <i class="fa-solid fa-record-vinyl"></i>
             </div>
             <div class="now-playing-info">
-              <span class="now-playing-folder-chip" id="nowPlayingFolder"><i class="fa-solid fa-folder"></i> CARPETA: NOSTÁLGICAS</span>
+              <span class="now-playing-folder-chip" id="nowPlayingFolder"><i class="fa-solid fa-folder"></i> NOSTÁLGICAS</span>
               <h4 class="now-playing-song-title" id="nowPlayingSong">Sweden</h4>
               <span class="now-playing-artist-name" id="nowPlayingArtist">C418 • Minecraft Volume Alpha</span>
             </div>
@@ -1999,10 +1999,16 @@
           </div>
         </div>
 
-        <!-- Auto-play Notice -->
-        <div class="mc-autoplay-indicator">
-          <i class="fa-solid fa-repeat"></i>
-          <span><strong>Reproducción Continua Activada:</strong> cuando finaliza una pista, comienza la siguiente de forma automática.</span>
+        <!-- Botón para Evitar o Activar Reproducción Automática -->
+        <div class="mc-autoplay-button-bar">
+          <button type="button" class="btn-mc-prevent-autoplay is-active" id="musicAutoplayToggleBtn" title="Clic para evitar la reproducción automática" aria-pressed="true">
+            <div class="btn-mc-prevent-left">
+              <span class="mc-autoplay-led" id="musicAutoplayLed"></span>
+              <i class="fa-solid fa-repeat" id="musicAutoplayIcon"></i>
+              <span class="mc-autoplay-btn-text" id="musicAutoplayBtnLabel">Reproducción Automática: <strong>Activada</strong></span>
+            </div>
+            <span class="mc-autoplay-pill-badge" id="musicAutoplayPill">Clic para Evitar</span>
+          </button>
         </div>
 
         <!-- Folders and Songs Lists -->
@@ -2012,7 +2018,7 @@
             <div class="mc-folder-header">
               <div class="mc-folder-title">
                 <i class="fa-solid fa-folder-open folder-icon-nostalgica"></i>
-                <span class="folder-name">📁 CARPETA: NOSTÁLGICAS</span>
+                <span class="folder-name">📁 NOSTÁLGICAS</span>
                 <span class="folder-count-badge">10 Canciones</span>
               </div>
               <span class="folder-author-badge">C418 Clásicos</span>
@@ -2027,7 +2033,7 @@
             <div class="mc-folder-header">
               <div class="mc-folder-title">
                 <i class="fa-solid fa-folder-open folder-icon-populares"></i>
-                <span class="folder-name">📁 CARPETA: POPULARES</span>
+                <span class="folder-name">📁 POPULARES</span>
                 <span class="folder-count-badge">4 Canciones</span>
               </div>
               <span class="folder-author-badge">Discos & Nuevas Épocas</span>
