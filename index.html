@@ -353,6 +353,11 @@
           <span class="btn-text" id="musicBtnText">Música</span>
         </button>
 
+        <!-- Open Music Jukebox Modal Button -->
+        <button id="openMusicModalBtn" class="action-btn music-playlist-btn" title="Abrir Tocadiscos de Minecraft (Lista de Canciones)" aria-label="Lista de canciones">
+          <i class="fa-solid fa-compact-disc"></i>
+        </button>
+
         <!-- Sound FX Button -->
         <button id="soundFxBtn" class="action-btn" title="Activar/Desactivar efectos de sonido" aria-label="Efectos de sonido">
           <i class="fa-solid fa-volume-high"></i>
@@ -373,10 +378,10 @@
     </div>
   </header>
 
-  <!-- Audio de Fondo (Minecraft OST) -->
-  <audio id="bgMusicAudio" loop preload="auto">
+  <!-- Audio de Fondo (Minecraft OST - Reproducción Continua) -->
+  <audio id="bgMusicAudio" preload="auto">
+    <source src="./MUSICA%20DE%20MINECRAFT/NOSTALGICAS/SWEDEN.mp3" type="audio/mpeg">
     <source src="./audio_minecraft.mp3" type="audio/mpeg">
-    <source src="./audio%20minecraft2.mp3" type="audio/mpeg">
   </audio>
 
   <!-- Side Drawer Navigation -->
@@ -437,6 +442,18 @@
             </div>
             <i class="fa-solid fa-arrow-up-right-from-square drawer-chevron"></i>
           </a>
+        </li>
+        <li>
+          <button type="button" class="drawer-item-btn highlight-item" id="drawerMusicBtn" title="Abrir Tocadiscos y Canciones de Minecraft">
+            <div class="drawer-icon-box item-music">
+              <i class="fa-solid fa-compact-disc"></i>
+            </div>
+            <div class="drawer-item-text">
+              <span class="drawer-item-title">Música de Minecraft</span>
+              <span class="drawer-item-desc">Canciones Nostálgicas y Populares (C418 & Lena Raine)</span>
+            </div>
+            <i class="fa-solid fa-chevron-right drawer-chevron"></i>
+          </button>
         </li>
         <li>
           <button type="button" class="drawer-item-btn" id="drawerCopyrightBtn" title="Ver Aviso de Copyright y Créditos de Música">
@@ -1870,6 +1887,155 @@
             <i class="fa-solid fa-check"></i>
             <span>Entendido</span>
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       INTERRUPTOR DE REDSTONE: MODO OVERWORLD / MODO NETHER
+       ========================================================================== -->
+  <aside class="redstone-switch-corner" id="redstoneSwitchCorner" aria-label="Interruptor de Redstone">
+    <button type="button" class="redstone-lever-btn" id="redstoneLeverBtn" title="Interruptor de Redstone: Cambiar Dimensión (Overworld / Nether)" aria-label="Cambiar dimensión">
+      <div class="redstone-lever-frame">
+        <!-- Base de Piedra / Adoquín -->
+        <div class="redstone-block-base">
+          <!-- Líneas de Redstone -->
+          <div class="redstone-wire wire-top"></div>
+          <div class="redstone-wire wire-bottom"></div>
+          
+          <!-- Palanca 3D de Redstone -->
+          <div class="redstone-lever-assembly" id="redstoneLeverAssembly">
+            <div class="lever-pivot-socket"></div>
+            <div class="lever-arm" id="redstoneLeverArm">
+              <span class="lever-stick"></span>
+              <span class="lever-handle-ball"></span>
+            </div>
+          </div>
+
+          <!-- Antorcha de Redstone -->
+          <div class="redstone-torch-wrap" id="redstoneTorchWrap">
+            <div class="torch-dust-sparks">
+              <span class="spark s1"></span>
+              <span class="spark s2"></span>
+              <span class="spark s3"></span>
+            </div>
+            <div class="torch-glowing-head" id="torchHead"></div>
+            <div class="torch-wooden-stick"></div>
+          </div>
+        </div>
+
+        <!-- Etiqueta Indicadora de Modo -->
+        <div class="redstone-mode-tag" id="redstoneModeTag">
+          <div class="mode-tag-main">
+            <i class="fa-solid fa-fire-flame-curved mode-tag-icon" id="redstoneTagIcon"></i>
+            <span class="mode-tag-name" id="redstoneTagName">Modo Nether</span>
+          </div>
+          <span class="mode-tag-desc" id="redstoneTagDesc">Oscuro / Lava</span>
+        </div>
+      </div>
+    </button>
+  </aside>
+
+  <!-- ==========================================================================
+       MODAL: REPRODUCTOR TOCADISCOS DE MINECRAFT (POR CARPETAS)
+       ========================================================================== -->
+  <div class="modal-backdrop minecraft-music-modal-backdrop" id="minecraftMusicModal" aria-hidden="true">
+    <div class="modal-dialog modal-minecraft-music-dialog">
+      <button class="modal-close-btn" id="closeMinecraftMusicModalBtn" aria-label="Cerrar tocadiscos">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="mc-music-modal-content">
+        <!-- Header -->
+        <div class="mc-music-header">
+          <div class="mc-jukebox-icon-box">
+            <i class="fa-solid fa-compact-disc mc-spinning-disc" id="musicJukeboxDisc"></i>
+            <span class="mc-note-bubble">🎵</span>
+          </div>
+          <div class="mc-music-title-wrap">
+            <div class="mc-music-tag"><i class="fa-solid fa-music"></i> MINECRAFT SOUNDTRACK</div>
+            <h3 class="mc-music-title">Tocadiscos de Minecraft</h3>
+            <p class="mc-music-sub">Música dividida por carpetas con reproducción continua automática</p>
+          </div>
+        </div>
+
+        <!-- Now Playing Card -->
+        <div class="mc-now-playing-card" id="nowPlayingCard">
+          <div class="now-playing-left">
+            <div class="now-playing-disc-art" id="nowPlayingDiscArt">
+              <i class="fa-solid fa-record-vinyl"></i>
+            </div>
+            <div class="now-playing-info">
+              <span class="now-playing-folder-chip" id="nowPlayingFolder"><i class="fa-solid fa-folder"></i> CARPETA: NOSTÁLGICAS</span>
+              <h4 class="now-playing-song-title" id="nowPlayingSong">Sweden</h4>
+              <span class="now-playing-artist-name" id="nowPlayingArtist">C418 • Minecraft Volume Alpha</span>
+            </div>
+          </div>
+          <div class="now-playing-controls">
+            <button type="button" class="btn-mc-ctrl" id="musicPrevBtn" title="Canción anterior" aria-label="Canción anterior">
+              <i class="fa-solid fa-backward-step"></i>
+            </button>
+            <button type="button" class="btn-mc-ctrl btn-mc-playpause" id="musicPlayPauseBtn" title="Reproducir / Pausar" aria-label="Reproducir o pausar">
+              <i class="fa-solid fa-play" id="musicPlayPauseIcon"></i>
+            </button>
+            <button type="button" class="btn-mc-ctrl" id="musicNextBtn" title="Siguiente canción" aria-label="Siguiente canción">
+              <i class="fa-solid fa-forward-step"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress and Volume Bar -->
+        <div class="mc-audio-timeline-bar">
+          <span class="time-label" id="musicCurrentTime">0:00</span>
+          <div class="mc-progress-track" id="musicProgressTrack">
+            <div class="mc-progress-fill" id="musicProgressFill"></div>
+          </div>
+          <span class="time-label" id="musicDuration">--:--</span>
+          
+          <div class="mc-volume-control">
+            <i class="fa-solid fa-volume-high" id="musicVolumeIcon"></i>
+            <input type="range" class="mc-volume-slider" id="musicVolumeSlider" min="0" max="1" step="0.05" value="0.45" aria-label="Volumen">
+          </div>
+        </div>
+
+        <!-- Auto-play Notice -->
+        <div class="mc-autoplay-indicator">
+          <i class="fa-solid fa-repeat"></i>
+          <span><strong>Reproducción Continua Activada:</strong> cuando finaliza una pista, comienza la siguiente de forma automática.</span>
+        </div>
+
+        <!-- Folders and Songs Lists -->
+        <div class="mc-folders-container">
+          <!-- Folder 1: NOSTÁLGICAS -->
+          <div class="mc-music-folder-block">
+            <div class="mc-folder-header">
+              <div class="mc-folder-title">
+                <i class="fa-solid fa-folder-open folder-icon-nostalgica"></i>
+                <span class="folder-name">📁 CARPETA: NOSTÁLGICAS</span>
+                <span class="folder-count-badge">10 Canciones</span>
+              </div>
+              <span class="folder-author-badge">C418 Clásicos</span>
+            </div>
+            <div class="mc-track-list" id="trackListNostalgicas">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Folder 2: POPULARES -->
+          <div class="mc-music-folder-block">
+            <div class="mc-folder-header">
+              <div class="mc-folder-title">
+                <i class="fa-solid fa-folder-open folder-icon-populares"></i>
+                <span class="folder-name">📁 CARPETA: POPULARES</span>
+                <span class="folder-count-badge">4 Canciones</span>
+              </div>
+              <span class="folder-author-badge">Discos & Nuevas Épocas</span>
+            </div>
+            <div class="mc-track-list" id="trackListPopulares">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
         </div>
       </div>
     </div>

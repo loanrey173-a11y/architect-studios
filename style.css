@@ -43,47 +43,63 @@
   --radius-full: 9999px;
 }
 
-/* Netherite Dark Theme (Default) */
-[data-theme="dark"] {
-  --bg-primary: #0a0d14;
-  --bg-secondary: #111827;
-  --bg-tertiary: #1f293d;
-  --bg-card: rgba(23, 32, 51, 0.75);
-  --bg-card-hover: rgba(30, 41, 65, 0.9);
-  --bg-glass: rgba(10, 13, 20, 0.85);
-  --bg-input: #0f172a;
+/* Nether Mode Theme (Oscuro / Rojos / Lava) */
+[data-theme="dark"],
+[data-theme="nether"] {
+  --bg-primary: #0d0305;
+  --bg-secondary: #17070b;
+  --bg-tertiary: #270c13;
+  --bg-card: rgba(28, 9, 14, 0.85);
+  --bg-card-hover: rgba(42, 13, 20, 0.96);
+  --bg-glass: rgba(13, 3, 5, 0.92);
+  --bg-input: #1b070b;
   
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-main: #fff1f2;
+  --text-muted: #fda4af;
+  --text-dim: #f43f5e;
   
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(16, 185, 129, 0.4);
+  --border-subtle: rgba(244, 63, 94, 0.22);
+  --border-glow: rgba(239, 68, 68, 0.6);
   
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.6);
+  --emerald: #ef4444; /* Nether Redstone Red */
+  --emerald-hover: #dc2626;
+  --emerald-glow: rgba(239, 68, 68, 0.45);
+  
+  --gold: #f97316; /* Lava Orange */
+  --gold-glow: rgba(249, 115, 22, 0.45);
+  
+  --shadow-sm: 0 4px 14px rgba(239, 68, 68, 0.15);
+  --shadow-md: 0 10px 25px rgba(239, 68, 68, 0.25);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.75);
 }
 
-/* Daylight Overworld Theme */
-[data-theme="light"] {
+/* Overworld Mode Theme (Claro / Verdes / Praderas) */
+[data-theme="light"],
+[data-theme="overworld"] {
   --bg-primary: #f0fdf4;
   --bg-secondary: #ffffff;
-  --bg-tertiary: #e2e8f0;
-  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-tertiary: #dcfce7;
+  --bg-card: rgba(255, 255, 255, 0.88);
   --bg-card-hover: rgba(255, 255, 255, 0.98);
-  --bg-glass: rgba(240, 253, 244, 0.9);
+  --bg-glass: rgba(240, 253, 244, 0.92);
   --bg-input: #ffffff;
   
   --text-main: #0f172a;
-  --text-muted: #475569;
-  --text-dim: #94a3b8;
+  --text-muted: #15803d;
+  --text-dim: #166534;
   
-  --border-subtle: rgba(15, 23, 42, 0.1);
+  --border-subtle: rgba(16, 185, 129, 0.2);
   --border-glow: rgba(16, 185, 129, 0.5);
   
+  --emerald: #10b981; /* Overworld Emerald Green */
+  --emerald-hover: #059669;
+  --emerald-glow: rgba(16, 185, 129, 0.35);
+  
+  --gold: #f59e0b;
+  --gold-glow: rgba(245, 158, 11, 0.35);
+  
   --shadow-sm: 0 4px 12px rgba(16, 185, 129, 0.08);
-  --shadow-md: 0 10px 25px rgba(16, 185, 129, 0.12);
+  --shadow-md: 0 10px 25px rgba(16, 185, 129, 0.14);
   --shadow-lg: 0 20px 40px rgba(16, 185, 129, 0.18);
 }
 
@@ -9858,6 +9874,1017 @@ html, body {
     height: 480px;
   }
 }
+
+/* ==========================================================================
+   INTERRUPTOR DE REDSTONE (MODO OVERWORLD / MODO NETHER)
+   ========================================================================== */
+.redstone-switch-corner {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 1050;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.redstone-lever-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  outline: none;
+  font-family: var(--font-main);
+  transition: transform var(--tr-smooth);
+}
+
+.redstone-lever-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.redstone-lever-btn:active {
+  transform: scale(0.96);
+}
+
+.redstone-lever-frame {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 0.5rem 0.85rem 0.5rem 0.5rem;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid rgba(239, 68, 68, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.25);
+  transition: all var(--tr-smooth);
+}
+
+[data-theme="light"] .redstone-lever-frame,
+[data-theme="overworld"] .redstone-lever-frame {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+/* Minecraft Cobblestone / Stone Block Base */
+.redstone-block-base {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  position: relative;
+  background: #6b7280;
+  background-image: 
+    linear-gradient(45deg, #4b5563 25%, transparent 25%), 
+    linear-gradient(-45deg, #4b5563 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #4b5563 75%), 
+    linear-gradient(-45deg, transparent 75%, #4b5563 75%);
+  background-size: 8px 8px;
+  border-top: 3px solid #9ca3af;
+  border-left: 3px solid #9ca3af;
+  border-bottom: 3px solid #374151;
+  border-right: 3px solid #374151;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6), 0 3px 6px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Redstone Wire Lines on Base */
+.redstone-wire {
+  position: absolute;
+  height: 3px;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+.wire-top {
+  top: 4px;
+  left: 6px;
+  right: 6px;
+  background: #7f1d1d;
+}
+
+.wire-bottom {
+  bottom: 4px;
+  left: 6px;
+  right: 6px;
+  background: #7f1d1d;
+}
+
+/* Active redstone wire in Nether mode */
+[data-theme="dark"] .wire-top,
+[data-theme="dark"] .wire-bottom,
+[data-theme="nether"] .wire-top,
+[data-theme="nether"] .wire-bottom {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444, 0 0 14px rgba(239, 68, 68, 0.8);
+}
+
+/* 3D Lever Assembly */
+.redstone-lever-assembly {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 8px;
+  top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lever-pivot-socket {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #1f2937;
+  border: 2px solid #111827;
+  border-radius: 3px;
+  box-shadow: inset 0 0 4px #000;
+  z-index: 2;
+}
+
+.lever-arm {
+  position: absolute;
+  width: 6px;
+  height: 28px;
+  bottom: 6px;
+  transform-origin: bottom center;
+  transform: rotate(-35deg);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 3;
+}
+
+.lever-stick {
+  display: block;
+  width: 4px;
+  height: 22px;
+  background: linear-gradient(90deg, #78350f, #92400e);
+  margin: 0 auto;
+  border-radius: 1px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.lever-handle-ball {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: #4b5563;
+  border-top: 1px solid #9ca3af;
+  border-left: 1px solid #9ca3af;
+  border-bottom: 1px solid #1f2937;
+  border-right: 1px solid #1f2937;
+  border-radius: 2px;
+  margin: -3px auto 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Lever Arm when Active (Nether Mode) */
+[data-theme="dark"] .lever-arm,
+[data-theme="nether"] .lever-arm {
+  transform: rotate(35deg);
+}
+
+/* Redstone Torch Element */
+.redstone-torch-wrap {
+  position: absolute;
+  right: 6px;
+  top: 10px;
+  width: 14px;
+  height: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+
+.torch-glowing-head {
+  width: 8px;
+  height: 8px;
+  background: #7f1d1d;
+  border-radius: 1px;
+  border: 1px solid #450a0a;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.torch-wooden-stick {
+  width: 4px;
+  height: 16px;
+  background: #78350f;
+  border: 1px solid #451a03;
+  margin-top: -1px;
+}
+
+/* Torch lit in Nether Mode */
+[data-theme="dark"] .torch-glowing-head,
+[data-theme="nether"] .torch-glowing-head {
+  background: #ef4444;
+  border-color: #ff7b7b;
+  box-shadow: 0 0 12px #ef4444, 0 0 22px rgba(239, 68, 68, 0.9);
+  animation: torchFlicker 1.8s infinite ease-in-out;
+}
+
+@keyframes torchFlicker {
+  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 8px #ef4444); }
+  50% { opacity: 0.85; transform: scale(0.95); filter: drop-shadow(0 0 4px #dc2626); }
+}
+
+.torch-dust-sparks {
+  position: absolute;
+  top: -8px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+[data-theme="dark"] .torch-dust-sparks,
+[data-theme="nether"] .torch-dust-sparks {
+  opacity: 1;
+}
+
+.torch-dust-sparks .spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #ff4500;
+  box-shadow: 0 0 4px #ff2200;
+  border-radius: 1px;
+}
+
+.torch-dust-sparks .s1 { top: 2px; left: 4px; animation: sparkFloat 1.4s infinite ease-in; }
+.torch-dust-sparks .s2 { top: 6px; right: 2px; animation: sparkFloat 1.9s infinite ease-in 0.3s; }
+.torch-dust-sparks .s3 { top: -2px; left: 9px; animation: sparkFloat 1.6s infinite ease-in 0.6s; }
+
+@keyframes sparkFloat {
+  0% { transform: translateY(0) scale(1); opacity: 0.9; }
+  100% { transform: translateY(-14px) scale(0.2); opacity: 0; }
+}
+
+/* Redstone Mode Tag Label */
+.redstone-mode-tag {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.mode-tag-main {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mode-tag-icon {
+  font-size: 0.95rem;
+  color: #ef4444;
+  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6));
+}
+
+[data-theme="light"] .mode-tag-icon,
+[data-theme="overworld"] .mode-tag-icon {
+  color: #10b981;
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6));
+}
+
+.mode-tag-name {
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fff1f2;
+  letter-spacing: 0.02em;
+}
+
+[data-theme="light"] .mode-tag-name,
+[data-theme="overworld"] .mode-tag-name {
+  color: #0f172a;
+}
+
+.mode-tag-desc {
+  font-size: 0.72rem;
+  color: #fda4af;
+  font-weight: 500;
+}
+
+[data-theme="light"] .mode-tag-desc,
+[data-theme="overworld"] .mode-tag-desc {
+  color: #15803d;
+}
+
+@media (max-width: 768px) {
+  .redstone-switch-corner {
+    bottom: 16px;
+    left: 16px;
+  }
+  .redstone-lever-frame {
+    padding: 0.4rem 0.7rem 0.4rem 0.4rem;
+  }
+  .redstone-block-base {
+    width: 44px;
+    height: 44px;
+  }
+  .lever-arm {
+    height: 24px;
+  }
+}
+
+/* ==========================================================================
+   CHECKLIST DE MATERIALES EN TARJETAS (ESTILO CRAFTING INVENTORY)
+   ========================================================================== */
+.card-crafting-accordion {
+  margin: 0.85rem 0 0.5rem;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  transition: all var(--tr-smooth);
+}
+
+[data-theme="light"] .card-crafting-accordion,
+[data-theme="overworld"] .card-crafting-accordion {
+  background: rgba(240, 253, 244, 0.6);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.btn-card-materials-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: background var(--tr-fast);
+  user-select: none;
+}
+
+.btn-card-materials-toggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] .btn-card-materials-toggle:hover,
+[data-theme="overworld"] .btn-card-materials-toggle:hover {
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.mat-toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.mc-craft-grid-icon {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  background: #374151;
+  padding: 2px;
+  border-radius: 3px;
+  border: 1px solid #6b7280;
+}
+
+.grid-slot {
+  background: #9ca3af;
+  border-radius: 1px;
+}
+
+.mat-toggle-label {
+  font-family: var(--font-main);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.01em;
+}
+
+.mat-toggle-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mat-counter-pill {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.18);
+  color: var(--emerald);
+  border: 1px solid var(--emerald-glow);
+  letter-spacing: 0.02em;
+}
+
+.mat-toggle-chevron {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+}
+
+.btn-card-materials-toggle[aria-expanded="true"] .mat-toggle-chevron {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Content */
+.card-materials-dropdown {
+  border-top: 1px solid var(--border-subtle);
+  padding: 0.75rem 0.85rem;
+  animation: matSlideDown 0.25s ease-out;
+}
+
+@keyframes matSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mc-crafting-gui-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mc-crafting-gui-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mc-crafting-gui-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mc-crafting-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-mc-quick {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr-fast);
+}
+
+.btn-mc-quick:hover {
+  background: var(--emerald);
+  color: #fff;
+  border-color: var(--emerald);
+}
+
+.mc-crafting-slots-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+  max-height: 210px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.mc-crafting-slots-grid::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mc-crafting-slots-grid::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+
+/* Material Slot Row (Minecraft UI Style) */
+.mc-craft-slot-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--tr-fast);
+}
+
+[data-theme="light"] .mc-craft-slot-row,
+[data-theme="overworld"] .mc-craft-slot-row {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.mc-craft-slot-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--emerald-glow);
+}
+
+[data-theme="light"] .mc-craft-slot-row:hover,
+[data-theme="overworld"] .mc-craft-slot-row:hover {
+  background: #f0fdf4;
+}
+
+.mc-craft-native-check {
+  display: none;
+}
+
+/* Sunken 3D Minecraft Item Slot */
+.mc-craft-slot-box {
+  width: 26px;
+  height: 26px;
+  background: #8b8b8b;
+  border-top: 2px solid #373737;
+  border-left: 2px solid #373737;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  border-radius: 2px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
+}
+
+.mc-cube-icon {
+  font-size: 0.72rem;
+  color: #374151;
+}
+
+.mc-slot-checkmark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.75rem;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mc-craft-slot-row.slot-completed .mc-slot-checkmark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.mc-slot-mat-name {
+  font-size: 0.82rem;
+  color: var(--text-main);
+  font-weight: 500;
+  flex-grow: 1;
+  transition: all var(--tr-fast);
+}
+
+.mc-craft-slot-row.slot-completed .mc-slot-mat-name {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   REPRODUCTOR TOCADISCOS DE MINECRAFT (MODAL Y CARPETAS)
+   ========================================================================== */
+.modal-minecraft-music-dialog {
+  max-width: 680px;
+  width: 94%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border-glow);
+  box-shadow: var(--shadow-lg), 0 0 35px var(--emerald-glow);
+}
+
+.mc-music-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.mc-music-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mc-jukebox-icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(249, 115, 22, 0.3));
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  color: var(--emerald);
+  position: relative;
+  flex-shrink: 0;
+}
+
+[data-theme="light"] .mc-jukebox-icon-box,
+[data-theme="overworld"] .mc-jukebox-icon-box {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(0, 240, 255, 0.25));
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.mc-spinning-disc.is-playing {
+  animation: discSpin 3s linear infinite;
+}
+
+@keyframes discSpin {
+  100% { transform: rotate(360deg); }
+}
+
+.mc-note-bubble {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 0.9rem;
+}
+
+.mc-music-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.mc-music-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--emerald);
+  text-transform: uppercase;
+}
+
+.mc-music-title {
+  font-family: var(--font-main);
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.mc-music-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0.15rem 0 0;
+}
+
+/* Now Playing Card */
+.mc-now-playing-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+  gap: 1rem;
+}
+
+[data-theme="light"] .mc-now-playing-card,
+[data-theme="overworld"] .mc-now-playing-card {
+  background: rgba(240, 253, 244, 0.8);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.now-playing-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.now-playing-disc-art {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #111827;
+  color: var(--emerald);
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--emerald-glow);
+  flex-shrink: 0;
+}
+
+.now-playing-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.now-playing-folder-chip {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--emerald);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.now-playing-song-title {
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0.1rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.now-playing-artist-name {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.now-playing-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-mc-ctrl {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all var(--tr-fast);
+}
+
+.btn-mc-ctrl:hover {
+  background: var(--emerald);
+  color: #fff;
+  transform: scale(1.08);
+}
+
+.btn-mc-ctrl.btn-mc-playpause {
+  width: 44px;
+  height: 44px;
+  background: var(--emerald);
+  color: #fff;
+  border-color: var(--emerald);
+  box-shadow: 0 4px 15px var(--emerald-glow);
+}
+
+.btn-mc-ctrl.btn-mc-playpause:hover {
+  background: var(--emerald-hover);
+  transform: scale(1.1);
+}
+
+/* Timeline & Volume */
+.mc-audio-timeline-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.time-label {
+  min-width: 35px;
+}
+
+.mc-progress-track {
+  flex-grow: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.mc-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--emerald), var(--gold));
+  border-radius: 999px;
+  transition: width 0.1s linear;
+}
+
+.mc-volume-control {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.5rem;
+}
+
+.mc-volume-slider {
+  width: 70px;
+  accent-color: var(--emerald);
+  cursor: pointer;
+}
+
+/* Autoplay Notice */
+.mc-autoplay-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  font-size: 0.78rem;
+  color: var(--emerald);
+}
+
+/* Folders Container */
+.mc-folders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.mc-music-folder-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mc-folder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.35rem;
+  border-bottom: 1.5px solid var(--border-subtle);
+}
+
+.mc-folder-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.folder-icon-nostalgica {
+  color: #38bdf8;
+}
+
+.folder-icon-populares {
+  color: #f59e0b;
+}
+
+.folder-name {
+  font-family: var(--font-main);
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
+}
+
+.folder-count-badge {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.folder-author-badge {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+/* Track list */
+.mc-track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.mc-track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: all var(--tr-fast);
+}
+
+[data-theme="light"] .mc-track-item,
+[data-theme="overworld"] .mc-track-item {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.mc-track-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--border-glow);
+  transform: translateX(3px);
+}
+
+.mc-track-item.is-active {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: var(--emerald);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="dark"] .mc-track-item.is-active,
+[data-theme="nether"] .mc-track-item.is-active {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: #ef4444;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
+}
+
+.track-item-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.track-num {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-dim);
+  min-width: 20px;
+}
+
+.track-icon {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.mc-track-item.is-active .track-icon {
+  color: var(--emerald);
+  animation: discSpin 3s linear infinite;
+}
+
+.track-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.track-title {
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-artist {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.track-play-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  transition: all var(--tr-fast);
+}
+
+.mc-track-item:hover .track-play-btn,
+.mc-track-item.is-active .track-play-btn {
+  background: var(--emerald);
+  color: #fff;
+  border-color: var(--emerald);
+}
+
 
 
 

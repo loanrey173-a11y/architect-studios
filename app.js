@@ -83,8 +83,169 @@
     SOUND: 'mc_sound_v11',
     FAVORITES: 'mc_favs_v11',
     USER_LIKES: 'mc_user_likes_v20',
-    ADMIN_ROLE: 'mc_admin_role_v12'
+    ADMIN_ROLE: 'mc_admin_role_v12',
+    CHECKED_MATERIALS: 'mc_checked_materials_v2',
+    CURRENT_TRACK: 'mc_current_track_v1'
   };
+
+  const MINECRAFT_PLAYLIST = [
+    // CARPETA: NOSTÁLGICAS (10 Canciones de C418)
+    {
+      id: 'sweden',
+      num: '01',
+      title: 'Sweden',
+      artist: 'C418',
+      album: 'Minecraft - Volume Alpha',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/SWEDEN.mp3',
+      tag: 'Clásico Nostálgico'
+    },
+    {
+      id: 'wet-hands',
+      num: '02',
+      title: 'Wet Hands',
+      artist: 'C418',
+      album: 'Minecraft - Volume Alpha',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/WET%20HANDS.mp3',
+      tag: 'Piano Inmortal'
+    },
+    {
+      id: 'subwoofer-lullaby',
+      num: '03',
+      title: 'Subwoofer Lullaby',
+      artist: 'C418',
+      album: 'Minecraft - Volume Alpha',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/Subwoofer%20Lullaby.mp3',
+      tag: 'Atmósfera Acústica'
+    },
+    {
+      id: 'mice-on-venus',
+      num: '04',
+      title: 'Mice on Venus',
+      artist: 'C418',
+      album: 'Minecraft - Volume Alpha',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/MICE%20ON%20VENUS.mp3',
+      tag: 'Piano Espacial'
+    },
+    {
+      id: 'haggstrom',
+      num: '05',
+      title: 'Haggstrom',
+      artist: 'C418',
+      album: 'Minecraft - Volume Alpha',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/HAGGSTROM.mp3',
+      tag: 'Aventura Clásica'
+    },
+    {
+      id: 'danny',
+      num: '06',
+      title: 'Danny',
+      artist: 'C418',
+      album: 'Minecraft - Volume Alpha',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/DANNY.mp3',
+      tag: 'Melodía Serena'
+    },
+    {
+      id: 'moog-city',
+      num: '07',
+      title: 'Moog City',
+      artist: 'C418',
+      album: 'Minecraft - Volume Alpha',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/MOOG%20CITY.mp3',
+      tag: 'Sintetizador Retro'
+    },
+    {
+      id: 'wait',
+      num: '08',
+      title: 'Wait',
+      artist: 'C418',
+      album: 'Minecraft - Volume Beta',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/WAIT.mp3',
+      tag: 'Disco Musical'
+    },
+    {
+      id: 'strad',
+      num: '09',
+      title: 'Strad',
+      artist: 'C418',
+      album: 'Minecraft - Volume Beta',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/STRAD.mp3',
+      tag: 'Disco Tropical'
+    },
+    {
+      id: 'mail',
+      num: '10',
+      title: 'Mall',
+      artist: 'C418',
+      album: 'Minecraft - Volume Beta',
+      folder: 'NOSTÁLGICAS',
+      folderKey: 'nostalgicas',
+      src: './MUSICA%20DE%20MINECRAFT/NOSTALGICAS/MAIL.mp3',
+      tag: 'Disco Relajante'
+    },
+    // CARPETA: POPULARES (4 Canciones)
+    {
+      id: 'otherside',
+      num: '01',
+      title: 'Otherside',
+      artist: 'Lena Raine',
+      album: 'Caves & Cliffs',
+      folder: 'POPULARES',
+      folderKey: 'populares',
+      src: './MUSICA%20DE%20MINECRAFT/POPULARES/A%20otherside.mp3',
+      tag: 'Disco Épico'
+    },
+    {
+      id: 'cat',
+      num: '02',
+      title: 'Cat',
+      artist: 'C418',
+      album: 'Minecraft - Volume Alpha',
+      folder: 'POPULARES',
+      folderKey: 'populares',
+      src: './MUSICA%20DE%20MINECRAFT/POPULARES/A%20CAT.mp3',
+      tag: 'Disco Verde Popular'
+    },
+    {
+      id: 'creator',
+      num: '03',
+      title: 'Creator',
+      artist: 'Lena Raine',
+      album: 'Tricky Trials',
+      folder: 'POPULARES',
+      folderKey: 'populares',
+      src: './MUSICA%20DE%20MINECRAFT/POPULARES/A%20CREATOR.mp3',
+      tag: 'Música de Cámaras'
+    },
+    {
+      id: 'relic',
+      num: '04',
+      title: 'Relic',
+      artist: 'Aaron Cherof',
+      album: 'Trails & Tales',
+      folder: 'POPULARES',
+      folderKey: 'populares',
+      src: './MUSICA%20DE%20MINECRAFT/POPULARES/A%20RELIC.mp3',
+      tag: 'Arqueología & Ruinas'
+    }
+  ];
 
   const INITIAL_HOUSES = [
     {
@@ -422,6 +583,51 @@
         // Ignore
       }
     }
+
+    playRedstoneLever(isOn) {
+      if (!this.enabled) return;
+      try {
+        this.initContext();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        const startFreq = isOn ? 740 : 520;
+        osc.frequency.setValueAtTime(startFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.055);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      } catch (e) {
+        // Ignore
+      }
+    }
+
+    playCraftSlot() {
+      if (!this.enabled) return;
+      try {
+        this.initContext();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(420, now);
+        osc.frequency.exponentialRampToValueAtTime(860, now + 0.07);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.07);
+      } catch (e) {
+        // Ignore
+      }
+    }
   }
 
   /* ==========================================================================
@@ -467,15 +673,29 @@
     }
 
     createParticle() {
-      return {
-        x: Math.random() * this.width,
-        y: Math.random() * this.height,
-        size: Math.random() * 2.5 + 1.2,
-        speedX: (Math.random() - 0.5) * 0.4,
-        speedY: (Math.random() - 0.5) * 0.4 - 0.15,
-        opacity: Math.random() * 0.5 + 0.2,
-        color: Math.random() > 0.4 ? 'rgba(16, 185, 129,' : 'rgba(0, 240, 255,'
-      };
+      const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const isNether = (theme === 'dark' || theme === 'nether');
+      if (isNether) {
+        return {
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
+          size: Math.random() * 2.8 + 1.2,
+          speedX: (Math.random() - 0.5) * 0.45,
+          speedY: -(Math.random() * 0.65 + 0.25), // Flotan hacia arriba como ascuas de lava del Nether
+          opacity: Math.random() * 0.65 + 0.25,
+          color: Math.random() > 0.45 ? 'rgba(239, 68, 68,' : (Math.random() > 0.5 ? 'rgba(249, 115, 22,' : 'rgba(255, 75, 43,')
+        };
+      } else {
+        return {
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
+          size: Math.random() * 2.5 + 1.2,
+          speedX: (Math.random() - 0.5) * 0.4,
+          speedY: (Math.random() - 0.5) * 0.4 - 0.15,
+          opacity: Math.random() * 0.5 + 0.2,
+          color: Math.random() > 0.4 ? 'rgba(16, 185, 129,' : 'rgba(0, 240, 255,'
+        };
+      }
     }
 
     animate() {
@@ -1084,6 +1304,8 @@
       this.userFavorites = this.loadFavorites();
       this.userLikes = this.loadUserLikes();
       this.userCommentLikes = this.loadUserCommentLikes();
+      this.checkedMaterials = this.loadCheckedMaterials();
+      this.currentTrackIndex = 0;
       this.adminRole = localStorage.getItem(STORAGE_KEYS.ADMIN_ROLE) || 'none';
       if (this.adminRole === 'co-creator') {
         this.adminRole = 'none';
@@ -1123,6 +1345,7 @@
       this.cacheDOMElements();
       this.initTheme();
       this.initBackgroundMusic();
+      this.initRedstoneSwitch();
       this.initEventListeners();
       this.updateCommentAuthorUI();
       this.render();
@@ -1296,6 +1519,115 @@
         localStorage.setItem(STORAGE_KEYS.USER_COMMENT_LIKES, JSON.stringify(this.userCommentLikes));
       } catch (e) {
         // Ignore
+      }
+    }
+
+    loadCheckedMaterials() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEYS.CHECKED_MATERIALS);
+        return saved ? JSON.parse(saved) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    saveCheckedMaterials() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.CHECKED_MATERIALS, JSON.stringify(this.checkedMaterials));
+      } catch (e) {
+        // Ignore
+      }
+    }
+
+    isMaterialChecked(houseId, idx) {
+      if (!this.checkedMaterials || !this.checkedMaterials[houseId]) return false;
+      return !!this.checkedMaterials[houseId][idx];
+    }
+
+    getCheckedMaterialsCount(houseId) {
+      if (!this.checkedMaterials || !this.checkedMaterials[houseId]) return 0;
+      return Object.values(this.checkedMaterials[houseId]).filter(Boolean).length;
+    }
+
+    toggleMaterialCheck(houseId, idx, isChecked) {
+      if (!this.checkedMaterials) this.checkedMaterials = {};
+      if (!this.checkedMaterials[houseId]) this.checkedMaterials[houseId] = {};
+      this.checkedMaterials[houseId][idx] = isChecked;
+
+      this.saveCheckedMaterials();
+      this.sound.playCraftSlot();
+
+      // Update card counter badge
+      const house = this.houses.find((h) => h.id === houseId);
+      const total = house && house.materials ? house.materials.length : 0;
+      const count = this.getCheckedMaterialsCount(houseId);
+      const counterEl = document.getElementById(`cardMatCounter-${houseId}`);
+      if (counterEl) {
+        counterEl.textContent = `${count}/${total}`;
+      }
+
+      // Update card slot row
+      const card = this.cardsGrid ? this.cardsGrid.querySelector(`.house-card[data-house-id="${houseId}"]`) : null;
+      if (card) {
+        const slotRow = card.querySelector(`.mc-craft-slot-row[data-idx="${idx}"]`);
+        if (slotRow) {
+          slotRow.classList.toggle('slot-completed', isChecked);
+          const chk = slotRow.querySelector('.mc-craft-native-check');
+          if (chk) chk.checked = isChecked;
+        }
+      }
+
+      // Also sync modal checkbox if currently viewing this house in detail modal
+      if (this.activeModalHouse && this.activeModalHouse.id === houseId) {
+        const modalChk = document.getElementById(`mat-check-${idx}`);
+        if (modalChk) {
+          modalChk.checked = isChecked;
+          const parentLabel = modalChk.closest('.material-check-item');
+          if (parentLabel) parentLabel.classList.toggle('completed', isChecked);
+        }
+      }
+    }
+
+    setAllMaterialsCheck(houseId, state) {
+      const house = this.houses.find((h) => h.id === houseId);
+      if (!house || !house.materials) return;
+
+      if (!this.checkedMaterials) this.checkedMaterials = {};
+      this.checkedMaterials[houseId] = {};
+
+      house.materials.forEach((_, idx) => {
+        this.checkedMaterials[houseId][idx] = state;
+      });
+
+      this.saveCheckedMaterials();
+      this.sound.playSuccess();
+
+      const total = house.materials.length;
+      const count = state ? total : 0;
+      const counterEl = document.getElementById(`cardMatCounter-${houseId}`);
+      if (counterEl) {
+        counterEl.textContent = `${count}/${total}`;
+      }
+
+      const card = this.cardsGrid ? this.cardsGrid.querySelector(`.house-card[data-house-id="${houseId}"]`) : null;
+      if (card) {
+        const slotRows = card.querySelectorAll(`.mc-craft-slot-row`);
+        slotRows.forEach((row) => {
+          row.classList.toggle('slot-completed', state);
+          const chk = row.querySelector('.mc-craft-native-check');
+          if (chk) chk.checked = state;
+        });
+      }
+
+      if (this.activeModalHouse && this.activeModalHouse.id === houseId) {
+        house.materials.forEach((_, idx) => {
+          const modalChk = document.getElementById(`mat-check-${idx}`);
+          if (modalChk) {
+            modalChk.checked = state;
+            const parentLabel = modalChk.closest('.material-check-item');
+            if (parentLabel) parentLabel.classList.toggle('completed', state);
+          }
+        });
       }
     }
 
@@ -1782,25 +2114,128 @@
 
       // Toast Container
       this.toastContainer = document.getElementById('toastContainer');
+
+      // Redstone Dimension Switch (Overworld / Nether)
+      this.redstoneSwitchCorner = document.getElementById('redstoneSwitchCorner');
+      this.redstoneLeverBtn = document.getElementById('redstoneLeverBtn');
+      this.redstoneLeverArm = document.getElementById('redstoneLeverArm');
+      this.redstoneTorchWrap = document.getElementById('redstoneTorchWrap');
+      this.redstoneTagName = document.getElementById('redstoneTagName');
+      this.redstoneTagDesc = document.getElementById('redstoneTagDesc');
+      this.redstoneTagIcon = document.getElementById('redstoneTagIcon');
+
+      // Minecraft Jukebox Music Player & Modal
+      this.openMusicModalBtn = document.getElementById('openMusicModalBtn');
+      this.drawerMusicBtn = document.getElementById('drawerMusicBtn');
+      this.minecraftMusicModal = document.getElementById('minecraftMusicModal');
+      this.closeMinecraftMusicModalBtn = document.getElementById('closeMinecraftMusicModalBtn');
+      this.nowPlayingSong = document.getElementById('nowPlayingSong');
+      this.nowPlayingArtist = document.getElementById('nowPlayingArtist');
+      this.nowPlayingFolder = document.getElementById('nowPlayingFolder');
+      this.musicPlayPauseBtn = document.getElementById('musicPlayPauseBtn');
+      this.musicPlayPauseIcon = document.getElementById('musicPlayPauseIcon');
+      this.musicPrevBtn = document.getElementById('musicPrevBtn');
+      this.musicNextBtn = document.getElementById('musicNextBtn');
+      this.musicProgressTrack = document.getElementById('musicProgressTrack');
+      this.musicProgressFill = document.getElementById('musicProgressFill');
+      this.musicCurrentTime = document.getElementById('musicCurrentTime');
+      this.musicDuration = document.getElementById('musicDuration');
+      this.musicVolumeSlider = document.getElementById('musicVolumeSlider');
+      this.musicVolumeIcon = document.getElementById('musicVolumeIcon');
+      this.musicJukeboxDisc = document.getElementById('musicJukeboxDisc');
+      this.trackListNostalgicas = document.getElementById('trackListNostalgicas');
+      this.trackListPopulares = document.getElementById('trackListPopulares');
     }
 
     /* ------------------------------------------------------------------------
-       Theme & Sound Initialization
+       Theme & Redstone Dimension Switch Initialization
        ------------------------------------------------------------------------ */
 
     initTheme() {
       const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
       this.updateThemeIcon(savedTheme);
-
+      this.updateRedstoneSwitchUI(savedTheme);
       this.updateSoundBtnUI();
     }
 
     updateThemeIcon(theme) {
-      if (!this.themeToggleBtn) return;
-      const icon = this.themeToggleBtn.querySelector('i');
-      if (icon) {
-        icon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+      const isNether = (theme === 'dark' || theme === 'nether');
+      if (this.themeToggleBtn) {
+        const icon = this.themeToggleBtn.querySelector('i');
+        if (icon) {
+          icon.className = isNether ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        }
+        this.themeToggleBtn.setAttribute('title', isNether ? 'Cambiar a Modo Overworld (Día / Verdes)' : 'Cambiar a Modo Nether (Oscuro / Rojos / Lava)');
+      }
+      this.updateRedstoneSwitchUI(theme);
+    }
+
+    updateRedstoneSwitchUI(theme) {
+      const isNether = (theme === 'dark' || theme === 'nether');
+      if (this.redstoneLeverArm) {
+        this.redstoneLeverArm.style.transform = isNether ? 'rotate(35deg)' : 'rotate(-35deg)';
+      }
+      if (this.redstoneTagName) {
+        this.redstoneTagName.textContent = isNether ? 'Modo Nether' : 'Modo Overworld';
+      }
+      if (this.redstoneTagDesc) {
+        this.redstoneTagDesc.textContent = isNether ? 'Oscuro / Lava' : 'Claro / Verdes';
+      }
+      if (this.redstoneTagIcon) {
+        this.redstoneTagIcon.className = isNether ? 'fa-solid fa-fire-flame-curved mode-tag-icon' : 'fa-solid fa-seedling mode-tag-icon';
+      }
+    }
+
+    initRedstoneSwitch() {
+      if (this.redstoneLeverBtn) {
+        this.redstoneLeverBtn.addEventListener('click', () => {
+          this.toggleRedstoneDimension();
+        });
+      }
+    }
+
+    toggleRedstoneDimension() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const isCurrentlyNether = (currentTheme === 'dark' || currentTheme === 'nether');
+      const newTheme = isCurrentlyNether ? 'light' : 'dark';
+
+      this.sound.playRedstoneLever(!isCurrentlyNether);
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem(STORAGE_KEYS.THEME, newTheme);
+      this.updateThemeIcon(newTheme);
+
+      this.spawnRedstoneClickSparks();
+
+      this.showToast(newTheme === 'dark' 
+        ? '🔥 ¡Dimensión cambiada a MODO NETHER! (Oscuro, Crimson y Lava)' 
+        : '🌿 ¡Dimensión cambiada a MODO OVERWORLD! (Claro, Praderas y Cerezos)');
+    }
+
+    spawnRedstoneClickSparks() {
+      if (!this.redstoneSwitchCorner) return;
+      const rect = this.redstoneSwitchCorner.getBoundingClientRect();
+      for (let i = 0; i < 6; i++) {
+        const spark = document.createElement('div');
+        spark.style.cssText = `
+          position: fixed;
+          left: ${rect.left + 26 + (Math.random() - 0.5) * 20}px;
+          top: ${rect.top + 26 + (Math.random() - 0.5) * 20}px;
+          width: 5px;
+          height: 5px;
+          background: #ef4444;
+          box-shadow: 0 0 8px #ff2200;
+          border-radius: 1px;
+          pointer-events: none;
+          z-index: 999999;
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+        `;
+        document.body.appendChild(spark);
+        requestAnimationFrame(() => {
+          spark.style.transform = `translate(${(Math.random() - 0.5) * 50}px, -${Math.random() * 40 + 20}px) scale(0.2)`;
+          spark.style.opacity = '0';
+        });
+        setTimeout(() => spark.remove(), 700);
       }
     }
 
@@ -1866,16 +2301,10 @@
         });
       }
 
-      // 3. Theme Toggle
+      // 3. Theme Toggle (Sincronizado con Palanca de Redstone)
       if (this.themeToggleBtn) {
         this.themeToggleBtn.addEventListener('click', () => {
-          this.sound.playPop();
-          const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-          document.documentElement.setAttribute('data-theme', newTheme);
-          localStorage.setItem(STORAGE_KEYS.THEME, newTheme);
-          this.updateThemeIcon(newTheme);
-          this.showToast(`Tema cambiado a: ${newTheme === 'dark' ? 'Netherite Noche 🌙' : 'Overworld Día ☀️'}`);
+          this.toggleRedstoneDimension();
         });
       }
 
@@ -3101,6 +3530,58 @@
               </div>
             </a>
 
+            <!-- Menú Desplegable: Inventario de Crafteo y Materiales -->
+            <div class="card-crafting-accordion" data-crafting-container="${house.id}">
+              <button type="button" class="btn-card-materials-toggle" data-action="toggle-materials" data-house-id="${house.id}" aria-expanded="false" title="Desplegar lista de materiales estilo inventario de crafteo">
+                <div class="mat-toggle-left">
+                  <div class="mc-craft-grid-icon">
+                    <span class="grid-slot"></span><span class="grid-slot"></span>
+                    <span class="grid-slot"></span><span class="grid-slot"></span>
+                  </div>
+                  <span class="mat-toggle-label">Lista de Materiales</span>
+                </div>
+                <div class="mat-toggle-right">
+                  <span class="mat-counter-pill" id="cardMatCounter-${house.id}">${this.getCheckedMaterialsCount(house.id)}/${(house.materials || []).length}</span>
+                  <i class="fa-solid fa-chevron-down mat-toggle-chevron"></i>
+                </div>
+              </button>
+
+              <div class="card-materials-dropdown" id="cardMatDropdown-${house.id}" style="display: none;">
+                <div class="mc-crafting-gui-panel">
+                  <div class="mc-crafting-gui-top">
+                    <div class="mc-crafting-gui-title">
+                      <i class="fa-solid fa-boxes-stacked"></i>
+                      <span>Inventario de Crafteo</span>
+                    </div>
+                    <div class="mc-crafting-quick-actions">
+                      <button type="button" class="btn-mc-quick" data-action="check-all-materials" data-house-id="${house.id}" title="Marcar todos">
+                        <i class="fa-solid fa-check-double"></i> Todos
+                      </button>
+                      <button type="button" class="btn-mc-quick" data-action="clear-all-materials" data-house-id="${house.id}" title="Desmarcar todos">
+                        <i class="fa-solid fa-rotate-left"></i> Limpiar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="mc-crafting-slots-grid">
+                    ${(house.materials || []).map((mat, idx) => {
+                      const isChecked = this.isMaterialChecked(house.id, idx);
+                      return `
+                        <label class="mc-craft-slot-row ${isChecked ? 'slot-completed' : ''}" data-action="slot-label" data-house-id="${house.id}" data-idx="${idx}">
+                          <input type="checkbox" class="mc-craft-native-check" data-action="toggle-material-check" data-house-id="${house.id}" data-idx="${idx}" ${isChecked ? 'checked' : ''}>
+                          <div class="mc-craft-slot-box">
+                            <i class="fa-solid fa-cube mc-cube-icon"></i>
+                            <span class="mc-slot-checkmark"><i class="fa-solid fa-check"></i></span>
+                          </div>
+                          <span class="mc-slot-mat-name">${mat}</span>
+                        </label>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="card-footer-row">
               <button class="btn-card-like ${isLiked ? 'liked has-likes' : ''}" data-action="like" data-id="${house.id}" title="${isLiked ? 'Quitar like' : 'Dar like (1 por usuario)'}">
                 <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
@@ -3132,8 +3613,8 @@
 
         // Main card click -> open detail modal
         card.addEventListener('click', (e) => {
-          // If clicked on specific action buttons, don't trigger full card click
-          if (e.target.closest('[data-action]')) return;
+          // If clicked on specific action buttons or crafting accordion, don't trigger full card click
+          if (e.target.closest('[data-action]') || e.target.closest('.card-crafting-accordion')) return;
           this.sound.playPop();
           this.openModal(houseId, 'materials');
         });
@@ -3141,12 +3622,54 @@
         // Keyboard navigation (Enter or Space)
         card.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
-            if (e.target.closest('[data-action]')) return;
+            if (e.target.closest('[data-action]') || e.target.closest('.card-crafting-accordion')) return;
             e.preventDefault();
             this.sound.playPop();
             this.openModal(houseId);
           }
         });
+
+        // Materials Accordion Toggle
+        const toggleMatBtn = card.querySelector('[data-action="toggle-materials"]');
+        const matDropdown = card.querySelector(`#cardMatDropdown-${houseId}`);
+        if (toggleMatBtn && matDropdown) {
+          toggleMatBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playPop();
+            const isOpen = matDropdown.style.display !== 'none';
+            matDropdown.style.display = isOpen ? 'none' : 'block';
+            toggleMatBtn.setAttribute('aria-expanded', (!isOpen).toString());
+          });
+        }
+
+        // Materials Slot Checkboxes
+        const slotRows = card.querySelectorAll('.mc-craft-slot-row');
+        slotRows.forEach((row) => {
+          row.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const idx = parseInt(row.getAttribute('data-idx'), 10);
+            const checkbox = row.querySelector('.mc-craft-native-check');
+            const newCheckedState = !checkbox.checked;
+            checkbox.checked = newCheckedState;
+            this.toggleMaterialCheck(houseId, idx, newCheckedState);
+          });
+        });
+
+        // Check All / Clear All Materials
+        const checkAllBtn = card.querySelector('[data-action="check-all-materials"]');
+        if (checkAllBtn) {
+          checkAllBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.setAllMaterialsCheck(houseId, true);
+          });
+        }
+        const clearAllBtn = card.querySelector('[data-action="clear-all-materials"]');
+        if (clearAllBtn) {
+          clearAllBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.setAllMaterialsCheck(houseId, false);
+          });
+        }
 
         // Instagram buttons / links click inside card
         const igBtns = card.querySelectorAll('[data-action="instagram"]');
@@ -3494,19 +4017,28 @@
         }
       }
 
-      // Populate Materials Checklist (NO quantities, only clean block names)
+      // Populate Materials Checklist (NO quantities, only clean block names - sincronizado)
       if (this.detailMaterialsList) {
-        this.detailMaterialsList.innerHTML = house.materials
-          .map(
-            (mat, idx) => `
-          <label class="material-check-item">
-            <input type="checkbox" id="mat-check-${idx}">
-            <span class="custom-checkbox"><i class="fa-solid fa-check"></i></span>
-            <span class="material-name"><i class="fa-solid fa-cube mat-icon"></i> ${mat}</span>
-          </label>
-        `
-          )
+        this.detailMaterialsList.innerHTML = (house.materials || [])
+          .map((mat, idx) => {
+            const isChecked = this.isMaterialChecked(house.id, idx);
+            return `
+              <label class="material-check-item ${isChecked ? 'completed' : ''}">
+                <input type="checkbox" id="mat-check-${idx}" data-idx="${idx}" ${isChecked ? 'checked' : ''}>
+                <span class="custom-checkbox"><i class="fa-solid fa-check"></i></span>
+                <span class="material-name"><i class="fa-solid fa-cube mat-icon"></i> ${mat}</span>
+              </label>
+            `;
+          })
           .join('');
+
+        const modalInputs = this.detailMaterialsList.querySelectorAll('input[type="checkbox"]');
+        modalInputs.forEach((input) => {
+          input.addEventListener('change', () => {
+            const idx = parseInt(input.getAttribute('data-idx'), 10);
+            this.toggleMaterialCheck(house.id, idx, input.checked);
+          });
+        });
       }
 
       // Set active tab (defaults to 'materials' as requested)
@@ -3937,7 +4469,7 @@
     initBackgroundMusic() {
       if (!this.bgMusicAudio) return;
       this.bgMusicAudio.volume = 0.45;
-      this.bgMusicAudio.loop = true;
+      this.bgMusicAudio.loop = false; // Permite reproducción continua al terminar cada pista
 
       this.bgMusicAudio.addEventListener('play', () => {
         this.updateMusicUI(true);
@@ -3948,15 +4480,254 @@
       });
 
       this.bgMusicAudio.addEventListener('ended', () => {
-        // Enforce infinite looping
-        this.bgMusicAudio.currentTime = 0;
-        this.playBackgroundMusic();
+        // Reproducción continua automática: al terminar pasa a la siguiente
+        this.playNextTrack();
       });
+
+      // Inicializa el reproductor tocadiscos
+      this.initMinecraftMusicPlayer();
+    }
+
+    initMinecraftMusicPlayer() {
+      this.currentTrackIndex = 0;
+      this.renderMusicPlaylist();
+      this.updateNowPlayingCard();
+
+      // Barra de progreso y tiempo
+      if (this.bgMusicAudio) {
+        this.bgMusicAudio.addEventListener('timeupdate', () => {
+          if (!this.bgMusicAudio.duration) return;
+          const curr = this.bgMusicAudio.currentTime;
+          const dur = this.bgMusicAudio.duration;
+          const pct = (curr / dur) * 100;
+          if (this.musicProgressFill) {
+            this.musicProgressFill.style.width = `${pct}%`;
+          }
+          if (this.musicCurrentTime) {
+            this.musicCurrentTime.textContent = this.formatTime(curr);
+          }
+          if (this.musicDuration && !isNaN(dur)) {
+            this.musicDuration.textContent = this.formatTime(dur);
+          }
+        });
+      }
+
+      // Adelantar / retroceder haciendo clic en la barra
+      if (this.musicProgressTrack) {
+        this.musicProgressTrack.addEventListener('click', (e) => {
+          if (!this.bgMusicAudio || !this.bgMusicAudio.duration) return;
+          const rect = this.musicProgressTrack.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const pct = Math.max(0, Math.min(1, clickX / rect.width));
+          this.bgMusicAudio.currentTime = pct * this.bgMusicAudio.duration;
+        });
+      }
+
+      // Slider de volumen
+      if (this.musicVolumeSlider && this.bgMusicAudio) {
+        this.musicVolumeSlider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value);
+          this.bgMusicAudio.volume = val;
+        });
+      }
+
+      // Botones de control del tocadiscos
+      if (this.musicPlayPauseBtn) {
+        this.musicPlayPauseBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.toggleBackgroundMusic();
+        });
+      }
+
+      if (this.musicPrevBtn) {
+        this.musicPrevBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.playPrevTrack();
+        });
+      }
+
+      if (this.musicNextBtn) {
+        this.musicNextBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.playNextTrack();
+        });
+      }
+
+      // Botón en el menú hamburguesa
+      if (this.drawerMusicBtn) {
+        this.drawerMusicBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeDrawer();
+          this.openMinecraftMusicModal();
+        });
+      }
+
+      // Botón en la cabecera
+      if (this.openMusicModalBtn) {
+        this.openMusicModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.openMinecraftMusicModal();
+        });
+      }
+
+      // Cerrar modal tocadiscos
+      if (this.closeMinecraftMusicModalBtn) {
+        this.closeMinecraftMusicModalBtn.addEventListener('click', () => {
+          this.sound.playPop();
+          this.closeMinecraftMusicModal();
+        });
+      }
+
+      if (this.minecraftMusicModal) {
+        this.minecraftMusicModal.addEventListener('click', (e) => {
+          if (e.target === this.minecraftMusicModal) {
+            this.sound.playPop();
+            this.closeMinecraftMusicModal();
+          }
+        });
+      }
+    }
+
+    renderMusicPlaylist() {
+      const nostalgicas = MINECRAFT_PLAYLIST.filter((t) => t.folderKey === 'nostalgicas');
+      const populares = MINECRAFT_PLAYLIST.filter((t) => t.folderKey === 'populares');
+
+      if (this.trackListNostalgicas) {
+        this.trackListNostalgicas.innerHTML = nostalgicas.map((t) => this.createTrackHTML(t)).join('');
+      }
+      if (this.trackListPopulares) {
+        this.trackListPopulares.innerHTML = populares.map((t) => this.createTrackHTML(t)).join('');
+      }
+
+      // Eventos de clic en las canciones
+      const allTracks = document.querySelectorAll('.mc-track-item');
+      allTracks.forEach((item) => {
+        item.addEventListener('click', () => {
+          const trackId = item.getAttribute('data-track-id');
+          const idx = MINECRAFT_PLAYLIST.findIndex((t) => t.id === trackId);
+          if (idx !== -1) {
+            this.sound.playPop();
+            this.playTrackByIndex(idx, true);
+          }
+        });
+      });
+    }
+
+    createTrackHTML(track) {
+      const globalIdx = MINECRAFT_PLAYLIST.findIndex((t) => t.id === track.id);
+      const isCurrent = globalIdx === this.currentTrackIndex;
+      const isPlaying = isCurrent && this.bgMusicAudio && !this.bgMusicAudio.paused;
+
+      return `
+        <div class="mc-track-item ${isCurrent ? 'is-active' : ''}" data-track-id="${track.id}" role="button" tabindex="0">
+          <div class="track-item-left">
+            <span class="track-num">${track.num}</span>
+            <i class="fa-solid fa-compact-disc track-icon"></i>
+            <div class="track-meta">
+              <span class="track-title">${track.title}</span>
+              <span class="track-artist">${track.artist} • ${track.tag}</span>
+            </div>
+          </div>
+          <button type="button" class="track-play-btn" title="Reproducir ${track.title}" aria-label="Reproducir ${track.title}">
+            <i class="fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+          </button>
+        </div>
+      `;
+    }
+
+    playTrackByIndex(index, startPlaying = true) {
+      if (index < 0 || index >= MINECRAFT_PLAYLIST.length) index = 0;
+      this.currentTrackIndex = index;
+      const track = MINECRAFT_PLAYLIST[index];
+
+      if (this.bgMusicAudio) {
+        this.bgMusicAudio.src = track.src;
+        if (startPlaying) {
+          const playPromise = this.bgMusicAudio.play();
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                this.updateMusicUI(true);
+              })
+              .catch((err) => {
+                console.warn('Error al reproducir pista:', err);
+                this.updateMusicUI(false);
+              });
+          }
+        }
+      }
+
+      this.updateNowPlayingCard();
+      this.updatePlaylistActiveStates();
+      if (startPlaying) {
+        this.showToast(`🎵 Reproduciendo: ${track.title} (${track.folder})`);
+      }
+    }
+
+    playNextTrack() {
+      const nextIdx = (this.currentTrackIndex + 1) % MINECRAFT_PLAYLIST.length;
+      this.playTrackByIndex(nextIdx, true);
+    }
+
+    playPrevTrack() {
+      const prevIdx = (this.currentTrackIndex - 1 + MINECRAFT_PLAYLIST.length) % MINECRAFT_PLAYLIST.length;
+      this.playTrackByIndex(prevIdx, true);
+    }
+
+    updateNowPlayingCard() {
+      const track = MINECRAFT_PLAYLIST[this.currentTrackIndex] || MINECRAFT_PLAYLIST[0];
+      if (this.nowPlayingSong) this.nowPlayingSong.textContent = track.title;
+      if (this.nowPlayingArtist) this.nowPlayingArtist.textContent = `${track.artist} • ${track.album}`;
+      if (this.nowPlayingFolder) {
+        this.nowPlayingFolder.innerHTML = `<i class="fa-solid fa-folder"></i> CARPETA: ${track.folder}`;
+      }
+    }
+
+    updatePlaylistActiveStates() {
+      const allTracks = document.querySelectorAll('.mc-track-item');
+      allTracks.forEach((item) => {
+        const trackId = item.getAttribute('data-track-id');
+        const isCurrent = MINECRAFT_PLAYLIST[this.currentTrackIndex]?.id === trackId;
+        item.classList.toggle('is-active', isCurrent);
+        const icon = item.querySelector('.track-play-btn i');
+        if (icon) {
+          const isPlaying = isCurrent && this.bgMusicAudio && !this.bgMusicAudio.paused;
+          icon.className = `fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'}`;
+        }
+      });
+    }
+
+    openMinecraftMusicModal() {
+      if (this.minecraftMusicModal) {
+        this.minecraftMusicModal.classList.add('active', 'open');
+        this.minecraftMusicModal.setAttribute('aria-hidden', 'false');
+        this.syncBodyModalLock();
+        this.updatePlaylistActiveStates();
+      }
+    }
+
+    closeMinecraftMusicModal() {
+      if (this.minecraftMusicModal) {
+        this.minecraftMusicModal.classList.remove('active', 'open');
+        this.minecraftMusicModal.setAttribute('aria-hidden', 'true');
+        this.syncBodyModalLock();
+      }
+    }
+
+    formatTime(sec) {
+      if (isNaN(sec) || sec < 0) return '0:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
     playBackgroundMusic() {
       if (!this.bgMusicAudio) return;
       try {
+        if (!this.bgMusicAudio.src || this.bgMusicAudio.src.indexOf('audio_minecraft') !== -1) {
+          const currentTrack = MINECRAFT_PLAYLIST[this.currentTrackIndex] || MINECRAFT_PLAYLIST[0];
+          this.bgMusicAudio.src = currentTrack.src;
+        }
         const playPromise = this.bgMusicAudio.play();
         if (playPromise !== undefined) {
           playPromise
@@ -3996,14 +4767,22 @@
       if (this.bgMusicToggleBtn) {
         this.bgMusicToggleBtn.classList.toggle('playing', isPlaying);
         this.bgMusicToggleBtn.setAttribute('title', isPlaying ? 'Pausar música de fondo' : 'Reproducir música de fondo');
-        const icon = this.bgMusicToggleBtn.querySelector('.music-icon');
+        const icon = this.bgMusicToggleBtn.querySelector('.music-icon') || this.bgMusicToggleBtn.querySelector('#musicStaticIcon');
         if (icon) {
-          icon.className = isPlaying ? 'fa-solid fa-compact-disc fa-spin music-icon' : 'fa-solid fa-music music-icon';
+          icon.className = isPlaying ? 'fa-solid fa-compact-disc fa-spin music-icon' : 'fa-solid fa-music music-static-icon';
         }
       }
       if (this.musicBtnText) {
-        this.musicBtnText.textContent = isPlaying ? 'Música activa' : 'Música';
+        const track = MINECRAFT_PLAYLIST[this.currentTrackIndex];
+        this.musicBtnText.textContent = isPlaying && track ? track.title : 'Música';
       }
+      if (this.musicPlayPauseIcon) {
+        this.musicPlayPauseIcon.className = `fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'}`;
+      }
+      if (this.musicJukeboxDisc) {
+        this.musicJukeboxDisc.classList.toggle('is-playing', isPlaying);
+      }
+      this.updatePlaylistActiveStates();
     }
 
     openWelcomeMusicModal() {
