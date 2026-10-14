@@ -3487,10 +3487,158 @@
 
       if (this.emptyState) this.emptyState.style.display = 'none';
 
-      this.cardsGrid.innerHTML = sorted.map((house) => this.createCardHTML(house)).join('');
+      // Agrupar las tarjetas por jugador / creador
+      const yazminHouses = sorted.filter((h) => (h.creator || '').toLowerCase().includes('yazmin'));
+      const loanreyHouses = sorted.filter((h) => (h.creator || '').toLowerCase().includes('loanrey'));
+      const otherHouses = sorted.filter((h) => !(h.creator || '').toLowerCase().includes('yazmin') && !(h.creator || '').toLowerCase().includes('loanrey'));
+
+      let htmlOutput = '';
+
+      if (yazminHouses.length > 0) {
+        htmlOutput += this.createPlayerDividerHTML('yazmingonzalez318', yazminHouses.length);
+        htmlOutput += yazminHouses.map((house) => this.createCardHTML(house)).join('');
+      }
+
+      if (loanreyHouses.length > 0) {
+        if (yazminHouses.length > 0) {
+          // Separador de valla de madera de Minecraft usando wood_divider.png
+          htmlOutput += this.createWoodSeparatorHTML();
+        }
+        htmlOutput += this.createPlayerDividerHTML('loanrey17', loanreyHouses.length);
+        htmlOutput += loanreyHouses.map((house) => this.createCardHTML(house)).join('');
+      }
+
+      if (otherHouses.length > 0) {
+        if (yazminHouses.length > 0 || loanreyHouses.length > 0) {
+          htmlOutput += this.createWoodSeparatorHTML();
+        }
+        htmlOutput += this.createPlayerDividerHTML('comunidad', otherHouses.length);
+        htmlOutput += otherHouses.map((house) => this.createCardHTML(house)).join('');
+      }
+
+      this.cardsGrid.innerHTML = htmlOutput || sorted.map((house) => this.createCardHTML(house)).join('');
 
       this.attachCardEventListeners();
       this.initLazyLoading();
+    }
+
+    createWoodSeparatorHTML() {
+      return `
+        <div class="mc-player-wood-divider-barrier" role="separator" aria-label="Separador de jugadores">
+          <div class="wood-barrier-texture-strip"></div>
+          <div class="wood-barrier-center-badge">
+            <span class="wood-nail"></span>
+            <div class="barrier-badge-content">
+              <i class="fa-solid fa-cubes-stacked"></i>
+              <span>DIVISIÓN DE ARQUITECTOS</span>
+              <i class="fa-solid fa-cube"></i>
+            </div>
+            <span class="wood-nail"></span>
+          </div>
+          <div class="wood-barrier-texture-strip"></div>
+        </div>
+      `;
+    }
+
+    createPlayerDividerHTML(playerKey, count) {
+      if (playerKey === 'yazmingonzalez318') {
+        return `
+          <div class="mc-player-section-banner player-yazmin">
+            <div class="player-banner-wood-trim trim-top"></div>
+            <div class="player-banner-content">
+              <div class="player-banner-left">
+                <div class="player-avatar-badge-wrap">
+                  <div class="player-avatar-cube sakura-cube">
+                    <i class="fa-solid fa-tree"></i>
+                  </div>
+                  <span class="player-status-dot"></span>
+                </div>
+                <div class="player-info-meta">
+                  <div class="player-role-tag">
+                    <i class="fa-brands fa-instagram"></i> CREADORA & ARQUITECTA
+                  </div>
+                  <h3 class="player-name-title">
+                    <span>@yazmingonzalez318</span>
+                    <span class="player-count-pill">${count} Construcciones</span>
+                  </h3>
+                  <p class="player-specialty-text">
+                    🌸 Mansiones de Cerezos, Diseños Imperiales y Obras en la Jungla
+                  </p>
+                </div>
+              </div>
+              <div class="player-banner-right">
+                <a href="https://www.instagram.com/yazmingonzalez318/" target="_blank" rel="noopener noreferrer" class="btn-player-ig-profile" title="Ver Instagram de @yazmingonzalez318">
+                  <i class="fa-brands fa-instagram"></i>
+                  <span>@yazmingonzalez318</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+            <div class="player-banner-wood-trim trim-bottom"></div>
+          </div>
+        `;
+      } else if (playerKey === 'loanrey17') {
+        return `
+          <div class="mc-player-section-banner player-loanrey">
+            <div class="player-banner-wood-trim trim-top"></div>
+            <div class="player-banner-content">
+              <div class="player-banner-left">
+                <div class="player-avatar-badge-wrap">
+                  <div class="player-avatar-cube dev-cube">
+                    <i class="fa-solid fa-crown" style="color: var(--gold);"></i>
+                  </div>
+                  <span class="player-status-dot dev"></span>
+                </div>
+                <div class="player-info-meta">
+                  <div class="player-role-tag dev-tag">
+                    <i class="fa-solid fa-code"></i> DESARROLLADOR & ARQUITECTO
+                  </div>
+                  <h3 class="player-name-title">
+                    <span>@loanrey17</span>
+                    <span class="player-count-pill dev-pill">${count} Construcciones</span>
+                  </h3>
+                  <p class="player-specialty-text">
+                    🏖️ Villas Costeras Modernas y Mansiones de Playa con Muelle
+                  </p>
+                </div>
+              </div>
+              <div class="player-banner-right">
+                <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="btn-player-ig-profile dev-ig" title="Ver Instagram de @loanrey17">
+                  <i class="fa-brands fa-instagram"></i>
+                  <span>@loanrey17</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+            <div class="player-banner-wood-trim trim-bottom"></div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="mc-player-section-banner player-comunidad">
+            <div class="player-banner-wood-trim trim-top"></div>
+            <div class="player-banner-content">
+              <div class="player-banner-left">
+                <div class="player-avatar-badge-wrap">
+                  <div class="player-avatar-cube">
+                    <i class="fa-solid fa-users"></i>
+                  </div>
+                </div>
+                <div class="player-info-meta">
+                  <div class="player-role-tag">
+                    <i class="fa-solid fa-cube"></i> COMUNIDAD
+                  </div>
+                  <h3 class="player-name-title">
+                    <span>Construcciones de la Comunidad</span>
+                    <span class="player-count-pill">${count} Diseños</span>
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div class="player-banner-wood-trim trim-bottom"></div>
+          </div>
+        `;
+      }
     }
 
     createCardHTML(house) {

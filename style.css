@@ -11260,6 +11260,284 @@ html, body {
   transform: translateY(-2px);
 }
 
+/* ==========================================================================
+   PLAYER SECTION DIVIDERS & MINECRAFT WOOD FENCE SEPARATOR
+   ========================================================================== */
+
+/* Full-width player banner in cards grid */
+.mc-player-section-banner {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 3px solid #2a180c;
+  background-color: #24160c;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65), inset 0 0 0 1px rgba(255, 200, 120, 0.15);
+  position: relative;
+  transition: all var(--tr-smooth);
+}
+
+.mc-player-section-banner.player-yazmin {
+  border-color: #552735;
+  background: linear-gradient(135deg, rgba(46, 20, 28, 0.96), rgba(30, 16, 22, 0.96));
+}
+
+.mc-player-section-banner.player-loanrey {
+  border-color: #203548;
+  background: linear-gradient(135deg, rgba(18, 30, 42, 0.96), rgba(14, 22, 32, 0.96));
+}
+
+/* Wood Fence Trim using wood_divider.png */
+.player-banner-wood-trim {
+  width: 100%;
+  height: 28px;
+  background-image: url('./wood_divider.png');
+  background-repeat: repeat-x;
+  background-size: auto 28px;
+  image-rendering: pixelated;
+  border-top: 2px solid #1a0f07;
+  border-bottom: 2px solid #1a0f07;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.player-banner-wood-trim.trim-top {
+  border-top: none;
+}
+
+.player-banner-wood-trim.trim-bottom {
+  border-bottom: none;
+}
+
+/* Banner Content */
+.player-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.1rem 1.4rem;
+  flex-wrap: wrap;
+}
+
+.player-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+.player-avatar-badge-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.player-avatar-cube {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.player-avatar-cube.sakura-cube {
+  background: linear-gradient(135deg, #f43f5e, #ec4899);
+  color: #fff;
+  border-color: rgba(244, 63, 94, 0.5);
+  box-shadow: 0 0 16px rgba(244, 63, 94, 0.35);
+}
+
+.player-avatar-cube.dev-cube {
+  background: linear-gradient(135deg, #f59e0b, #eab308);
+  color: #1a1205;
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+}
+
+.player-status-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid #1e1017;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.player-status-dot.dev {
+  border-color: #0e1620;
+}
+
+.player-info-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.player-role-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #fb7185;
+}
+
+.player-role-tag.dev-tag {
+  color: #fbbf24;
+}
+
+.player-name-title {
+  font-family: var(--font-main);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.player-count-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(244, 63, 94, 0.2);
+  color: #fda4af;
+  border: 1px solid rgba(244, 63, 94, 0.35);
+}
+
+.player-count-pill.dev-pill {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.player-specialty-text {
+  font-size: 0.82rem;
+  color: var(--text-dim, #94a3b8);
+  margin: 0;
+}
+
+.btn-player-ig-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(244, 63, 94, 0.15));
+  border: 1.5px solid rgba(244, 63, 94, 0.4);
+  color: #fda4af;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+.btn-player-ig-profile:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+  color: #ffffff;
+  border-color: #f43f5e;
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.4);
+}
+
+.btn-player-ig-profile.dev-ig {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(234, 179, 8, 0.15));
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fde68a;
+}
+
+.btn-player-ig-profile.dev-ig:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #1a1205;
+  border-color: #f59e0b;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+}
+
+/* ==========================================================================
+   MINECRAFT WOODEN FENCE SEPARATOR (User's wood_divider.png)
+   ========================================================================== */
+.mc-player-wood-divider-barrier {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 2.2rem 0 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+}
+
+.wood-barrier-texture-strip {
+  width: 100%;
+  height: 44px;
+  background-image: url('./wood_divider.png');
+  background-repeat: repeat-x;
+  background-size: auto 44px;
+  image-rendering: pixelated;
+  border-top: 3px solid #1c1007;
+  border-bottom: 3px solid #1c1007;
+  box-shadow: 
+    inset 0 3px 6px rgba(0, 0, 0, 0.7), 
+    inset 0 -3px 6px rgba(0, 0, 0, 0.7),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.wood-barrier-center-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.45rem 1.4rem;
+  background: #2b190d;
+  border: 2px solid #5a381d;
+  border-radius: var(--radius-sm);
+  margin: -14px auto -14px;
+  z-index: 5;
+  box-shadow: 
+    inset 0 2px 0 #7e502c,
+    inset 0 -2px 0 #150a04,
+    0 4px 16px rgba(0, 0, 0, 0.8);
+}
+
+.wood-nail {
+  width: 6px;
+  height: 6px;
+  background: #110904;
+  box-shadow: inset 0 -1px 0 #4a2f18;
+  border-radius: 1px;
+}
+
+.barrier-badge-content {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #f7d2a5;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-transform: uppercase;
+}
+
+.barrier-badge-content i {
+  color: var(--gold, #f59e0b);
+  font-size: 0.75rem;
+}
+
 
 
 
