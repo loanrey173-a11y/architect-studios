@@ -640,7 +640,7 @@
       if (!this.canvas) return;
       this.ctx = this.canvas.getContext('2d');
       this.particles = [];
-      this.particleCount = 38;
+      this.particleCount = window.innerWidth < 768 ? 16 : 28;
       this.width = 0;
       this.height = 0;
       this.mouseX = -1000;
@@ -699,6 +699,11 @@
     }
 
     animate() {
+      if (document.hidden) {
+        requestAnimationFrame(() => this.animate());
+        return;
+      }
+
       this.ctx.clearRect(0, 0, this.width, this.height);
 
       for (let i = 0; i < this.particles.length; i++) {
@@ -2167,11 +2172,14 @@
     updateThemeIcon(theme) {
       const isNether = (theme === 'dark' || theme === 'nether');
       if (this.themeToggleBtn) {
-        const icon = this.themeToggleBtn.querySelector('i');
-        if (icon) {
-          icon.className = isNether ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        this.themeToggleBtn.setAttribute('title', isNether 
+          ? 'Antorcha: Modo Noche / Nether activo (Clic para cambiar a Día / Overworld)' 
+          : 'Antorcha: Modo Día / Overworld activo (Clic para cambiar a Noche / Nether)');
+        const torch = document.getElementById('headerTorch');
+        if (torch) {
+          torch.classList.toggle('torch-nether', isNether);
+          torch.classList.toggle('torch-overworld', !isNether);
         }
-        this.themeToggleBtn.setAttribute('title', isNether ? 'Cambiar a Modo Overworld (Día / Verdes)' : 'Cambiar a Modo Nether (Oscuro / Rojos / Lava)');
       }
       this.updateRedstoneSwitchUI(theme);
     }
@@ -2244,6 +2252,36 @@
       }
     }
 
+    spawnTorchClickSparks() {
+      if (!this.themeToggleBtn) return;
+      const rect = this.themeToggleBtn.getBoundingClientRect();
+      const colors = ['#f59e0b', '#ef4444', '#fde047', '#ff6b00'];
+      for (let i = 0; i < 7; i++) {
+        const spark = document.createElement('div');
+        spark.style.cssText = `
+          position: fixed;
+          left: ${rect.left + rect.width / 2 + (Math.random() - 0.5) * 14}px;
+          top: ${rect.top + 8 + (Math.random() - 0.5) * 10}px;
+          width: 4px;
+          height: 4px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          box-shadow: 0 0 6px ${colors[0]};
+          border-radius: 1px;
+          pointer-events: none;
+          z-index: 99999;
+          transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
+        `;
+        document.body.appendChild(spark);
+        requestAnimationFrame(() => {
+          spark.style.transform = `translate(${(Math.random() - 0.5) * 36}px, ${-(Math.random() * 24 + 10)}px) scale(0)`;
+          spark.style.opacity = '0';
+        });
+        setTimeout(() => {
+          if (spark.parentNode) spark.parentNode.removeChild(spark);
+        }, 500);
+      }
+    }
+
     updateSoundBtnUI() {
       if (!this.soundFxBtn) return;
       const icon = this.soundFxBtn.querySelector('i');
@@ -2306,9 +2344,10 @@
         });
       }
 
-      // 3. Theme Toggle (Sincronizado con Palanca de Redstone)
+      // 3. Theme Toggle (Antorcha de Minecraft sincronizada con Palanca de Redstone)
       if (this.themeToggleBtn) {
         this.themeToggleBtn.addEventListener('click', () => {
+          this.spawnTorchClickSparks();
           this.toggleRedstoneDimension();
         });
       }
@@ -4642,7 +4681,6 @@
         <div class="mc-track-item ${isCurrent ? 'is-active' : ''}" data-track-id="${track.id}" role="button" tabindex="0">
           <div class="track-item-left">
             <span class="track-num">${track.num}</span>
-            <i class="fa-solid fa-compact-disc track-icon"></i>
             <div class="track-meta">
               <span class="track-title">${track.title}</span>
               <span class="track-artist">${track.artist} • ${track.tag}</span>
@@ -4699,7 +4737,7 @@
       if (this.nowPlayingSong) this.nowPlayingSong.textContent = track.title;
       if (this.nowPlayingArtist) this.nowPlayingArtist.textContent = `${track.artist} • ${track.album}`;
       if (this.nowPlayingFolder) {
-        this.nowPlayingFolder.innerHTML = `<i class="fa-solid fa-folder"></i> ${track.folder}`;
+        this.nowPlayingFolder.textContent = track.folder;
       }
     }
 

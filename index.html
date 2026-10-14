@@ -364,9 +364,19 @@
           <span class="btn-text">Sonido</span>
         </button>
 
-        <!-- Theme Toggle -->
-        <button id="themeToggleBtn" class="action-btn" title="Cambiar tema Día / Noche" aria-label="Tema">
-          <i class="fa-solid fa-moon"></i>
+        <!-- Minecraft Torch Theme Toggle (Modo Noche / Claro) -->
+        <button id="themeToggleBtn" class="action-btn mc-torch-theme-btn" title="Antorcha de Minecraft: Cambiar entre Noche (Nether) y Día (Overworld)" aria-label="Cambiar tema Día o Noche">
+          <div class="mc-interactive-torch" id="headerTorch">
+            <div class="mc-torch-flame-container">
+              <div class="mc-torch-flame-inner">
+                <div class="mc-torch-flame-core"></div>
+              </div>
+              <span class="mc-torch-particle p1"></span>
+              <span class="mc-torch-particle p2"></span>
+              <span class="mc-torch-smoke"></span>
+            </div>
+            <div class="mc-torch-wood-stick"></div>
+          </div>
         </button>
 
         <!-- Comments Button -->
@@ -378,8 +388,8 @@
     </div>
   </header>
 
-  <!-- Audio de Fondo (Minecraft OST - Reproducción Continua) -->
-  <audio id="bgMusicAudio" preload="auto">
+  <!-- Audio de Fondo (Minecraft OST - Optimizado con preload none) -->
+  <audio id="bgMusicAudio" preload="none">
     <source src="./MUSICA%20DE%20MINECRAFT/NOSTALGICAS/SWEDEN.mp3" type="audio/mpeg">
     <source src="./audio_minecraft.mp3" type="audio/mpeg">
   </audio>
@@ -808,6 +818,17 @@
             </div>
             <i class="fa-solid fa-arrow-up-right-from-square insta-arrow"></i>
           </a>
+
+          <a href="https://www.instagram.com/losnrey_18/?hl=es" target="_blank" rel="noopener noreferrer" class="instagram-dev-badge instagram-creator-badge" title="Instagram de la Creadora losnrey_18">
+            <div class="insta-icon-box creator-box">
+              <i class="fa-brands fa-instagram"></i>
+            </div>
+            <div class="insta-text-box">
+              <span class="insta-platform"><i class="fa-solid fa-wand-magic-sparkles" style="color: #ec4899; font-size: 0.65rem;"></i> Creadora</span>
+              <span class="insta-username">losnrey_18</span>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square insta-arrow"></i>
+          </a>
         </div>
 
         <!-- Sección Apoya al Proyecto -->
@@ -1136,7 +1157,10 @@
 
         <div class="tutorials-actions-group">
           <a href="https://www.instagram.com/loanrey17" target="_blank" rel="noopener noreferrer" class="btn-tutorials-contact" id="contactDevTutorialsBtn">
-            <i class="fa-brands fa-instagram"></i> Escribir al Desarrollador (@loanrey17)
+            <i class="fa-brands fa-instagram"></i> Desarrollador (@loanrey17)
+          </a>
+          <a href="https://www.instagram.com/losnrey_18/?hl=es" target="_blank" rel="noopener noreferrer" class="btn-tutorials-contact btn-creator-contact" id="contactCreatorTutorialsBtn">
+            <i class="fa-brands fa-instagram"></i> Creadora (@losnrey_18)
           </a>
           <button type="button" class="btn-tutorials-ok" id="tutorialsModalOkBtn">
             <i class="fa-solid fa-check"></i> Entendido
@@ -1967,7 +1991,7 @@
               <i class="fa-solid fa-record-vinyl"></i>
             </div>
             <div class="now-playing-info">
-              <span class="now-playing-folder-chip" id="nowPlayingFolder"><i class="fa-solid fa-folder"></i> NOSTÁLGICAS</span>
+              <span class="now-playing-folder-chip" id="nowPlayingFolder">NOSTÁLGICAS</span>
               <h4 class="now-playing-song-title" id="nowPlayingSong">Sweden</h4>
               <span class="now-playing-artist-name" id="nowPlayingArtist">C418 • Minecraft Volume Alpha</span>
             </div>
@@ -2017,8 +2041,7 @@
           <div class="mc-music-folder-block">
             <div class="mc-folder-header">
               <div class="mc-folder-title">
-                <i class="fa-solid fa-folder-open folder-icon-nostalgica"></i>
-                <span class="folder-name">📁 NOSTÁLGICAS</span>
+                <span class="folder-name">NOSTÁLGICAS</span>
                 <span class="folder-count-badge">10 Canciones</span>
               </div>
               <span class="folder-author-badge">C418 Clásicos</span>
@@ -2032,8 +2055,7 @@
           <div class="mc-music-folder-block">
             <div class="mc-folder-header">
               <div class="mc-folder-title">
-                <i class="fa-solid fa-folder-open folder-icon-populares"></i>
-                <span class="folder-name">📁 POPULARES</span>
+                <span class="folder-name">POPULARES</span>
                 <span class="folder-count-badge">4 Canciones</span>
               </div>
               <span class="folder-author-badge">Discos & Nuevas Épocas</span>
