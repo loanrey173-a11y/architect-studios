@@ -364,13 +364,17 @@
           <span class="btn-text">Sonido</span>
         </button>
 
-        <!-- Minecraft Torch Theme Toggle (Modo Noche / Claro) -->
-        <button id="themeToggleBtn" class="action-btn mc-torch-theme-btn" title="Antorcha de Minecraft: Cambiar entre Noche (Nether) y Día (Overworld)" aria-label="Cambiar tema Día o Noche">
+        <!-- Minecraft Torch Theme Toggle (Modo Noche: Prendida / Modo Claro: Apagada) -->
+        <button id="themeToggleBtn" class="action-btn mc-torch-theme-btn" title="Antorcha de Minecraft: Noche (prendida) / Día (apagada)" aria-label="Cambiar tema Día o Noche">
           <div class="mc-interactive-torch" id="headerTorch">
             <div class="mc-torch-flame-container">
+              <!-- Llama ardiente (Modo Oscuro / Noche) -->
               <div class="mc-torch-flame-inner">
                 <div class="mc-torch-flame-core"></div>
               </div>
+              <!-- Carbón apagado con humo (Modo Claro / Día) -->
+              <div class="mc-torch-charcoal-head"></div>
+
               <span class="mc-torch-particle p1"></span>
               <span class="mc-torch-particle p2"></span>
               <span class="mc-torch-smoke"></span>

@@ -2173,11 +2173,13 @@
       const isNether = (theme === 'dark' || theme === 'nether');
       if (this.themeToggleBtn) {
         this.themeToggleBtn.setAttribute('title', isNether 
-          ? 'Antorcha: Modo Noche / Nether activo (Clic para cambiar a Día / Overworld)' 
-          : 'Antorcha: Modo Día / Overworld activo (Clic para cambiar a Noche / Nether)');
+          ? 'Antorcha: Prendida (Modo Oscuro) - Clic para apagar y pasar a Modo Claro' 
+          : 'Antorcha: Apagada (Modo Claro) - Clic para prender y pasar a Modo Oscuro');
         const torch = document.getElementById('headerTorch');
         if (torch) {
+          torch.classList.toggle('torch-lit', isNether);
           torch.classList.toggle('torch-nether', isNether);
+          torch.classList.toggle('torch-unlit', !isNether);
           torch.classList.toggle('torch-overworld', !isNether);
         }
       }

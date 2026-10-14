@@ -11127,21 +11127,115 @@ html, body {
   z-index: 1;
 }
 
-/* Theme states */
-.mc-interactive-torch.torch-nether .mc-torch-flame-inner {
-  background: #f97316;
+/* Charcoal Head (cuando la antorcha está apagada en Modo Claro) */
+.mc-torch-charcoal-head {
+  display: none;
+  width: 5px;
+  height: 4px;
+  background: #272422;
   box-shadow: 
-    0 -3px 0 0 #dc2626, 
-    0 0 10px rgba(239, 68, 68, 0.85),
-    0 0 22px rgba(255, 100, 0, 0.6);
+    inset 0 -1px 0 #181615, 
+    inset 0 1px 0 #3a3633,
+    0 -1px 0 #151312;
+  image-rendering: pixelated;
+  z-index: 2;
+  margin-top: 5px;
 }
 
-.mc-interactive-torch.torch-overworld .mc-torch-flame-inner {
-  background: #facc15;
+/* ==========================================================================
+   ESTADOS DE LA ANTORCHA: PRENDIDA (MODO OSCURO) / APAGADA (MODO CLARO)
+   ========================================================================== */
+
+/* 1. MODO OSCURO (NETHER / DARK): ANTORCHA PRENDIDA */
+[data-theme="dark"] .mc-interactive-torch .mc-torch-flame-inner,
+[data-theme="nether"] .mc-interactive-torch .mc-torch-flame-inner,
+.mc-interactive-torch.torch-lit .mc-torch-flame-inner,
+.mc-interactive-torch.torch-nether .mc-torch-flame-inner {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  background: #f59e0b;
   box-shadow: 
-    0 -3px 0 0 #f59e0b, 
-    0 0 8px rgba(250, 204, 21, 0.75),
-    0 0 16px rgba(234, 179, 8, 0.4);
+    0 -3px 0 0 #ef4444, 
+    0 0 10px rgba(245, 158, 11, 0.9), 
+    0 0 22px rgba(239, 68, 68, 0.65);
+}
+
+[data-theme="dark"] .mc-interactive-torch .mc-torch-charcoal-head,
+[data-theme="nether"] .mc-interactive-torch .mc-torch-charcoal-head,
+.mc-interactive-torch.torch-lit .mc-torch-charcoal-head,
+.mc-interactive-torch.torch-nether .mc-torch-charcoal-head {
+  display: none !important;
+}
+
+[data-theme="dark"] .mc-interactive-torch .mc-torch-particle,
+[data-theme="nether"] .mc-interactive-torch .mc-torch-particle,
+.mc-interactive-torch.torch-lit .mc-torch-particle,
+.mc-interactive-torch.torch-nether .mc-torch-particle {
+  display: block;
+}
+
+[data-theme="dark"] .mc-torch-theme-btn,
+[data-theme="nether"] .mc-torch-theme-btn {
+  background: rgba(255, 140, 0, 0.12);
+  border-color: rgba(255, 140, 0, 0.4);
+}
+
+/* 2. MODO CLARO (OVERWORLD / LIGHT): ANTORCHA APAGADA */
+[data-theme="light"] .mc-interactive-torch .mc-torch-flame-inner,
+[data-theme="overworld"] .mc-interactive-torch .mc-torch-flame-inner,
+.mc-interactive-torch.torch-unlit .mc-torch-flame-inner,
+.mc-interactive-torch.torch-overworld .mc-torch-flame-inner {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  animation: none !important;
+}
+
+[data-theme="light"] .mc-interactive-torch .mc-torch-particle,
+[data-theme="overworld"] .mc-interactive-torch .mc-torch-particle,
+.mc-interactive-torch.torch-unlit .mc-torch-particle,
+.mc-interactive-torch.torch-overworld .mc-torch-particle {
+  display: none !important;
+}
+
+[data-theme="light"] .mc-interactive-torch .mc-torch-charcoal-head,
+[data-theme="overworld"] .mc-interactive-torch .mc-torch-charcoal-head,
+.mc-interactive-torch.torch-unlit .mc-torch-charcoal-head,
+.mc-interactive-torch.torch-overworld .mc-torch-charcoal-head {
+  display: block !important;
+}
+
+/* Humo suave con movimiento continuo saliendo de la antorcha apagada */
+[data-theme="light"] .mc-interactive-torch .mc-torch-smoke,
+[data-theme="overworld"] .mc-interactive-torch .mc-torch-smoke,
+.mc-interactive-torch.torch-unlit .mc-torch-smoke,
+.mc-interactive-torch.torch-overworld .mc-torch-smoke {
+  display: block !important;
+  opacity: 0.75 !important;
+  background: rgba(80, 75, 71, 0.7) !important;
+  animation: mcTorchSmokeUnlit 1.8s infinite ease-out !important;
+}
+
+@keyframes mcTorchSmokeUnlit {
+  0% {
+    transform: translateY(2px) scale(0.7);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateY(-8px) translateX(2px) scale(1.1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(-16px) translateX(-2px) scale(1.6);
+    opacity: 0;
+  }
+}
+
+[data-theme="light"] .mc-torch-theme-btn,
+[data-theme="overworld"] .mc-torch-theme-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 /* Creadora Instagram Badges */
