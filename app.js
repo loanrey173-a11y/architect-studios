@@ -3658,14 +3658,6 @@
         ? `<span class="badge-photo-count"><i class="fa-solid fa-images"></i> ${house.gallery.length} fotos</span>`
         : '';
 
-      const isDev = (house.creator === 'loanrey17') || (house.creatorDisplay && house.creatorDisplay.toLowerCase() === 'loanrey17') || (house.instagram && house.instagram.name && house.instagram.name.toLowerCase() === 'loanrey17');
-      const creatorRole = isDev ? 'Desarrollador' : (house.creatorRole && house.creatorRole !== 'Desarrollador' ? house.creatorRole : 'Instagram');
-      const creatorDisplay = house.creatorDisplay || house.creator || (isDev ? 'loanrey17' : 'Arquitecto');
-      const igHandle = house.instagram?.name || (isDev ? 'loanrey17' : '');
-      const igUrl = house.instagram?.url || (isDev ? 'https://www.instagram.com/loanrey17/' : `https://www.instagram.com/${igHandle}/`);
-
-      const devCrown = isDev ? '<i class="fa-solid fa-crown creator-crown" style="color: var(--gold); font-size: 0.72rem; margin-right: 0.25rem;"></i>' : '';
-
       // SVG placeholder to prevent early downloads and ensure zero layout shift (CLS)
       const placeholderSVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'%3E%3C/svg%3E";
 
@@ -3693,12 +3685,6 @@
               </div>
             </div>
 
-            <!-- Direct Instagram Badge on Image -->
-            <a href="${igUrl}" target="_blank" rel="noopener noreferrer" class="card-img-ig-badge" data-action="instagram" title="Instagram: @${igHandle}" aria-label="Instagram de @${igHandle}">
-              <div class="card-img-ig-icon"><i class="fa-brands fa-instagram"></i></div>
-              <span class="card-img-ig-name">@${igHandle}</span>
-            </a>
-
             <!-- Floating 360° Quick Access Chip on Image -->
             <button class="card-img-360-chip" data-action="view-360" data-id="${house.id}" title="Ver en 360°" aria-label="Ver construcción en 360 grados">
               <i class="fa-solid fa-arrows-spin"></i> <span>360°</span>
@@ -3709,20 +3695,6 @@
             <div class="card-biome"><i class="fa-solid fa-location-dot"></i> ${house.biome}</div>
             <h3 class="card-title">${house.title}</h3>
             <p class="card-desc">${house.description}</p>
-
-            <!-- Instagram Creator Banner -->
-            <a href="${igUrl}" target="_blank" rel="noopener noreferrer" class="card-ig-banner" data-action="instagram" title="Instagram de @${igHandle}" aria-label="Abrir Instagram de @${igHandle}">
-              <div class="card-ig-logo-wrap">
-                <img src="./instagram_logo.png" alt="Logo Instagram" class="card-ig-logo-img" onerror="window.handleImgFallback(this, 'instagram_logo')">
-              </div>
-              <div class="card-ig-info">
-                <span class="card-ig-handle">${creatorDisplay} <span class="card-ig-at">@${igHandle}</span></span>
-              </div>
-              <div class="card-ig-badge-action">
-                <span>Instagram</span>
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-              </div>
-            </a>
 
             <!-- Menú Desplegable: Inventario de Crafteo y Materiales -->
             <div class="card-crafting-accordion" data-crafting-container="${house.id}">
